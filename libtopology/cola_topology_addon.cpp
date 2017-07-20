@@ -18,6 +18,7 @@
  * Author(s):  Michael Wybrow
 */
 
+#include <functional>
 #include <utility>
 
 #include "libvpsc/rectangle.h"
@@ -39,7 +40,7 @@ ColaTopologyAddon::ColaTopologyAddon()
 }
 
 ColaTopologyAddon::ColaTopologyAddon(
-        std::vector<topology::Node*>& tnodes, 
+        std::vector<topology::Node*>& tnodes,
         std::vector<topology::Edge*>& routes)
     : cola::TopologyAddonInterface(),
       topologyNodes(tnodes),
@@ -69,7 +70,7 @@ void ColaTopologyAddon::freeAssociatedObjects(void)
 }
 
 void ColaTopologyAddon::handleResizes(const cola::Resizes& resizeList,
-        unsigned n, std::valarray<double>& X, std::valarray<double>& Y, 
+        unsigned n, std::valarray<double>& X, std::valarray<double>& Y,
         cola::CompoundConstraints& ccs, vpsc::Rectangles& boundingBoxes,
         cola::RootCluster* clusterHierarchy)
 {
@@ -158,12 +159,12 @@ void ColaTopologyAddon::writeSVGFile(std::string basename)
         double rMaxX = debugSVGViewBox->getMaxX();
         double rMinY = debugSVGViewBox->getMinY();
         double rMaxY = debugSVGViewBox->getMaxY();
-   
+
         reduceRange(rMinX);
         reduceRange(rMaxX);
         reduceRange(rMinY);
         reduceRange(rMaxY);
-        
+
         if (rMinX > -LIMIT)
         {
             minX = std::min(minX, rMinX);
@@ -191,12 +192,12 @@ void ColaTopologyAddon::writeSVGFile(std::string basename)
             double rMaxX = rect->getMaxX();
             double rMinY = rect->getMinY();
             double rMaxY = rect->getMaxY();
-       
+
             reduceRange(rMinX);
             reduceRange(rMaxX);
             reduceRange(rMinY);
             reduceRange(rMaxY);
-            
+
             if (rMinX > -LIMIT)
             {
                 minX = std::min(minX, rMinX);
@@ -247,7 +248,7 @@ void ColaTopologyAddon::writeSVGFile(std::string basename)
     {
         straightener::Route *route = topologyRoutes[i]->getRoute();
 
-        fprintf(fp, "<path id=\"edge-%u\" class=\"edge\" d=\"", 
+        fprintf(fp, "<path id=\"edge-%u\" class=\"edge\" d=\"",
                 (unsigned) i);
         for (size_t p = 0; p < route->n; ++p)
         {
@@ -259,7 +260,7 @@ void ColaTopologyAddon::writeSVGFile(std::string basename)
         delete route;
     }
     fprintf(fp, "</g>\n");
-    
+
     fprintf(fp, "<g inkscape:groupmode=\"layer\" "
             "inkscape:label=\"Nodes\">\n");
     for (size_t i = 0; i < topologyNodes.size(); ++i)
@@ -269,16 +270,16 @@ void ColaTopologyAddon::writeSVGFile(std::string basename)
         double rMaxX = rect->getMaxX();
         double rMinY = rect->getMinY();
         double rMaxY = rect->getMaxY();
-   
+
         reduceRange(rMinX);
         reduceRange(rMaxX);
         reduceRange(rMinY);
         reduceRange(rMaxY);
-        
+
         fprintf(fp, "<rect id=\"rect-%u\" x=\"%g\" y=\"%g\" width=\"%g\" "
-                "height=\"%g\" />\n", (unsigned) i, rMinX, rMinY, 
+                "height=\"%g\" />\n", (unsigned) i, rMinX, rMinY,
                 rMaxX - rMinX, rMaxY - rMinY);
-        fprintf(fp, "<text x=\"%g\" y=\"%g\">%u</text>\n", rMinX + 3, 
+        fprintf(fp, "<text x=\"%g\" y=\"%g\">%u</text>\n", rMinX + 3,
                 rMinY + 11, (unsigned) i);
     }
     fprintf(fp, "</g>\n");
@@ -303,7 +304,7 @@ bool ColaTopologyAddon::useTopologySolver(void) const
     return (!topologyNodes.empty() && !topologyRoutes.empty());
 }
 
-void ColaTopologyAddon::makeFeasible(bool generateNonOverlapConstraints, 
+void ColaTopologyAddon::makeFeasible(bool generateNonOverlapConstraints,
         vpsc::Rectangles& boundingBoxes, cola::RootCluster* clusterHierarchy)
 {
     if (generateNonOverlapConstraints)
@@ -316,12 +317,12 @@ void ColaTopologyAddon::makeFeasible(bool generateNonOverlapConstraints,
             topologyNodes[id] = new topology::Node(id, boundingBoxes[id]);
         }
     }
-  
+
     if (clusterHierarchy)
     {
         // create cluster boundaries
         unsigned clusterCount=0;
-        for (std::vector<cola::Cluster*>::iterator i = 
+        for (std::vector<cola::Cluster*>::iterator i =
                 clusterHierarchy->clusters.begin();
                 i != clusterHierarchy->clusters.end(); ++i, ++clusterCount)
         {
@@ -338,21 +339,21 @@ void ColaTopologyAddon::makeFeasible(bool generateNonOverlapConstraints,
                     topology::Node *node= topologyNodes[id];
                     topology::EdgePoint::RectIntersect ri;
                     switch(corner) {
-                        case 0: 
-                            ri=topology::EdgePoint::BR; 
+                        case 0:
+                            ri=topology::EdgePoint::BR;
                             //cout << "EdgePoint::BR);" << endl;
                             break;
-                        case 1: 
-                            ri=topology::EdgePoint::TR; 
+                        case 1:
+                            ri=topology::EdgePoint::TR;
                             //cout << "EdgePoint::TR);" << endl;
                             break;
-                        case 2: 
+                        case 2:
                             ri=topology::EdgePoint::TL;
                             //cout << "EdgePoint::TL);" << endl;
                             break;
                         default:
                             COLA_ASSERT(corner==3);
-                            ri=topology::EdgePoint::BL; 
+                            ri=topology::EdgePoint::BL;
                             //cout << "EdgePoint::BL);" << endl;
                             break;
                     }
@@ -367,7 +368,7 @@ void ColaTopologyAddon::makeFeasible(bool generateNonOverlapConstraints,
     }
 }
 
-void ColaTopologyAddon::moveTo(const vpsc::Dim dim, 
+void ColaTopologyAddon::moveTo(const vpsc::Dim dim,
         vpsc::Variables& vs, vpsc::Constraints& cs,
         std::valarray<double> &coords, cola::RootCluster* clusterHierarchy)
 {
@@ -390,7 +391,7 @@ void ColaTopologyAddon::moveTo(const vpsc::Dim dim,
 double ColaTopologyAddon::applyForcesAndConstraints(
         cola::ConstrainedFDLayout *layout, const vpsc::Dim dim,
         std::valarray<double>& g, vpsc::Variables& vs,
-        vpsc::Constraints& cs, std::valarray<double> &coords, 
+        vpsc::Constraints& cs, std::valarray<double> &coords,
         cola::DesiredPositionsInDim& des, double oldStress)
 {
     FILE_LOG(cola::logDEBUG1) << "applying topology preserving layout...";
