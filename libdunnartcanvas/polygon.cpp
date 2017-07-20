@@ -26,6 +26,7 @@
 #include <QByteArray>
 #include <climits>
 #include <cassert>
+#include <memory>
 #include <utility>
 
 
@@ -65,7 +66,9 @@ void PolygonShape::initWithXMLProperties(Canvas *canvas,
         // Read the number of points.
         const int totalPoints = strings.at(stringIndex++).toInt();
 
-        int geometry[2][totalPoints];
+		std::unique_ptr<int[]> geometry[2] =
+			{ std::make_unique<int[]>(totalPoints)
+			, std::make_unique<int[]>(totalPoints) };
 
         int xp = essentialProp<int>(node, x_xPos, ns);
         int yp = essentialProp<int>(node, x_yPos, ns);
@@ -76,7 +79,7 @@ void PolygonShape::initWithXMLProperties(Canvas *canvas,
             geometry[0][ptNum] = strings.at(stringIndex++).toInt() + xp;
             geometry[1][ptNum] = strings.at(stringIndex++).toInt() + yp;
         }
-        setBoundaryInternal(geometry[0], geometry[1], totalPoints);
+        setBoundaryInternal(geometry[0].get(), geometry[1].get(), totalPoints);
     }
     else
     {
