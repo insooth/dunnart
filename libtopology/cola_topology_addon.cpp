@@ -18,11 +18,11 @@
  * Author(s):  Michael Wybrow
 */
 
-#include <algorithm>
-#include <utility>
-
 #define _USE_MATH_DEFINES // M_PI
 #include <cmath>
+
+#include <algorithm>
+#include <utility>
 
 #include "libvpsc/rectangle.h"
 #include "libvpsc/constraint.h"
@@ -127,8 +127,8 @@ static const double LIMIT = 100000000;
 
 static void reduceRange(double& val)
 {
-    val = std::min(val, LIMIT);
-    val = std::max(val, -LIMIT);
+    val = (std::min)(val, LIMIT);
+    val = (std::max)(val, -LIMIT);
 }
 
 
@@ -170,19 +170,19 @@ void ColaTopologyAddon::writeSVGFile(std::string basename)
 
         if (rMinX > -LIMIT)
         {
-            minX = std::min(minX, rMinX);
+            minX = (std::min)(minX, rMinX);
         }
         if (rMaxX < LIMIT)
         {
-            maxX = std::max(maxX,rMaxX);
+            maxX = (std::max)(maxX,rMaxX);
         }
         if (rMinY > -LIMIT)
         {
-            minY = std::min(minY, rMinY);
+            minY = (std::min)(minY, rMinY);
         }
         if (rMaxY < LIMIT)
         {
-            maxY = std::max(maxY, rMaxY);
+            maxY = (std::max)(maxY, rMaxY);
         }
     }
     else
@@ -203,19 +203,19 @@ void ColaTopologyAddon::writeSVGFile(std::string basename)
 
             if (rMinX > -LIMIT)
             {
-                minX = std::min(minX, rMinX);
+                minX = (std::min)(minX, rMinX);
             }
             if (rMaxX < LIMIT)
             {
-                maxX = std::max(maxX,rMaxX);
+                maxX = (std::max)(maxX,rMaxX);
             }
             if (rMinY > -LIMIT)
             {
-                minY = std::min(minY, rMinY);
+                minY = (std::min)(minY, rMinY);
             }
             if (rMaxY < LIMIT)
             {
-                maxY = std::max(maxY, rMaxY);
+                maxY = (std::max)(maxY, rMaxY);
             }
         }
         minX -= 50;
