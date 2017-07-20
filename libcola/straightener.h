@@ -23,7 +23,7 @@
 
 #include <set>
 #include <cfloat>
-#include <functional>
+#include <algorithm>
 #include <iostream>
 #include <iterator>
 

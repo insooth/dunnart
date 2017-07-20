@@ -18,8 +18,11 @@
  * Author(s):  Michael Wybrow
 */
 
-#include <functional>
+#include <algorithm>
 #include <utility>
+
+#define _USE_MATH_DEFINES // M_PI
+#include <cmath>
 
 #include "libvpsc/rectangle.h"
 #include "libvpsc/constraint.h"

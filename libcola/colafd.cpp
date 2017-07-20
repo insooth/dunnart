@@ -24,7 +24,7 @@
 // cmath needs ::strcpy_s under MinGW so include cstring.
 #include <cstring>
 
-#include <functional>
+#include <algorithm>
 #include <vector>
 #include <cmath>
 #include <limits>
