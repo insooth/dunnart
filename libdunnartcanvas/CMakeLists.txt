@@ -13,17 +13,11 @@ find_package(Threads REQUIRED)
 
 
 set(dunnartcanvas_githash_file githash.h)
-if(MSVC)
-  execute_process(OUTPUT_FILE ${dunnartcanvas_githash_file}
-                  COMMAND write_gitver.bat)
-else()
-  execute_process(OUTPUT_FILE ${dunnartcanvas_githash_file}
-                  COMMAND git show --abbrev-commit
-                  COMMAND grep "^commit"
-                  COMMAND cut -f2 -d" "
-                  COMMAND xargs printf "#define GITHASH \"%s\"")
-endif()
-
+execute_process(OUTPUT_FILE ${dunnartcanvas_githash_file}
+                COMMAND git show --abbrev-commit
+                COMMAND grep "^commit"
+                COMMAND cut -f2 -d" "
+                COMMAND xargs printf "#define GITHASH \"%s\"")
 
 
 add_subdirectory(qtpropertybrowser)
@@ -31,7 +25,7 @@ add_subdirectory(qtpropertybrowser)
 
 
 file(GLOB dunnartcanvas_SOURCES RELATIVE ${CMAKE_CURRENT_LIST_DIR} "*.cpp")
-file(GLOB dunnartcanvas_UI_SOURCES RELATIVE ${CMAKE_CURRENT_LIST_DIR}/ui "*.cpp")
+file(GLOB dunnartcanvas_UI_SOURCES RELATIVE ${CMAKE_CURRENT_LIST_DIR} "ui/*.cpp")
 
 add_library(dunnartcanvas SHARED ${dunnartcanvas_githash_file}
                                  ${dunnartcanvas_SOURCES} ${dunnartcanvas_UI_SOURCES}
