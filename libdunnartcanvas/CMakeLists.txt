@@ -14,9 +14,10 @@ find_package(Threads REQUIRED)
 
 set(dunnartcanvas_githash_file githash.h)
 execute_process(OUTPUT_FILE ${dunnartcanvas_githash_file}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                 COMMAND git show --abbrev-commit
                 COMMAND grep "^commit"
-                COMMAND cut -f2 -d" "
+                COMMAND cut -f2 -d' '
                 COMMAND xargs printf "#define GITHASH \"%s\"")
 
 

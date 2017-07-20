@@ -11,7 +11,7 @@ gen-rcc/
 build/
 Dunnart.app/
 
-githash.h
+libdunnartcanvas/githash.h
 
 # Makefiles are generated, so ignore.
 Makefile*
