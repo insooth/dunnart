@@ -26,6 +26,7 @@
 #ifndef TOPOLOGY_GRAPH_H
 #define TOPOLOGY_GRAPH_H
 
+#include <functional>
 #include <vector>
 
 #include "libvpsc/assertions.h"
@@ -76,12 +77,12 @@ namespace topology {
         // variable positions used by solver
         vpsc::Variable* var;
     };
-    /** 
+    /**
      * @brief  A vector of pointers to Node objects.
      */
     typedef std::vector<Node *> Nodes;
     /*
-     * let n=ns.size(), where n<=vs.size(), 
+     * let n=ns.size(), where n<=vs.size(),
      * for i<n we set the variable for ns[i] to be vs[i].
      */
     void setNodeVariables(Nodes& ns, std::vector<vpsc::Variable*>& vs);
@@ -95,7 +96,7 @@ namespace topology {
         // the node / variable / rectangle associated with this EdgePoint
         Node* node;
         // where the EdgePoint lies on the rectangle
-        enum RectIntersect { 
+        enum RectIntersect {
             TR, //< top right corner
             BR, //< bottom right corner
             BL, //< bottom left corner
@@ -106,7 +107,7 @@ namespace topology {
         Segment* inSegment;
         // the outgoing segment to this EdgePoint on the edge path
         Segment* outSegment;
-        /* each articulation EdgePoint (where isReal()==false) 
+        /* each articulation EdgePoint (where isReal()==false)
          *  will be assigned (not immediately) a bendConstraint
          */
         BendConstraint* bendConstraint;
@@ -120,13 +121,13 @@ namespace topology {
          * Constructor associates the point with a node vertex but
          * not an edge.
          */
-        EdgePoint(Node* n, RectIntersect i) 
+        EdgePoint(Node* n, RectIntersect i)
                 : node(n), rectIntersect(i)
-                , inSegment(NULL), outSegment(NULL) 
+                , inSegment(NULL), outSegment(NULL)
                 , bendConstraint(NULL)
         {
         }
-        /* 
+        /*
          * @param dim the axis (either horizontal or
          * vertical) of the coordinate to return
          * @return the position, computed based on rectIntersect and rectangle
@@ -137,7 +138,7 @@ namespace topology {
         double posX() const { return pos(vpsc::HORIZONTAL); }
         // @return y position
         double posY() const { return pos(vpsc::VERTICAL); }
-        /* 
+        /*
          *  @return where the EdgePoint on the rectangle as a vertex index
          *  for libavoid.
          */
@@ -146,13 +147,13 @@ namespace topology {
             switch(rectIntersect) {
                 case topology::EdgePoint::BR:
                     return 0;
-                case topology::EdgePoint::TR: 
+                case topology::EdgePoint::TR:
                     return 1;
                 case topology::EdgePoint::TL:
                     return 2;
-                case topology::EdgePoint::BL: 
+                case topology::EdgePoint::BL:
                     return 3;
-                default: 
+                default:
                     return 4;
             }
         }
@@ -204,13 +205,13 @@ namespace topology {
     public:
         /*
          * Create segment for a given edge between two EdgePoints.
-         * Note that segments can be zero length, for example between 
+         * Note that segments can be zero length, for example between
          * opposite corners of two rectangles.
          * @param edge the edge to which this segment belongs
          * @param start the EdgePoint at the start of the segment
          * @param end the EdgePoint at the end of the segment
          */
-        Segment(Edge* edge, EdgePoint* start, EdgePoint* end) 
+        Segment(Edge* edge, EdgePoint* start, EdgePoint* end)
             : edge(edge), start(start), end(end)
         {
             // no self loops!
@@ -240,7 +241,7 @@ namespace topology {
          * for transferStraightConstraint
          */
         typedef std::binder1st<
-            std::mem_fun1_t<void, Segment, StraightConstraint*> 
+            std::mem_fun1_t<void, Segment, StraightConstraint*>
             > TransferStraightConstraint;
         /*
          * TransferStraightConstraint might for example be applied to
@@ -253,7 +254,7 @@ namespace topology {
         /*
          * append straightConstraints to ts
          */
-        void getStraightConstraints(std::vector<TopologyConstraint*>* ts) 
+        void getStraightConstraints(std::vector<TopologyConstraint*>* ts)
             const;
         /*
          * clean up topologyConstraints
@@ -293,7 +294,7 @@ namespace topology {
             }
             return end;
         }
-        /* 
+        /*
          * compute the intersection with the line !dim=pos.
          * if called when Segment is parallel to scan line it will throw an
          * assertion error.
@@ -360,7 +361,7 @@ namespace topology {
      * the last EdgePoint is also the first.  Thus, we process from
      * Edge::firstSegment to Edge::lastSegment.  We visit every EdgePoint
      * (i.e. nSegments+1), in the case of a cycle, the first/last
-     * point will be visited (PointOp applied) twice unless noCycle is set 
+     * point will be visited (PointOp applied) twice unless noCycle is set
      * true.
      */
     template <typename PEdge,
@@ -387,7 +388,7 @@ namespace topology {
      * @brief Topology representation of an edge.
      *
      * An edge provides a doubly linked list of segments, each involving a pair
-     * of EdgePoints.  
+     * of EdgePoints.
      *
      * @note You shouldn't need to create these yourself, but you may
      *       extract them from an existing ColaTopologyAddon and construct
@@ -413,7 +414,7 @@ namespace topology {
         /**
          * Construct an edge from a list of EdgePoint in sequence
          */
-        Edge(unsigned id, double idealLength, EdgePoints &vs) 
+        Edge(unsigned id, double idealLength, EdgePoints &vs)
             : id(id)
             , idealLength(idealLength)
             , firstSegment(NULL), lastSegment(NULL)
@@ -421,7 +422,7 @@ namespace topology {
         {
             EdgePoints::iterator a=vs.begin();
             for(EdgePoints::iterator b=a+1;b!=vs.end();++a,++b) {
-                Segment* s = new Segment(this,*a,*b); 
+                Segment* s = new Segment(this,*a,*b);
                 nSegments++;
                 if(firstSegment==NULL) {
                     firstSegment = s;
@@ -431,7 +432,7 @@ namespace topology {
         }
         /*
          * apply an operation to every Segment and EdgePoint associated with
-         * this Edge 
+         * this Edge
          * @param po operation to apply to each EdgePoint
          * @param so operation to apply to each Segment
          */
@@ -470,7 +471,7 @@ namespace topology {
          * apply an operation to every EdgePoint associated with this edge
          * @param o operation (a function or functor that takes a pointer to
          * an EdgePoint as an argument)
-         * @param noCycle if the edge is a cycle don't apply o to the 
+         * @param noCycle if the edge is a cycle don't apply o to the
          * start/end point twice.
          */
         template <typename T>
@@ -480,7 +481,7 @@ namespace topology {
         /*
          * a version of forEachEdgePoint for const edges
          * @param o an operation on a const EdgePoint
-         * @param noCycle if the edge is a cycle apply o to the 
+         * @param noCycle if the edge is a cycle apply o to the
          * start/end point only once.
          */
         template <typename T>
@@ -512,7 +513,7 @@ namespace topology {
          * @return a list of the coordinates along the edge route
          */
         straightener::Route* getRoute() const;
-        void getTopologyConstraints(std::vector<TopologyConstraint*>* ts) 
+        void getTopologyConstraints(std::vector<TopologyConstraint*>* ts)
         const {
             forEach(
                     std::bind2nd(
@@ -534,8 +535,8 @@ namespace topology {
     double compute_stress(const Edges&);
     void printEdges(const Edges&);
 /*
- * CrossProduct of three points: If the result is 0, the points are collinear; 
- * if it is positive, the three points (in order) constitute a "left turn", 
+ * CrossProduct of three points: If the result is 0, the points are collinear;
+ * if it is positive, the three points (in order) constitute a "left turn",
  * otherwise a "right turn".
  */
 inline double crossProduct(

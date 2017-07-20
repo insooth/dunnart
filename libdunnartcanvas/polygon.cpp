@@ -13,12 +13,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  *
  * Author(s): Michael Wybrow  <http://michael.wybrow.info/>
 */
@@ -63,14 +63,14 @@ void PolygonShape::initWithXMLProperties(Canvas *canvas,
         int stringIndex = 0;
 
         // Read the number of points.
-        int totalPoints = strings.at(stringIndex++).toInt();
-        
+        const int totalPoints = strings.at(stringIndex++).toInt();
+
         int geometry[2][totalPoints];
 
         int xp = essentialProp<int>(node, x_xPos, ns);
         int yp = essentialProp<int>(node, x_yPos, ns);
 
-        // Read a space separated list of coordinates. 
+        // Read a space separated list of coordinates.
         for (int ptNum = 0; ptNum < totalPoints; ++ptNum)
         {
             geometry[0][ptNum] = strings.at(stringIndex++).toInt() + xp;
@@ -109,7 +109,7 @@ PolygonShape::PolygonShape(int *xps, int *yps, int psn, QString id)
     ///QT setPos(x - 3, y - 3);
     //QT set_active_image(SHAPE_STATE_UNSELECTED);
     //QT set_noimages(w + 7, h + 7);
-    
+
     routerAdd();
 
     setPainterPath(buildPainterPath());
@@ -140,7 +140,7 @@ void PolygonShape::setBoundaryInternal(int *xps, int *yps, int psn)
 {
     _psn = psn;
     assert(_psn != 0);
-    
+
     if (_xps != NULL) std::free(_xps);
     _xps = (int *) calloc(_psn, sizeof(int));
     if (_yps != NULL) std::free(_yps);
@@ -192,7 +192,7 @@ void PolygonShape::computeBoundingBoxAndNormalise(void)
     // Normalise boundary coordinates:
     for (int i = 0; i < _psn; ++i)
     {
-        _xps[i] -= x_; 
+        _xps[i] -= x_;
         _yps[i] -= y_;
     }
 }
