@@ -9,7 +9,7 @@ find_package(Qt5Xml REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 #find_package(PkgConfig REQUIRED)
 find_package(Threads REQUIRED)
-# TODO: the rest + linking against libgvc if found
+# TODO: the rest
 
 
 set(dunnartcanvas_githash_file githash.h)
@@ -42,6 +42,9 @@ target_include_directories(dunnartcanvas PUBLIC ${CMAKE_CURRENT_LIST_DIR}
 target_link_libraries(dunnartcanvas avoid vpsc topology cola ogdf
                                     qtpropertybrowser
                                     Qt5::Core Qt5::Xml Qt5::Svg Qt5::Widgets)
+
+# TODO: link against libgvc and add gvc.h to inlude path
+target_compile_definitions(dunnartcanvas PRIVATE NOGRAPHVIZ=1)
 
 set_property(TARGET dunnartcanvas PROPERTY AUTOMOC ON)
 set_property(TARGET dunnartcanvas PROPERTY AUTORCC ON)
