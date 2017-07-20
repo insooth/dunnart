@@ -18,7 +18,7 @@ execute_process(OUTPUT_FILE ${dunnartcanvas_githash_file}
                 COMMAND git show --abbrev-commit
                 COMMAND grep "^commit"
                 COMMAND cut -f2 -d' '
-                COMMAND xargs printf "#define GITHASH \"%s\"")
+                COMMAND xargs printf "#define GITHASH \"%s\"\n")
 
 
 add_subdirectory(qtpropertybrowser)
