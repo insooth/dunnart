@@ -1,7 +1,7 @@
 /*
  * vim: ts=4 sw=4 et tw=0 wm=0
  *
- * libvpsc - A solver for the problem of Variable Placement with 
+ * libvpsc - A solver for the problem of Variable Placement with
  *           Separation Constraints.
  *
  * Copyright (C) 2005-2010  Monash University
@@ -61,7 +61,7 @@ struct RectangleIntersections {
     double topX, topY, bottomX, bottomY, leftX, leftY, rightX, rightY;
     RectangleIntersections()
         : intersects(false),top(false),bottom(false),left(false),right(false),
-      topX(0),topY(0),bottomX(0),bottomY(0),leftX(0),leftY(0),rightX(0),rightY(0) {} 
+      topX(0),topY(0),bottomX(0),bottomY(0),leftX(0),leftY(0),rightX(0),rightY(0) {}
     int countIntersections() {
         return left+right+top+bottom;
     }
@@ -75,10 +75,10 @@ struct RectangleIntersections {
  * @brief  A rectangle represents a fixed-size shape in the diagram that may
  *         be moved to prevent overlaps and satisfy constraints.
  */
-class Rectangle {   
+class Rectangle {
 public:
     /**
-     * @brief Constructs a rectangle by specifying the positions of all 
+     * @brief Constructs a rectangle by specifying the positions of all
      *        four sides.
      *
      * @param[in] x  Minimum horizontal value.
@@ -105,10 +105,10 @@ public:
      * @param X max value
      */
     void reset(const unsigned d, double x, double X);
-    double getMaxX() const { return maxX+xBorder; }
-    double getMaxY() const { return maxY+yBorder; }
-    double getMinX() const { return minX-xBorder; }
-    double getMinY() const { return minY-yBorder; }
+    double getMaxX() const;
+    double getMaxY() const;
+    double getMinX() const;
+    double getMinY() const;
     /*
      * @param d axis: 0=horizontal 1=vertical
      */
@@ -146,8 +146,8 @@ public:
         COLA_ASSERT(d==0||d==1);
         return ( d == 0 ? width() : height() );
     }
-    void set_width(double w) { maxX = minX + w - 2.0*xBorder; }
-    void set_height(double h) { maxY = minY + h - 2.0*yBorder; }
+    void set_width(double w);
+    void set_height(double h);
     void moveCentreD(const unsigned d, double p) {
         COLA_ASSERT(d==0||d==1);
         if(d == 0) { moveCentreX(p);
@@ -163,18 +163,10 @@ public:
         moveCentreX(x);
         moveCentreY(y);
     }
-    void moveMinX(double x) {
-        double w=width();
-        minX=x+xBorder;
-        maxX=x+w-xBorder;
-        COLA_ASSERT(fabs(width()-w)<1e-9);
-    }
-    void moveMinY(double y) {
-        double h=height();
-        maxY=y+h-yBorder;
-        minY=y+yBorder;
-        COLA_ASSERT(fabs(height()-h)<1e-9);
-    }
+    void moveMinX(double x);
+
+    void moveMinY(double y);
+
     double overlapD(const unsigned d, Rectangle* r) {
         if(d==0) {
             return overlapX(r);
@@ -209,7 +201,7 @@ public:
         minY += dy;
         maxY += dy;
     }
-    // returns the intersections between the line segment from (x1,y1) 
+    // returns the intersections between the line segment from (x1,y1)
     // to (x2,y2) and this rectangle.  Any intersections points with
     // sides are reported, lines coincident with a side are considered not
     // to intersect.
@@ -234,9 +226,9 @@ public:
      * the axis-by-axis overlap removal process.
      */
     static double xBorder,yBorder;
-    static void setXBorder(double x) {xBorder=x;}
-    static void setYBorder(double y) {yBorder=y;}
-    
+    static void setXBorder(double x);
+    static void setYBorder(double y);
+
 private:
     double minX,maxX,minY,maxY;
     bool overlap;
@@ -260,33 +252,33 @@ void generateYConstraints(const Rectangles& rs, const Variables& vars,
 /**
  * @brief Uses VPSC to remove overlaps between rectangles.
  *
- * Moves rectangles to remove all overlaps.  Heuristic attempts to move 
+ * Moves rectangles to remove all overlaps.  Heuristic attempts to move
  * shapes by as little as possible.
  *
  * @param[in,out] rs  The rectangles which will be moved to remove overlap
  */
 void removeoverlaps(Rectangles& rs);
 
-/** 
- * @brief Uses VPSC to remove overlaps between rectangles, excluding some 
+/**
+ * @brief Uses VPSC to remove overlaps between rectangles, excluding some
  *        that should not be moved.
  *
- * Moves rectangles to remove all overlaps.  A heuristic attempts to move 
- * shapes by as little as possible.  The heuristic is that the overlaps 
- * are removed horizontally and then vertically, each pass being a 
- * quadratic program in which the total squared movement is minimised 
- * subject to non-overlap constraints.  
+ * Moves rectangles to remove all overlaps.  A heuristic attempts to move
+ * shapes by as little as possible.  The heuristic is that the overlaps
+ * are removed horizontally and then vertically, each pass being a
+ * quadratic program in which the total squared movement is minimised
+ * subject to non-overlap constraints.
  *
  * An optional third horizontal pass (in addition to the first horizontal
- * pass and the second vertical pass) can be applied wherein the 
- * x-positions of rectangles are reset to their original positions and 
- * overlap removal repeated.  This may avoid some unnecessary movement. 
+ * pass and the second vertical pass) can be applied wherein the
+ * x-positions of rectangles are reset to their original positions and
+ * overlap removal repeated.  This may avoid some unnecessary movement.
  *
  * @param[in,out] rs    The rectangles which will be moved to remove overlap
  * @param[in] fixed     A set of indices to rectangles which should not be moved.
  * @param[in] thirdPass Optionally run the third horizontal pass described above.
  */
-void removeoverlaps(Rectangles& rs, const std::set<unsigned>& fixed, 
+void removeoverlaps(Rectangles& rs, const std::set<unsigned>& fixed,
         bool thirdPass = true);
 
 // Useful for assertions:

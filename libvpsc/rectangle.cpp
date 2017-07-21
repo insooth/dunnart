@@ -1,7 +1,7 @@
 /*
  * vim: ts=4 sw=4 et tw=0 wm=0
  *
- * libvpsc - A solver for the problem of Variable Placement with 
+ * libvpsc - A solver for the problem of Variable Placement with
  *           Separation Constraints.
  *
  * Copyright (C) 2005-2008  Monash University
@@ -51,12 +51,12 @@ std::ostream& operator <<(std::ostream &os, const Rectangle &r) {
     return os;
 }
 
-Rectangle::Rectangle(double x, double X, double y, double Y,bool allowOverlap) 
+Rectangle::Rectangle(double x, double X, double y, double Y,bool allowOverlap)
     : minX(x),
       maxX(X),
       minY(y),
       maxY(Y),
-      overlap(allowOverlap) 
+      overlap(allowOverlap)
 {
     COLA_ASSERT(x<X);
     COLA_ASSERT(y<Y);
@@ -69,7 +69,7 @@ Rectangle::Rectangle()
       maxX(-1),
       minY(1),
       maxY(-1),
-      overlap(false) 
+      overlap(false)
 {
     // Creates an invalid Rectangle
 }
@@ -89,7 +89,7 @@ Rectangle Rectangle::unionWith(const Rectangle& rhs) const
     {
         return Rectangle(*this);
     }
-    
+
     double newMaxY = std::max(rhs.getMaxY(),maxY);
     double newMinY = std::min(rhs.getMinY(),minY);
     double newMinX = std::min(rhs.getMinX(),minX);
@@ -97,7 +97,7 @@ Rectangle Rectangle::unionWith(const Rectangle& rhs) const
 
     return Rectangle(newMinX, newMaxX, newMinY, newMaxY);
 }
-    
+
 void Rectangle::reset(unsigned d, double x, double X) {
     if(d==0) {
         minX=x;
@@ -107,6 +107,37 @@ void Rectangle::reset(unsigned d, double x, double X) {
         maxY=X;
     }
 }
+
+double Rectangle::getMaxX() const { return maxX+xBorder; }
+
+double Rectangle::getMaxY() const { return maxY+yBorder; }
+
+double Rectangle::getMinX() const { return minX-xBorder; }
+
+double Rectangle::getMinY() const { return minY-yBorder; }
+
+void Rectangle::set_width(double w) { maxX = minX + w - 2.0*xBorder; }
+
+void Rectangle::set_height(double h) { maxY = minY + h - 2.0*yBorder; }
+
+void Rectangle::moveMinX(double x) {
+    double w=width();
+    minX=x+xBorder;
+    maxX=x+w-xBorder;
+    COLA_ASSERT(fabs(width()-w)<1e-9);
+}
+
+
+void Rectangle::moveMinY(double y) {
+    double h=height();
+    maxY=y+h-yBorder;
+    minY=y+yBorder;
+    COLA_ASSERT(fabs(height()-h)<1e-9);
+}
+
+void Rectangle::setXBorder(double x) {xBorder=x;}
+
+void Rectangle::setYBorder(double y) {yBorder=y;}
 
 struct Node;
 struct CmpNodePos { bool operator()(const Node* u, const Node* v) const; };
@@ -119,11 +150,11 @@ struct Node {
     double pos;
     Node *firstAbove, *firstBelow;
     NodeSet *leftNeighbours, *rightNeighbours;
-    Node(Variable *v, Rectangle *r, double p) 
+    Node(Variable *v, Rectangle *r, double p)
         : v(v),r(r),pos(p),
           firstAbove(NULL), firstBelow(NULL),
           leftNeighbours(NULL), rightNeighbours(NULL)
-     
+
     {
         COLA_ASSERT(r->width()<1e40);
     }
@@ -224,9 +255,9 @@ int compare_events(const void *a, const void *b) {
 }
 
 /*
- * Prepares constraints in order to apply VPSC horizontally.  Assumes 
+ * Prepares constraints in order to apply VPSC horizontally.  Assumes
  * variables have already been created.
- * useNeighbourLists determines whether or not a heuristic is used to 
+ * useNeighbourLists determines whether or not a heuristic is used to
  * deciding whether to resolve all overlap in the x pass, or leave some
  * overlaps for the y pass.
  */
@@ -283,7 +314,7 @@ void generateXConstraints(const Rectangles& rs, const Variables& vars,
                     result=u->rightNeighbours->erase(v);
                     COLA_ASSERT(result==1);
                 }
-                
+
                 for(NodeSet::iterator i=v->rightNeighbours->begin();
                     i!=v->rightNeighbours->end();i++
                 ) {
@@ -391,9 +422,9 @@ void generateYConstraints(const Rectangles& rs, const Variables& vars,
 #include "libvpsc/linesegment.h"
 using namespace linesegment;
 inline bool checkIntersection(
-        const LineSegment::IntersectResult result, 
+        const LineSegment::IntersectResult result,
         Vector const &intersection,
-        RectangleIntersections &ri, 
+        RectangleIntersections &ri,
         bool &side, double &sideX, double &sideY) {
     switch(result) {
     case LineSegment::INTERSECTING:
@@ -445,7 +476,7 @@ inline bool eq(double a, double b) {
 }
 /*
 bool Rectangle::inside(double x, double y) const {
-    return x>(minX+ERROR_MARGIN) && x<(maxX-ERROR_MARGIN) 
+    return x>(minX+ERROR_MARGIN) && x<(maxX-ERROR_MARGIN)
         && y>(minY+ERROR_MARGIN) && y<(maxY-ERROR_MARGIN);
 }
 */
@@ -459,7 +490,7 @@ void Rectangle::routeAround(double x1, double y1, double x2, double y2,
     ys.push_back(y1);
     bool top1=eq(y1,maxY), top2=eq(y2,maxY),
          bottom1=eq(y1,minY), bottom2=eq(y2,minY);
-    bool left1=eq(x1,minX), left2=eq(x2,minX), 
+    bool left1=eq(x1,minX), left2=eq(x2,minX),
          right1=eq(x1,maxX), right2=eq(x2,maxX);
     bool leftright = (left1 && right2) || (right1 && left2);
     bool topbottom = (top1 && bottom2) || (bottom1 && top2);
@@ -554,7 +585,7 @@ void Rectangle::routeAround(double x1, double y1, double x2, double y2,
     ys.push_back(y2);
 }
 
-/* 
+/*
  * moves all the rectangles to remove all overlaps.  Heuristic
  * attempts to move by as little as possible.
  * no overlaps guaranteed.
@@ -574,7 +605,7 @@ void removeoverlaps(Rectangles& rs) {
  * horizontal pass (in addition to the first horizontal pass and the second
  * vertical pass) can be applied wherein the x-positions of rectangles are reset to their
  * original positions and overlap removal repeated.  This may avoid some
- * unnecessary movement. 
+ * unnecessary movement.
  * @param rs the rectangles which will be moved to remove overlap
  * @param fixed a set of indices to rectangles which should not be moved
  * @param thirdPass optionally run the third horizontal pass described above.
@@ -662,17 +693,17 @@ void removeoverlaps(Rectangles& rs, const set<unsigned>& fixed, bool thirdPass) 
 }
 
 
-bool noRectangleOverlaps(const Rectangles& rs) 
+bool noRectangleOverlaps(const Rectangles& rs)
 {
     Rectangle *u, *v;
     Rectangles::const_iterator i=rs.begin(), j, e=rs.end();
-    for (;i!=e;++i) 
+    for (;i!=e;++i)
     {
         u=*i;
-        for (j=i+1;j!=e;++j) 
+        for (j=i+1;j!=e;++j)
         {
             v=*j;
-            if (u->overlapX(v)>0) 
+            if (u->overlapX(v)>0)
             {
                 COLA_ASSERT(u->overlapY(v)==0);
             }
@@ -683,7 +714,7 @@ bool noRectangleOverlaps(const Rectangles& rs)
 
 // checks if line segment is strictly overlapping.
 // That is, if any point on the line is inside the rectangle.
-bool Rectangle::overlaps(double x1, double y1, double x2, double y2) 
+bool Rectangle::overlaps(double x1, double y1, double x2, double y2)
 {
     RectangleIntersections ri;
     lineIntersections(x1,y1,x2,y2,ri);
@@ -709,7 +740,7 @@ bool Rectangle::overlaps(double x1, double y1, double x2, double y2)
 }
 
 
-void RectangleIntersections::printIntersections() 
+void RectangleIntersections::printIntersections()
 {
     printf("intersections:\n");
     if(top) printf("  top=%d:(%f,%f)\n",top,topX,topY);
@@ -725,14 +756,14 @@ void RectangleIntersections::nearest(double x, double y, double &xi, double &yi)
     double xs[]={topX, rightX, bottomX, leftX};
     double ys[]={topY, rightY, bottomY, leftY};
     double dx, dy, l, minl = 999999999999999.0;
-    for(unsigned i=0;i<4;i++) 
+    for(unsigned i=0;i<4;i++)
     {
-        if(is[i]) 
+        if(is[i])
         {
             dx=xs[i]-x;
             dy=ys[i]-y;
             l=dx*dx + dy*dy;
-            if(l<minl) 
+            if(l<minl)
             {
                 minl=l;
                 xi=xs[i];
