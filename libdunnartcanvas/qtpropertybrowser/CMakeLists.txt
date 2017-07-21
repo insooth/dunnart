@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.4.3)
 
 find_package(Qt5Widgets REQUIRED)
 

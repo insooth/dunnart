@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.4.3)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -54,4 +54,5 @@ set_property(TARGET dunnartcanvas PROPERTY AUTOUIC ON)
 set(dunnartcanvas_AUTOUIC_OPTS)
 set_property(TARGET dunnartcanvas APPEND PROPERTY INTERFACE_AUTOUIC_OPTIONS ${dunnartcanvas_AUTOUIC_OPTS})
 
+set_property(TARGET dunnartcanvas PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 

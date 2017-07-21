@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.4.3)
 
 # No MOC, UIC and Qt in libcola.
 
@@ -9,4 +9,6 @@ add_library(cola SHARED ${cola_SOURCES})
 
 target_include_directories(cola PUBLIC ${CMAKE_CURRENT_LIST_DIR}/..)
 target_link_libraries(cola vpsc)
+
+set_property(TARGET cola PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
