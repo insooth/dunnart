@@ -1,21 +1,21 @@
 /*
  * $Revision: 1.8 $
- *
+ * 
  * last checkin:
- *   $Author: gutwenger $
- *   $Date: 2008-01-27 19:13:49 +0100 (So, 27 Jan 2008) $
+ *   $Author: gutwenger $ 
+ *   $Date: 2008-01-27 19:13:49 +0100 (So, 27 Jan 2008) $ 
  ***************************************************************/
-
+ 
 /** \file
  * \brief Declaration of memory manager for allocating small
  *        pieces of memory
- *
+ * 
  * \author Carsten Gutwenger
- *
+ * 
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- *
+ * 
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,19 +32,19 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- *
+ * 
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * \par
- * You should have received a copy of the GNU General Public
+ * You should have received a copy of the GNU General Public 
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- *
+ * 
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
@@ -55,8 +55,6 @@
 
 #ifndef OGDF_POOL_MEMORY_ALLOCATOR_H
 #define OGDF_POOL_MEMORY_ALLOCATOR_H
-
-#include <ogdf/basic/basic.h>
 
 #ifndef OGDF_MEMORY_POOL_NTS
 #include <ogdf/basic/CriticalSection.h>
@@ -86,7 +84,7 @@ namespace ogdf {
  * macro \c #OGDF_MALLOC_NEW_DELETE in a class declaration.
  */
 
-class OGDF_EXPORT PoolMemoryAllocator
+class PoolMemoryAllocator
 {
 	struct MemElem {
 		MemElem *m_next;

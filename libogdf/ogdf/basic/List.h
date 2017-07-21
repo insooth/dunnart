@@ -54,6 +54,7 @@
 #ifndef OGDF_LIST_H
 #define OGDF_LIST_H
 
+#include <algorithm>
 
 #include <ogdf/internal/basic/list_templates.h>
 
@@ -632,6 +633,7 @@ public:
 		OGDF_ASSERT(it1.valid() && it2.valid() && it1 != it2)
 		ListElement<E> *pX = it1, *pY = it2;
 
+		using std::swap;
 		swap(pX->m_next,pY->m_next);
 		swap(pX->m_prev,pY->m_prev);
 
