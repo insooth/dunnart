@@ -11,3 +11,6 @@ target_include_directories(avoid PUBLIC ${CMAKE_CURRENT_LIST_DIR}/..)
 
 target_compile_definitions(avoid PUBLIC LIBAVOID_EXPORTS=1)
 
+# sometimes AVOID_EXPORT is missing...
+set_property(TARGET avoid PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
