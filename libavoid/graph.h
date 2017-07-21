@@ -12,12 +12,12 @@
  * See the file LICENSE.LGPL distributed with the library.
  *
  * Licensees holding a valid commercial license may use this file in
- * accordance with the commercial license agreement provided with the 
+ * accordance with the commercial license agreement provided with the
  * library.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Author(s):   Michael Wybrow
 */
@@ -30,6 +30,8 @@
 #include <cassert>
 #include <list>
 #include <utility>
+
+#include "libavoid/dllexport.h"
 #include "libavoid/vertices.h"
 
 namespace Avoid {
@@ -72,7 +74,7 @@ class EdgeInf
                 bool knownNew = false);
         static EdgeInf *existingEdge(VertInf *i, VertInf *j);
         int blocker(void) const;
-        
+
         bool isHyperedgeSegment(void) const;
         void setHyperedgeSegment(const bool hyperedge);
         double mtstDist(void) const;
@@ -106,7 +108,7 @@ class EdgeInf
 };
 
 
-class EdgeList
+class AVOID_EXPORT EdgeList
 {
     public:
         friend class EdgeInf;

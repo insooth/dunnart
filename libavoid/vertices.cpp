@@ -12,12 +12,12 @@
  * See the file LICENSE.LGPL distributed with the library.
  *
  * Licensees holding a valid commercial license may use this file in
- * accordance with the commercial license agreement provided with the 
+ * accordance with the commercial license agreement provided with the
  * library.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Author(s):  Michael Wybrow
 */
@@ -152,8 +152,38 @@ ostream& operator<<(ostream& os, const VertID& vID)
 }
 
 
+bool VertID::isOrthShapeEdge(void) const
+{
+    return (props & PROP_OrthShapeEdge) ? true : false;
+}
 
-VertInf::VertInf(Router *router, const VertID& vid, const Point& vpoint, 
+bool VertID::isConnPt(void) const
+{
+    return (props & PROP_ConnPoint) ? true : false;
+}
+
+bool VertID::isConnectionPin(void) const
+{
+    return (props & PROP_ConnectionPin) ? true : false;
+}
+
+bool VertID::isConnCheckpoint(void) const
+{
+    return (props & PROP_ConnCheckpoint) ? true : false;
+}
+
+bool VertID::isDummyPinHelper(void) const
+{
+    return (props & PROP_DummyPinHelper) ? true : false;
+}
+
+VertIDProps VertID::getOrthoShapeEdge()
+{
+    return VertID::PROP_OrthShapeEdge;
+}
+
+
+VertInf::VertInf(Router *router, const VertID& vid, const Point& vpoint,
         const bool addToRouter)
     : _router(router),
       id(vid),
@@ -404,7 +434,7 @@ void VertInf::setTreeRootPointer(VertInf **pointer)
 {
     m_treeRoot = pointer;
 }
-        
+
 void VertInf::setSPTFRoot(VertInf *root)
 {
     // Use the m_treeRoot instance var, but as just a normal VertInf pointer.
@@ -562,7 +592,7 @@ VertInf *VertInfList::removeVertex(VertInf *vert)
     }
     // Conditions for correct data structure
     checkVertInfListConditions();
-    
+
     VertInf *following = vert->lstNext;
 
     if (vert->id.isConnPt())

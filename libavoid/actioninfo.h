@@ -12,12 +12,12 @@
  * See the file LICENSE.LGPL distributed with the library.
  *
  * Licensees holding a valid commercial license may use this file in
- * accordance with the commercial license agreement provided with the 
+ * accordance with the commercial license agreement provided with the
  * library.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Author(s):   Michael Wybrow
 */
@@ -29,6 +29,7 @@
 
 #include "libavoid/actioninfo.h"
 #include "libavoid/connend.h"
+#include "libavoid/dllexport.h"
 #include "libavoid/geomtypes.h"
 
 namespace Avoid {
@@ -56,7 +57,7 @@ enum ActionType {
 
 typedef std::list<std::pair<unsigned int, ConnEnd> > ConnUpdateList;
 
-class ActionInfo {
+class AVOID_EXPORT ActionInfo {
     public:
         ActionInfo(ActionType t, ShapeRef *s, const Polygon& p, bool fM);
         ActionInfo(ActionType t, ShapeRef *s);
@@ -73,7 +74,7 @@ class ActionInfo {
                 bool isConnPinMoveUpdate);
         bool operator==(const ActionInfo& rhs) const;
         bool operator<(const ActionInfo& rhs) const;
-        
+
         ActionType type;
         void *objPtr;
         Polygon newPoly;

@@ -12,12 +12,12 @@
  * See the file LICENSE.LGPL distributed with the library.
  *
  * Licensees holding a valid commercial license may use this file in
- * accordance with the commercial license agreement provided with the 
+ * accordance with the commercial license agreement provided with the
  * library.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Author(s):  Michael Wybrow
 */
@@ -65,7 +65,7 @@ class Obstacle;
 typedef std::list<Obstacle *> ObstacleList;
 class DebugHandler;
 
-//! @brief  Flags that can be passed to the router during initialisation 
+//! @brief  Flags that can be passed to the router during initialisation
 //!         to specify options.
 enum RouterFlag
 {
@@ -82,38 +82,38 @@ static const unsigned int runningTo = 1;
 static const unsigned int runningFrom = 2;
 static const unsigned int runningToAndFrom = runningTo | runningFrom;
 
-//! @brief  Types of routing parameters and penalties that can be used to 
-//!         tailor the style and improve the quality of the connector 
+//! @brief  Types of routing parameters and penalties that can be used to
+//!         tailor the style and improve the quality of the connector
 //!         routes produced.
 enum RoutingParameter
 {
-    //! @brief  This penalty is applied for each segment in the connector 
+    //! @brief  This penalty is applied for each segment in the connector
     //!         path beyond the first.  This should always normally be set
     //!         when doing orthogonal routing to prevent step-like connector
     //!         paths.
-    //! @note   This penalty must be set (i.e., be greater than zero) in 
+    //! @note   This penalty must be set (i.e., be greater than zero) in
     //!         order for orthogonal connector nudging to be performed, since
-    //!         this requires reasonable initial routes. 
+    //!         this requires reasonable initial routes.
     segmentPenalty = 0,
-    
-    //! @brief  This penalty is applied in its full amount to tight acute 
+
+    //! @brief  This penalty is applied in its full amount to tight acute
     //!         bends in the connector path.  A smaller portion of the penalty
     //!         is applied for slight bends, i.e., where the bend is close to
     //!         180 degrees.  This is useful for polyline routing where there
-    //!         is some evidence that tighter corners are worse for 
-    //!         readability, but that slight bends might not be so bad, 
+    //!         is some evidence that tighter corners are worse for
+    //!         readability, but that slight bends might not be so bad,
     //!         especially when smoothed by curves.
     anglePenalty,
-    
-    //! @brief  This penalty is applied whenever a connector path crosses 
-    //!         another connector path.  It takes shared paths into 
+
+    //! @brief  This penalty is applied whenever a connector path crosses
+    //!         another connector path.  It takes shared paths into
     //!         consideration and the penalty is only applied if there
     //!         is an actual crossing.
     //! @note   This penalty is still experimental!  It is not recommended
     //!         for normal use.
     crossingPenalty,
-    
-    //! @brief  This penalty is applied whenever a connector path crosses 
+
+    //! @brief  This penalty is applied whenever a connector path crosses
     //!         a cluster boundary.
     //! @note   This penalty is still experimental!  It is not recommended
     //!         for normal use.
@@ -121,17 +121,17 @@ enum RoutingParameter
     //!         Router::shouldContinueTransactionWithProgress() to check
     //!         progress and possibly cancel overly slow transactions.
     clusterCrossingPenalty,
-    
-    //! @brief  This penalty is applied whenever a connector path shares 
-    //!         some segments with an immovable portion of an existing 
+
+    //! @brief  This penalty is applied whenever a connector path shares
+    //!         some segments with an immovable portion of an existing
     //!         connector route (such as the first or last segment of a
     //!         connector).
     //! @note   This penalty is still experimental!  It is not recommended
     //!         for normal use.
     fixedSharedPathPenalty,
-    
-    //! @brief  This penalty is applied to port selection choice when the 
-    //!         other end of the connector being routed does not appear in 
+
+    //! @brief  This penalty is applied to port selection choice when the
+    //!         other end of the connector being routed does not appear in
     //!         any of the 90 degree visibility cones centered on the
     //!         visibility directions for the port.
     //! @note   This penalty is still experimental!  It is not recommended
@@ -140,22 +140,22 @@ enum RoutingParameter
     //!         Router::shouldContinueTransactionWithProgress() to check
     //!         progress and possibly cancel overly slow transactions.
     portDirectionPenalty,
-    
+
     //! @brief This parameter defines the spacing distance that will be added
     //!        to the sides of each shape when determining obstacle sizes for
     //!        routing.  This controls how closely connectors pass shapes, and
-    //!        can be used to prevent connectors overlapping with shape 
+    //!        can be used to prevent connectors overlapping with shape
     //!        boundaries. By default, this distance is set to a value of 0.
     shapeBufferDistance,
-    
+
     //! @brief This parameter defines the spacing distance that will be used
-    //!        for nudging apart overlapping corners and line segments of 
+    //!        for nudging apart overlapping corners and line segments of
     //!        connectors.  By default, this distance is set to a value of 4.
     idealNudgingDistance,
 
     //! @brief  This penalty is applied whenever a connector path travels
     //!         in the direction opposite of the destination from the source
-    //!         endpoint.  By default this penalty is set to zero.  This 
+    //!         endpoint.  By default this penalty is set to zero.  This
     //!         shouldn't be needed in most cases but can be useful if you
     //!         use penalties such as ::crossingPenalty which cause connectors
     //!         to loop around obstacles.
@@ -173,13 +173,13 @@ typedef enum RoutingParameter PenaltyType;
 //! @brief  Types of routing options that can be enabled.
 enum RoutingOption
 {
-    //! This option causes the final segments of connectors, which are 
-    //! attached to shapes, to be nudged apart.  Usually these segments 
+    //! This option causes the final segments of connectors, which are
+    //! attached to shapes, to be nudged apart.  Usually these segments
     //! are fixed, since they are considered to be attached to ports.
     //!
     //! Defaults to false.
     //!
-    //! This option also causes routes running through the same checkpoint 
+    //! This option also causes routes running through the same checkpoint
     //! to be nudged apart.
     //!
     //! This option has no effect if ::nudgeSharedPathsWithCommonEndPoint is
@@ -188,7 +188,7 @@ enum RoutingOption
     //! @note   This will allow routes to be nudged up to the bounds of shapes.
     //!
     nudgeOrthogonalSegmentsConnectedToShapes = 0,
-    
+
     //! This option causes hyperedge routes to be locally improved fixing
     //! obviously bad paths.  As part of this process libavoid will
     //! effectively move junctions, setting new ideal positions which can be
@@ -208,17 +208,17 @@ enum RoutingOption
     //! @sa   Router::hyperedgeRerouter()
     //!
     improveHyperedgeRoutesMovingJunctions,
-    
-    //! This option penalises and attempts to reroute orthogonal shared 
-    //! connector paths terminating at a common junction or shape 
-    //! connection pin.  When multiple connector paths enter or leave 
-    //! the same side of a junction (or shape pin), the router will 
-    //! attempt to reroute these to different sides of the junction or 
-    //! different shape pins. 
+
+    //! This option penalises and attempts to reroute orthogonal shared
+    //! connector paths terminating at a common junction or shape
+    //! connection pin.  When multiple connector paths enter or leave
+    //! the same side of a junction (or shape pin), the router will
+    //! attempt to reroute these to different sides of the junction or
+    //! different shape pins.
     //!
     //! Defaults to false.
     //!
-    //! This option depends on the ::fixedSharedPathPenalty penalty having 
+    //! This option depends on the ::fixedSharedPathPenalty penalty having
     //! been set.
     //!
     //! @sa     fixedSharedPathPenalty
@@ -226,8 +226,8 @@ enum RoutingOption
     //!         for normal use.
     //!
     penaliseOrthogonalSharedPathsAtConnEnds,
-    
-    //! This option can be used to control whether collinear line 
+
+    //! This option can be used to control whether collinear line
     //! segments that touch just at their ends will be nudged apart.
     //! The overlap will usually be resolved in the other dimension,
     //! so this is not usually required.
@@ -235,29 +235,29 @@ enum RoutingOption
     //! Defaults to false.
     //!
     nudgeOrthogonalTouchingColinearSegments,
-    
+
     //! This option can be used to control whether the router performs
     //! a preprocessing step before orthogonal nudging where is tries
-    //! to unify segments and centre them in free space.  This 
+    //! to unify segments and centre them in free space.  This
     //! generally results in better quality ordering and nudging.
-    //!         
+    //!
     //! Defaults to true.
     //!
     //! You may wish to turn this off for large examples where it
     //! can be very slow and will make little difference.
     //!
     performUnifyingNudgingPreprocessingStep,
-    
+
     //! This option causes hyperedge routes to be locally improved fixing
     //! obviously bad paths.
-    //! 
+    //!
     //! It can cause junctions and connectors to be added or removed from
     //! hyperedges.  To get details of these changes for each connector you can
     //! call Router::newAndDeletedObjectListsFromHyperedgeImprovement().
     //!
     //! As part of this process libavoid will effectively move junctions by
-    //! setting new ideal positions for each remaining or added junction, 
-    //! which can be read from JunctionRef::recommendedPosition() for each 
+    //! setting new ideal positions for each remaining or added junction,
+    //! which can be read from JunctionRef::recommendedPosition() for each
     //! junction.
     //!
     //! Defaults to false.
@@ -290,23 +290,23 @@ enum RoutingOption
     lastRoutingOptionMarker
 };
 
-//! @brief  Types of routing phases reported by 
+//! @brief  Types of routing phases reported by
 //!         Router::shouldContinueTransactionWithProgress().
 //!
 //! This phases will occur in the order given here, but each phase may take
 //! varying amounts of time.
 //!
-enum TransactionPhases 
+enum TransactionPhases
 {
-    //! @brief  The orthogonal visibility graph is built by conducting a 
+    //! @brief  The orthogonal visibility graph is built by conducting a
     //!         scan in each dimension.  This is the x-dimension.
     TransactionPhaseOrthogonalVisibilityGraphScanX = 1,
-    //! @brief  The orthogonal visibility graph is built by conducting a 
+    //! @brief  The orthogonal visibility graph is built by conducting a
     //!         scan in each dimension.  This is the y-dimension.
     TransactionPhaseOrthogonalVisibilityGraphScanY,
     //! @brief  Initial routes are searched for in the visibility graph.
     TransactionPhaseRouteSearch,
-    //! @brief  With crossing penalties enabled, crossing detection is 
+    //! @brief  With crossing penalties enabled, crossing detection is
     //!         performed to find all crossings.
     TransactionPhaseCrossingDetection,
     //! @brief  Crossing connectors are rerouted to search for better routes.
@@ -329,7 +329,7 @@ enum TransactionPhases
 // graph.  Instead the bool is stored in this delegate and the
 // connector is alerted later, so long as it hasn't since been
 // deleted.
-class ConnRerouteFlagDelegate {
+class AVOID_EXPORT ConnRerouteFlagDelegate {
     public:
         ConnRerouteFlagDelegate();
         ~ConnRerouteFlagDelegate();
@@ -387,7 +387,7 @@ class AVOID_EXPORT Router {
     public:
         //! @brief  Constructor for router instance.
         //!
-        //! @param[in]  flags  One or more Avoid::RouterFlag options to 
+        //! @param[in]  flags  One or more Avoid::RouterFlag options to
         //!                    control the behaviour of the router.
         Router(const unsigned int flags);
 
@@ -407,7 +407,7 @@ class AVOID_EXPORT Router {
         ContainsMap contains;
         VertInfList vertices;
         ContainsMap enclosingClusters;
-        
+
         bool PartialTime;
         bool SimpleRouting;
         bool ClusteredRouting;
@@ -416,13 +416,13 @@ class AVOID_EXPORT Router {
         bool IgnoreRegions;
         bool UseLeesAlgorithm;
         bool InvisibilityGrph;
-       
+
         // General routing options:
         bool SelectiveReroute;
-        
+
         bool PartialFeedback;
         bool RubberBandRouting;
-        
+
 
         // Instrumentation:
 #ifdef AVOID_PROFILE
@@ -439,12 +439,12 @@ class AVOID_EXPORT Router {
         //! addition or deletion as batch tasks, and reroute the necessary
         //! connectors just once after these actions have been performed.
         //! For this reason, libavoid allows you to group such actions into
-        //! "transactions" that are processed efficiently when the 
+        //! "transactions" that are processed efficiently when the
         //! processTransaction() method is called.
         //!
         //! By default, the router will process all actions as transactions.
-        //! If transactionUse() is set to false, then all actions will get 
-        //! processed immediately, and cause immediate routing callbacks to 
+        //! If transactionUse() is set to false, then all actions will get
+        //! processed immediately, and cause immediate routing callbacks to
         //! all affected connectors after each action.
         //!
         //! @param[in]  transactions  A boolean value specifying whether to
@@ -461,14 +461,14 @@ class AVOID_EXPORT Router {
         //!
         bool transactionUse(void) const;
 
-        //! @brief Finishes the current transaction and processes all the 
+        //! @brief Finishes the current transaction and processes all the
         //!        queued object changes efficiently.
         //!
         //! This method will efficiently process all moves, additions and
-        //! deletions that have occurred since processTransaction() was 
+        //! deletions that have occurred since processTransaction() was
         //! last called.
         //!
-        //! If transactionUse() is false, then all actions will have been 
+        //! If transactionUse() is false, then all actions will have been
         //! processed immediately and this method will do nothing.
         //!
         //! @return A boolean value describing whether there were any actions
@@ -496,8 +496,8 @@ class AVOID_EXPORT Router {
 
         //! @brief Move or resize an existing shape within the router scene.
         //!
-        //! A new polygon for the shape can be given to effectively move or 
-        //! resize the shape with the scene.  Connectors that intersect the 
+        //! A new polygon for the shape can be given to effectively move or
+        //! resize the shape with the scene.  Connectors that intersect the
         //! new shape polygon, or that could have a better (usually shorter)
         //! path after the change, will be marked as needing to be rerouted.
         //!
@@ -505,11 +505,11 @@ class AVOID_EXPORT Router {
         //! the next time Router::processTransaction() is called.  See
         //! Router::setTransactionUse() for more information.
         //!
-        //! @param[in]  shape       Pointer reference to the shape being 
+        //! @param[in]  shape       Pointer reference to the shape being
         //!                         moved/resized.
         //! @param[in]  newPoly     The new polygon boundary for the shape.
-        //! @param[in]  first_move  This option is used for some advanced 
-        //!                         (currently undocumented) behaviour and 
+        //! @param[in]  first_move  This option is used for some advanced
+        //!                         (currently undocumented) behaviour and
         //!                         it should be ignored for the moment.
         //!
         void moveShape(ShapeRef *shape, const Polygon& newPoly,
@@ -517,9 +517,9 @@ class AVOID_EXPORT Router {
 
         //! @brief Move an existing shape within the router scene by a relative
         //!        distance.
-        //!         
-        //! Connectors that intersect the shape's new position, or that could 
-        //! have a better (usually shorter) path after the change, will be 
+        //!
+        //! Connectors that intersect the shape's new position, or that could
+        //! have a better (usually shorter) path after the change, will be
         //! marked as needing to be rerouted.
         //!
         //! If the router is using transactions, then this action will occur
@@ -527,9 +527,9 @@ class AVOID_EXPORT Router {
         //! Router::setTransactionUse() for more information.
         //!
         //! @param[in]  shape       Pointer reference to the shape being moved.
-        //! @param[in]  xDiff       The distance to move the shape in the 
+        //! @param[in]  xDiff       The distance to move the shape in the
         //!                         x dimension.
-        //! @param[in]  yDiff       The distance to move the shape in the 
+        //! @param[in]  yDiff       The distance to move the shape in the
         //!                         y dimension.
         //!
         void moveShape(ShapeRef *shape, const double xDiff, const double yDiff);
@@ -543,11 +543,11 @@ class AVOID_EXPORT Router {
         //! You should not use the junction reference again after this call.
         //! The router will handle freeing of the junction's memory.
         //!
-        //! @param[in]  junction  Pointer reference to the junction being 
+        //! @param[in]  junction  Pointer reference to the junction being
         //!                       removed.
         //!
         void deleteJunction(JunctionRef *junction);
-        
+
         //! @brief Remove a connector from the router scene.
         //!
         //! If the router is using transactions, then this action will occur
@@ -564,7 +564,7 @@ class AVOID_EXPORT Router {
 
         //! @brief Move an existing junction within the router scene.
         //!
-        //! Connectors that are attached to this junction will be rerouted 
+        //! Connectors that are attached to this junction will be rerouted
         //! as a result of the move.
         //!
         //! If the router is using transactions, then this action will occur
@@ -577,44 +577,44 @@ class AVOID_EXPORT Router {
         //!
         void moveJunction(JunctionRef *junction, const Point& newPosition);
 
-        //! @brief Move an existing junction within the router scene by a 
+        //! @brief Move an existing junction within the router scene by a
         //!        relative distance.
-        //!         
-        //! Connectors that are attached to this junction will be rerouted 
+        //!
+        //! Connectors that are attached to this junction will be rerouted
         //! as a result of the move.
         //!
         //! If the router is using transactions, then this action will occur
         //! the next time Router::processTransaction() is called.  See
         //! Router::setTransactionUse() for more information.
         //!
-        //! @param[in]  junction    Pointer reference to the junction being 
+        //! @param[in]  junction    Pointer reference to the junction being
         //!                         moved.
-        //! @param[in]  xDiff       The distance to move the junction in the 
+        //! @param[in]  xDiff       The distance to move the junction in the
         //!                         x dimension.
-        //! @param[in]  yDiff       The distance to move the junction in the 
+        //! @param[in]  yDiff       The distance to move the junction in the
         //!                         y dimension.
         //!
-        void moveJunction(JunctionRef *junction, const double xDiff, 
+        void moveJunction(JunctionRef *junction, const double xDiff,
                 const double yDiff);
-        
-        //! @brief  Sets values for routing parameters, including routing 
+
+        //! @brief  Sets values for routing parameters, including routing
         //!         penalties.
         //!
         //! libavoid uses a set of parameters to allow the user more control
         //! over routing style and quality.  These different parameters are
-        //! described and explained by the RoutingParameter enum.  All 
+        //! described and explained by the RoutingParameter enum.  All
         //! parameters have sensible defaults.
         //!
         //! Regarding routing penalties, libavoid will by default produce
-        //! shortest path routes between the source and destination points 
-        //! for each connector.  There are several penalties that can be 
+        //! shortest path routes between the source and destination points
+        //! for each connector.  There are several penalties that can be
         //! applied during this stage to penalise certain conditions and
-        //! thus improve the aesthetics of the routes generated.  
-        //! 
-        //! If a value of zero or Avoid::zeroParamValue is given then the 
-        //! particular parameter value or penalty will be removed.  If no 
-        //! parameter value argument (or a negative value) is specified 
-        //! when calling this method, then a sensible penalty value will 
+        //! thus improve the aesthetics of the routes generated.
+        //!
+        //! If a value of zero or Avoid::zeroParamValue is given then the
+        //! particular parameter value or penalty will be removed.  If no
+        //! parameter value argument (or a negative value) is specified
+        //! when calling this method, then a sensible penalty value will
         //! be automatically chosen.
         //!
         //! This method does not re-trigger processing of connectors. The new
@@ -623,7 +623,7 @@ class AVOID_EXPORT Router {
         //! @param[in] parameter  The type of penalty, a RoutingParameter.
         //! @param[in] value      The value to be set for that parameter.
         //!
-        void setRoutingParameter(const RoutingParameter parameter, 
+        void setRoutingParameter(const RoutingParameter parameter,
                 const double value = chooseSensibleParamValue);
 
         //! @brief  Returns the current value for a particular routing
@@ -648,7 +648,7 @@ class AVOID_EXPORT Router {
         //!
         bool routingOption(const RoutingOption option) const;
 
-        //! @brief  Sets or removes penalty values that are applied during 
+        //! @brief  Sets or removes penalty values that are applied during
         //!         connector routing.
         //!
         //! @note   This is a convenience wrapper for the setRoutingParameter()
@@ -656,9 +656,9 @@ class AVOID_EXPORT Router {
         //!
         //! @param[in] penType  The type of penalty, a RoutingParameter.
         //! @param[in] penVal   The value to be applied for each occurrence
-        //!                     of the penalty case.  
+        //!                     of the penalty case.
         //!
-        void setRoutingPenalty(const RoutingParameter penType, 
+        void setRoutingPenalty(const RoutingParameter penType,
                 const double penVal = chooseSensibleParamValue);
 
         //! @brief  Returns a pointer to the hyperedge rerouter for the router.
@@ -671,22 +671,22 @@ class AVOID_EXPORT Router {
         //! @brief  Generates an SVG file containing debug output and code that
         //!         can be used to regenerate the instance.
         //!
-        //! If transactions are being used, then this method should be called 
+        //! If transactions are being used, then this method should be called
         //! after processTransaction() has been called, so that it includes any
         //! changes being queued by the router.
         //!
-        //! @param[in] filename  A string indicating the filename (without 
+        //! @param[in] filename  A string indicating the filename (without
         //!                      extension) for the output file.  Defaults to
         //!                      "libavoid-debug.svg" if no filename is given.
         //!
         void outputInstanceToSVG(std::string filename = std::string());
 
-        //! @brief  Returns the object ID used for automatically generated 
+        //! @brief  Returns the object ID used for automatically generated
         //!         objects, such as during hyperedge routing.
-        //! 
+        //!
         //! Reimplement this in a subclass to set specific IDs for new objects.
         //!
-        //! @note   Your implementation should return a value that does not 
+        //! @note   Your implementation should return a value that does not
         //!         fail objectIdIsUnused().
         //!
         //! @return  The ID for a new object.
@@ -694,54 +694,54 @@ class AVOID_EXPORT Router {
         virtual unsigned int newObjectId(void) const;
 
         //! @brief  Returns whether or not the given ID is already used.
-        //! 
+        //!
         //! You should only need this if you reimplement newObjectId().
         //!
         //! @param[in]  id  An ID to test.
         //! @return  A boolean denoting that the given ID is unused.
         //!
         bool objectIdIsUnused(const unsigned int id) const;
-        
-        //! @brief  A method called at regular intervals during transaction 
+
+        //! @brief  A method called at regular intervals during transaction
         //!         processing to report progress and ask if the Router
         //!         should continue the transaction.
-        //! 
-        //! You can subclass the Avoid::Router class to implement your 
-        //! own behaviour, such as to show a progress bar or cancel the 
+        //!
+        //! You can subclass the Avoid::Router class to implement your
+        //! own behaviour, such as to show a progress bar or cancel the
         //! transaction at the user's request.
         //!
-        //! Note that you can get a sense of progress by looking at the 
-        //! phaseNumber divided by the totalPhases and the progress in the 
+        //! Note that you can get a sense of progress by looking at the
+        //! phaseNumber divided by the totalPhases and the progress in the
         //! current phase, but be aware that phases and the intervals and
         //! proportions at which this method is called will vary, sometime
         //! unpredictably.
         //!
         //! You can return false to request that the Router abort the current
         //! transaction.  Be aware that it may not abort in some phases. For
-        //! others it may need to clean up some state before it is safe for 
-        //! you to interact with it again.  Hence you should wait for a final 
+        //! others it may need to clean up some state before it is safe for
+        //! you to interact with it again.  Hence you should wait for a final
         //! call to this method with the phase Avoid::TransactionPhaseCompleted
         //! before continuing.
         //!
         //! @note  Your implementation of this method should be very fast as
         //!        it will be called many times.  Also, you should not change
-        //!        or interact with the Router instance at all during these 
-        //!        calls.  Wait till you have received a call with the 
+        //!        or interact with the Router instance at all during these
+        //!        calls.  Wait till you have received a call with the
         //!        Avoid::TransactionPhaseCompleted phase.
         //!
         //! @param  elapsedTime  The number of msec spent on the transaction
         //!                      since it began.
         //! @param  phaseNumber  A Router::TransactionPhases representing the
         //!                      current phase of the transaction.
-        //! @param  totalPhases  The total number of phases to be performed 
+        //! @param  totalPhases  The total number of phases to be performed
         //!                      during the transaction.
-        //! @param  proportion   A double representing the progress in the 
+        //! @param  proportion   A double representing the progress in the
         //!                      current phase.  Value will be between 0--1.
         //!
         //! @return  Whether the router should continue the transaction.
         //!          This is true in the default (empty) implementation.
         virtual bool shouldContinueTransactionWithProgress(
-                unsigned int elapsedTime, unsigned int phaseNumber, 
+                unsigned int elapsedTime, unsigned int phaseNumber,
                 unsigned int totalPhases, double proportion);
 
         //! @brief  Returns a HyperedgeNewAndDeletedObjectLists detailing the
@@ -749,17 +749,17 @@ class AVOID_EXPORT Router {
         //!         during hyperedge improvement.
         //!
         //! This method will only return information once the router has
-        //! processed the transaction.  You should read and act on this 
+        //! processed the transaction.  You should read and act on this
         //! information before processTransaction() is called again.
         //!
         //! After calling this you should no longer refer to any of the
-        //! objects in the "deleted" lists --- the router will delete these 
+        //! objects in the "deleted" lists --- the router will delete these
         //! and free their memory at its convenience.
         //!
-        //! @return A HyperedgeNewAndDeletedObjectLists containing lists of 
+        //! @return A HyperedgeNewAndDeletedObjectLists containing lists of
         //!         junctions and connectors created and deleted.
         //!
-        HyperedgeNewAndDeletedObjectLists 
+        HyperedgeNewAndDeletedObjectLists
                 newAndDeletedObjectListsFromHyperedgeImprovement(void) const;
 
         void setDebugHandler(DebugHandler *handler);
@@ -768,7 +768,7 @@ class AVOID_EXPORT Router {
         // Processes the actions list for the transaction.  You shouldn't
         // need to cal this.  Instead use processTransaction().
         void processActions(void);
-        
+
         void deleteCluster(ClusterRef *cluster);
         void attachedShapes(IntList &shapes, const unsigned int shapeId,
                 const unsigned int type);
@@ -789,11 +789,11 @@ class AVOID_EXPORT Router {
                 size_t stepNumber, size_t totalSteps);
         void registerSettingsChange(void);
 
-        /** 
+        /**
          *  @brief  Set an addon for doing orthogonal topology improvement.
          *
-         *  It is expected that you would use the topology::AvoidTopologyAddon() 
-         *  from libtopology rather than write your own.  This is done so that 
+         *  It is expected that you would use the topology::AvoidTopologyAddon()
+         *  from libtopology rather than write your own.  This is done so that
          *  libavoid does not have to depend on libtopology.
          */
         void setTopologyAddon(TopologyAddonInterface *topologyAddon);
@@ -807,10 +807,10 @@ class AVOID_EXPORT Router {
         bool existsInvalidOrthogonalPaths(void);
 
         // Outputs the current diagram.  Used for visualising individual
-        // steps of various algorithms.  lineReps can be used to draw 
+        // steps of various algorithms.  lineReps can be used to draw
         // attention to specific parts of the diagram that have changed
         // between steps.
-        void outputDiagramSVG(std::string instanceName = std::string(), 
+        void outputDiagramSVG(std::string instanceName = std::string(),
                 LineReps *lineReps = NULL);
 
         void outputDiagramText(std::string instanceName = std::string());
@@ -844,7 +844,7 @@ class AVOID_EXPORT Router {
         void checkAllMissingEdges(void);
         void adjustContainsWithAdd(const Polygon& poly, const int p_shape);
         void adjustContainsWithDel(const int p_shape);
-        void adjustClustersWithAdd(const PolygonInterface& poly, 
+        void adjustClustersWithAdd(const PolygonInterface& poly,
                 const int p_cluster);
         void adjustClustersWithDel(const int p_cluster);
         void rerouteAndCallbackConnectors(void);
@@ -856,25 +856,25 @@ class AVOID_EXPORT Router {
         bool m_currently_calling_destructors;
         double m_routing_parameters[lastRoutingParameterMarker];
         bool m_routing_options[lastRoutingOptionMarker];
-        
+
         ConnRerouteFlagDelegate m_conn_reroute_flags;
         HyperedgeRerouter m_hyperedge_rerouter;
-        
+
         // Progress tracking and transaction cancelling.
         clock_t m_transaction_start_time;
         bool m_abort_transaction;
-        
+
         TopologyAddonInterface *m_topology_addon;
 
         // Overall modes:
         bool m_allows_polyline_routing;
         bool m_allows_orthogonal_routing;
-        
+
         bool m_static_orthogonal_graph_invalidated;
         bool m_in_crossing_rerouting_stage;
 
         bool m_settings_changes;
-    
+
         HyperedgeImprover m_hyperedge_improver;
 
         DebugHandler *m_debug_handler;

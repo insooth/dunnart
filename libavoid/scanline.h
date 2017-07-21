@@ -12,12 +12,12 @@
  * See the file LICENSE.LGPL distributed with the library.
  *
  * Licensees holding a valid commercial license may use this file in
- * accordance with the commercial license agreement provided with the 
+ * accordance with the commercial license agreement provided with the
  * library.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Author(s):   Michael Wybrow
 */
@@ -29,6 +29,7 @@
 #include <set>
 #include <list>
 
+#include "libavoid/dllexport.h"
 #include "libavoid/geomtypes.h"
 
 
@@ -42,7 +43,7 @@ class VertInf;
 
 // ShiftSegment interface.
 class ShiftSegment
-{ 
+{
     public:
         ShiftSegment(const size_t dim)
             : dimension(dim)
@@ -58,7 +59,7 @@ class ShiftSegment
         virtual bool overlapsWith(const ShiftSegment *rhs,
                 const size_t dim) const = 0;
         virtual bool immovable(void) const = 0;
-        
+
         size_t dimension;
         double minSpaceLimit;
         double maxSpaceLimit;
@@ -69,13 +70,13 @@ typedef std::list<ShiftSegment *> ShiftSegmentList;
 class Node;
 struct CmpNodePos
 {
-    bool operator()(const Node* u, const Node* v) const; 
+    bool operator()(const Node* u, const Node* v) const;
 };
 
 
 typedef std::set<Node*,CmpNodePos> NodeSet;
 
-class Node 
+class AVOID_EXPORT Node
 {
     public:
 
@@ -96,7 +97,7 @@ class Node
     void markShiftSegmentsAbove(size_t dim);
     void markShiftSegmentsBelow(size_t dim);
     void findFirstPointAboveAndBelow(const size_t dim, const double linePos,
-            double& firstAbovePos, double& firstBelowPos, 
+            double& firstAbovePos, double& firstBelowPos,
             double& lastAbovePos, double& lastBelowPos);
     double firstPointAbove(size_t dim);
     double firstPointBelow(size_t dim);
@@ -108,26 +109,26 @@ class Node
 typedef enum {
     Open = 1,
     SegOpen = 2,
-    ConnPoint = 3, 
+    ConnPoint = 3,
     SegClose = 4,
     Close = 5
 } EventType;
 
 
-struct Event
+struct AVOID_EXPORT Event
 {
     Event(EventType t, Node *v, double p);
-    
+
     EventType type;
     Node *v;
     double pos;
 };
 
 
-extern int compare_events(const void *a, const void *b);
+AVOID_EXPORT int compare_events(const void *a, const void *b);
 extern void buildConnectorRouteCheckpointCache(Router *router);
 extern void clearConnectorRouteCheckpointCache(Router *router);
-extern void buildOrthogonalChannelInfo(Router *router, 
+extern void buildOrthogonalChannelInfo(Router *router,
         const size_t dim, ShiftSegmentList& segmentList);
 
 

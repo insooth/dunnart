@@ -12,18 +12,18 @@
  * See the file LICENSE.LGPL distributed with the library.
  *
  * Licensees holding a valid commercial license may use this file in
- * accordance with the commercial license agreement provided with the 
+ * accordance with the commercial license agreement provided with the
  * library.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Author(s):   Michael Wybrow
 */
 
 //! @file    obstacle.h
-//! @brief   Contains the interface for the Obstacle class, 
+//! @brief   Contains the interface for the Obstacle class,
 //!          the superclass for ShapeRef and JunctionRef.
 
 
@@ -35,6 +35,7 @@
 
 #include <cstdio>
 
+#include "libavoid/dllexport.h"
 #include "libavoid/geometry.h"
 #include "libavoid/connectionpin.h"
 
@@ -50,10 +51,10 @@ typedef std::list<Obstacle *> ObstacleList;
 typedef std::list<ConnRef *> ConnRefList;
 
 
-// @brief   The Obstacle class represents an obstacle that must be 
+// @brief   The Obstacle class represents an obstacle that must be
 //          routed around.  Superclass of ShapeRef and JunctionRef.
 //
-class Obstacle
+class AVOID_EXPORT Obstacle
 {
     public:
         //! @brief  Obstacle reference constructor.
@@ -63,9 +64,9 @@ class Obstacle
         //! use either ShapeRef() or JunctionRef().
         //!
         //! @param[in]  router  The router scene to place the shape into.
-        //! @param[in]  poly    A Polygon representing the boundary of the 
+        //! @param[in]  poly    A Polygon representing the boundary of the
         //!                     shape.
-        //! @param[in]  id      A unique positive integer ID for the shape.  
+        //! @param[in]  id      A unique positive integer ID for the shape.
         Obstacle(Router *router, Polygon poly, const unsigned int id = 0);
 
 // To prevent C++ objects from being destroyed in garbage collected languages
@@ -76,7 +77,7 @@ class Obstacle
         //!
         virtual ~Obstacle();
 #endif
-        
+
         //! @brief   Returns the ID of this obstacle.
         //! @returns The ID of the obstacle.
         unsigned int id(void) const;
@@ -91,7 +92,7 @@ class Obstacle
         //! @brief   Returns the position of this obstacle.
         //! @returns A point representing the position of this obstacle.
         virtual Point position(void) const = 0;
-        
+
         void setNewPoly(const Polygon& poly);
         VertInf *firstVert(void);
         VertInf *lastVert(void);
@@ -110,7 +111,7 @@ class Obstacle
         // Defined in visibility.cpp:
         void computeVisibilityNaive(void);
         void computeVisibilitySweep(void);
-       
+
         virtual void outputCode(FILE *fp) const = 0;
         void makeActive(void);
         void makeInactive(void);
@@ -125,7 +126,7 @@ class Obstacle
         void removeFollowingConnEnd(ConnEnd *connEnd);
         size_t addConnectionPin(ShapeConnectionPin *pin);
         void removeConnectionPin(ShapeConnectionPin *pin);
-        void assignPinVisibilityTo(const unsigned int pinClassId, 
+        void assignPinVisibilityTo(const unsigned int pinClassId,
                 VertInf *dummyConnectionVert);
         std::vector<Point> possiblePinPoints(unsigned int pinClassId) const;
 
