@@ -13,12 +13,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  *
  * Author(s): Michael Wybrow  <http://michael.wybrow.info/>
 */
@@ -59,8 +59,8 @@ typedef std::map<unsigned int, int> TallyMap;
 
 // -===============
 
-static int calcConnectorIntersections(Canvas *canvas, PtOrderMap *ptOrders, 
-        ConnPairSet *touchingConns, TallyMap *tallyMap, 
+static int calcConnectorIntersections(Canvas *canvas, PtOrderMap *ptOrders,
+        ConnPairSet *touchingConns, TallyMap *tallyMap,
         ConnPairSet *crossingConnectors, Connector *queryConn,
         PointSet *crossingPoints = NULL);
 
@@ -68,12 +68,12 @@ static int calcConnectorIntersections(Canvas *canvas, PtOrderMap *ptOrders,
 int noOfConnectorCrossings(Connector *conn)
 {
     PointSet crossingPoints;
-    return calcConnectorIntersections(conn->canvas(), NULL, NULL, NULL, 
+    return calcConnectorIntersections(conn->canvas(), NULL, NULL, NULL,
             NULL, conn, &crossingPoints);
 }
 
 
-void nudgeConnectors(Canvas *canvas, const double nudgeDist, 
+void nudgeConnectors(Canvas *canvas, const double nudgeDist,
         const bool displayUpdate)
 {
     PtOrderMap ptOrds;
@@ -105,9 +105,9 @@ void nudgeConnectors(Canvas *canvas, const double nudgeDist,
                     printf("%g, %g : ", connPt->x, connPt->y);
                 }
                 const VertID id(connPt->id, connPt->vn,
-                        VertID::PROP_ConnPoint);
+                        VertID::getConnPoint());
                 id.print(); printf(" ");
-               
+
                 if (count > 0)
                 {
                     // If not the first point.
@@ -174,7 +174,7 @@ static void identifyPointWithCircle(double xc, double yc, int r, int g, int b)
     filledCircleRGBA(screen,(int)p.x,(int)p.y,
                      4,r,g,b,80);
     SDL_Flip(screen);
-    SDL_Rect wholeCanvasRect;    
+    SDL_Rect wholeCanvasRect;
     wholeCanvasRect.x = canvas->get_xpos();
     wholeCanvasRect.y = canvas->get_ypos();
     wholeCanvasRect.w = canvas->get_width();
@@ -187,10 +187,10 @@ static void identifyPointWithCircle(double xc, double yc, int r, int g, int b)
 
 
 //
-// reset colors of connectors to the saved value that is stored when 
+// reset colors of connectors to the saved value that is stored when
 // color is set by set_value for interfering connectors. This is so
 // that connectors that were colored because they inteferered, and have
-// been re-routed so that they no longer interfere have their colours 
+// been re-routed so that they no longer interfere have their colours
 // restored to what they were before changed by colorInterferingConnectors().
 //
 static void resetConnectorColors(Canvas *canvas)
@@ -217,14 +217,14 @@ void colourInterferingConnectors(Canvas *canvas)
     ConnPairSet touchingConns;
     ConnPairSet crossingConns;
 
-    calcConnectorIntersections(canvas, NULL, &touchingConns, NULL, 
+    calcConnectorIntersections(canvas, NULL, &touchingConns, NULL,
             &crossingConns, NULL);
     ConnPairSet::iterator pathFinish = touchingConns.end();
 
 #if 0
     // ADS begin old debug line coloring code
     printf("colorInterferingConnectors start\n");
-    for (ConnPairSet::iterator it = touchingConns.begin(); 
+    for (ConnPairSet::iterator it = touchingConns.begin();
             it != pathFinish; ++it)
     {
         Conn *conn1 = it->first;
@@ -251,7 +251,7 @@ void colourInterferingConnectors(Canvas *canvas)
     // build inteference graph for crossings and shared paths
     ConnPairSet interferingConns = crossingConns; // start with crossings
     // then add shared paths
-    for (ConnPairSet::iterator it = touchingConns.begin(); 
+    for (ConnPairSet::iterator it = touchingConns.begin();
             it != pathFinish; ++it)
     {
         interferingConns.insert(*it);
@@ -261,7 +261,7 @@ void colourInterferingConnectors(Canvas *canvas)
     // color the graph so adjacent nodes have different colors
     int num_colors = intgraph->color_graph();
 
-    std::cout << "colourInterferingConnectors: required " << num_colors << 
+    std::cout << "colourInterferingConnectors: required " << num_colors <<
         " colours." << std::endl;
 
     // reset colors to values they had before any previous call here
@@ -279,7 +279,7 @@ void colourInterferingConnectors(Canvas *canvas)
     }
     else
     {
-        for (interference_graph::NodePtrList::iterator iter = 
+        for (interference_graph::NodePtrList::iterator iter =
                  intgraph->nodes->begin();
              iter != intgraph->nodes->end(); ++iter)
         {
@@ -309,7 +309,7 @@ static int calcConnectorIntersections(Canvas *canvas, PtOrderMap *ptOrders,
         {
             continue;
         }
-        
+
         for (int j = (i + 1); j < canvas_items.size(); ++j)
         {
             Point lastInt2(INFINITY, INFINITY);
@@ -318,7 +318,7 @@ static int calcConnectorIntersections(Canvas *canvas, PtOrderMap *ptOrders,
             {
                 continue;
             }
-            
+
             if (queryConn && (queryConn != conn) && (queryConn != conn2))
             {
                 // Querying, and neither of these are the query connector.
@@ -329,7 +329,7 @@ static int calcConnectorIntersections(Canvas *canvas, PtOrderMap *ptOrders,
             {
                 continue;
             }
-            
+
             Avoid::Polygon& route = conn->avoidRef->displayRoute();
             Avoid::Polygon& route2 = conn2->avoidRef->displayRoute();
             splitBranchingSegments(route2, true, route);
@@ -344,7 +344,7 @@ static int calcConnectorIntersections(Canvas *canvas, PtOrderMap *ptOrders,
         {
             continue;
         }
-        
+
         for (int j = (i + 1); j < canvas_items.size(); ++j)
         {
             Point lastInt2(INFINITY, INFINITY);
@@ -353,7 +353,7 @@ static int calcConnectorIntersections(Canvas *canvas, PtOrderMap *ptOrders,
             {
                 continue;
             }
-            
+
             if (queryConn && (queryConn != conn) && (queryConn != conn2))
             {
                 // Querying, and neither of these are the query connector.
@@ -364,7 +364,7 @@ static int calcConnectorIntersections(Canvas *canvas, PtOrderMap *ptOrders,
             {
                 continue;
             }
-            
+
             Avoid::Polygon& route = conn->avoidRef->displayRoute();
             Avoid::Polygon& route2 = conn2->avoidRef->displayRoute();
             //bool checkForBranchingSegments = false;
@@ -502,16 +502,16 @@ void reroute_connectors(Canvas *canvas, const bool force,
         //fflush(stdout);
     }
     // -----------------
-   
+
     if (postProcessing && canvas->avoidConnectorCrossings())
     {
         //SDL_Surface *sur = canvas->get_image(canvas->get_active_image_n());
-        
+
         std::map<unsigned int, int> tallies;
         printf("Avoiding connector crossings...\n");
 
         calcConnectorIntersections(canvas, NULL, NULL, &tallies, NULL, NULL);
-        
+
         TallyMap::iterator curr, finish = tallies.end();
         while (!tallies.empty())
         {

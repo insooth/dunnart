@@ -182,6 +182,21 @@ VertIDProps VertID::getOrthoShapeEdge()
     return VertID::PROP_OrthShapeEdge;
 }
 
+VertIDProps VertID::getConnPoint()
+{
+    return VertID::PROP_ConnPoint;
+}
+
+unsigned short VertID::getSrc()
+{
+    return VertID::src;
+}
+
+unsigned short VertID::getTar()
+{
+    return VertID::tar;
+}
+
 
 VertInf::VertInf(Router *router, const VertID& vid, const Point& vpoint,
         const bool addToRouter)

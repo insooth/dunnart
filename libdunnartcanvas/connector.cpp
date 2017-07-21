@@ -13,12 +13,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  *
  * Author(s): Michael Wybrow  <http://michael.wybrow.info/>
 */
@@ -157,7 +157,7 @@ void Connector::initWithXMLProperties(Canvas *canvas,
     QString sshape, dshape;
     if (optionalProp(node, x_srcID, sshape, ns) && !(sshape.isEmpty()))
     {
-        ShapeObj *sh = dynamic_cast<ShapeObj *> 
+        ShapeObj *sh = dynamic_cast<ShapeObj *>
                 (canvas->getItemByID(sshape));
         if (sh)
         {
@@ -193,7 +193,7 @@ void Connector::initWithXMLProperties(Canvas *canvas,
     m_dst_pt.x = m_dst_pt.y = 0;
     if (optionalProp(node,x_dstID,dshape,ns) && !(dshape.isEmpty()))
     {
-        ShapeObj *sh = dynamic_cast<ShapeObj *> 
+        ShapeObj *sh = dynamic_cast<ShapeObj *>
             (canvas->getItemByID(dshape));
         if (sh)
         {
@@ -222,12 +222,12 @@ void Connector::initWithXMLProperties(Canvas *canvas,
         m_dst_pt.x = essentialProp<double>(node, x_dstX, ns);
         m_dst_pt.y = essentialProp<double>(node, x_dstY, ns);
     }
-    
+
     optionalProp(node, x_idealLength, m_ideal_length, ns);
     optionalProp(node, x_obeysDirEdgeConstraints,
             m_obeys_directed_edge_constraints, ns);
     int oc=NONE;
-    if (optionalProp(node, x_orthogonalConstraint, oc, ns)) 
+    if (optionalProp(node, x_orthogonalConstraint, oc, ns))
     {
         m_orthogonal_constraint=(OrthogonalConstraint)oc;
         qDebug("orthogonal constraint=%d",oc);
@@ -240,7 +240,7 @@ void Connector::initWithXMLProperties(Canvas *canvas,
         //qDebug("read id=%s colour=%s", qPrintable(this->idString()),
         //       qPrintable(m_colour.name()));
     }
-    
+
     // Get dashed stroke setting.
     value = nodeAttribute(node, ns, "LineStyle");
     if (!value.isNull())
@@ -280,8 +280,8 @@ void Connector::routerAdd(void)
     avoidRef = new Avoid::ConnRef(canvas()->router(), internalId());
 
     // Update endpoints.
-    setNewLibavoidEndpoint(VertID::src);
-    setNewLibavoidEndpoint(VertID::tar);
+    setNewLibavoidEndpoint(VertID::getSrc());
+    setNewLibavoidEndpoint(VertID::getTar());
 
     if (m_routing_type == orthogonal)
     {
@@ -336,7 +336,7 @@ void Connector::setNewEndpoint(const int endptType, QPointF pos,
             return;
         }
 
-        setNewLibavoidEndpoint((endptType == SRCPT) ? VertID::src : VertID::tar);
+        setNewLibavoidEndpoint((endptType == SRCPT) ? VertID::getSrc() : VertID::getTar());
         triggerReroute();
     }
 }
@@ -441,7 +441,7 @@ void Connector::addXmlProps(const unsigned int subset, QDomElement& node,
                     m_colour.green(), m_colour.blue(), m_colour.alpha());
             newProp(node, x_lineCol, value);
         }
-        
+
         write_libavoid_path(node, doc);
 
         char value[40];
@@ -670,7 +670,7 @@ void Connector::swapDirection(void)
     CPoint tmp = m_dst_pt;
     m_dst_pt = m_src_pt;
     m_src_pt = tmp;
-    
+
     forceReroute();
 
     if (canvas())
@@ -940,8 +940,8 @@ void Connector::forceReroute(void)
         return;
     }
 
-    setNewLibavoidEndpoint(VertID::src);
-    setNewLibavoidEndpoint(VertID::tar);
+    setNewLibavoidEndpoint(VertID::getSrc());
+    setNewLibavoidEndpoint(VertID::getTar());
 
     triggerReroute();
 }
@@ -1002,7 +1002,7 @@ QString Connector::valueStringForEnum(const char *enumName, int enumValue)
 
 
 static void arrowPoints(const Point& l1, const Point& l2, Point *a1,
-        Point *a2, Point *a3, const double arrowLen = 6, 
+        Point *a2, Point *a3, const double arrowLen = 6,
         const double arrowSpread = 3)
 {
     double rise = l2.y - l1.y;
@@ -1011,15 +1011,15 @@ static void arrowPoints(const Point& l1, const Point& l2, Point *a1,
     double segLength = euclideanDist(l1, l2);
     double riseInt = rise / segLength;
     double runInt = run / segLength;
-    
+
     a1->x = a3->x = l2.x - runInt  * arrowLen;
     a1->y = a3->y = l2.y - riseInt * arrowLen;
     a2->x = l2.x - runInt  * (arrowLen - 2);
     a2->y = l2.y - riseInt * (arrowLen - 2);
-    
+
     a1->y += runInt  * arrowSpread;
     a1->x -= riseInt * arrowSpread;
-   
+
     a3->y -= runInt  * arrowSpread;
     a3->x += riseInt * arrowSpread;
 }
@@ -1036,19 +1036,19 @@ bool Connector::drawArrow(QPainterPath& painter_path, double srcx, double srcy,
     Point l1, l2, a1, a2, a3;
     l1.x = srcx;
     l1.y = srcy;
-    
+
     l2.x = dstx;
     l2.y = dsty;
-    
+
     double crossDistance = 6;
 
     arrowPoints(l1, l2, &a1, &a2, &a3);
-    
+
     if (arrow_type == Connector::normal)
     {
         painter_path.moveTo(l2.x, l2.y);
         painter_path.lineTo(a1.x, a1.y);
-        painter_path.lineTo((l2.x + 0.1 * (l2.x-a1.x)), 
+        painter_path.lineTo((l2.x + 0.1 * (l2.x-a1.x)),
                 (l2.y + 0.1 * (l2.y-a2.y)));
         painter_path.lineTo(a3.x, a3.y);
         painter_path.closeSubpath();
@@ -1065,13 +1065,13 @@ bool Connector::drawArrow(QPainterPath& painter_path, double srcx, double srcy,
     {
         // Slightly away from shape.
         arrowPoints(l1, l2, &a1, &a2, &a3, 7.5);
-        
+
         painter_path.addEllipse(QPointF(a2.x, a2.y), 4, 4);
     }
     else if (typeStrings.contains("triangle"))
     {
         arrowPoints(l1, l2, &a1, &a2, &a3, 7, 4);
- 
+
         painter_path.moveTo(l2.x, l2.y);
         painter_path.lineTo(a1.x, a1.y);
         painter_path.lineTo(a3.x, a3.y);
@@ -1104,7 +1104,7 @@ void Connector::setNewLibavoidEndpoint(const int type)
         return;
     }
 
-    CPoint& ep = (type == VertID::src) ? m_src_pt : m_dst_pt;
+    CPoint& ep = (type == VertID::getSrc()) ? m_src_pt : m_dst_pt;
     if (ep.shape)
     {
         Avoid::ConnEnd connEndRef(ep.shape->avoidRef, ep.pinClassID);
@@ -1114,7 +1114,7 @@ void Connector::setNewLibavoidEndpoint(const int type)
     {
         Point tmppt(ep.x, ep.y);
         tmppt.id = m_internal_id;
-        tmppt.vn = (type == VertID::src) ? 1 : 2;
+        tmppt.vn = (type == VertID::getSrc()) ? 1 : 2;
 
         avoidRef->setEndpoint(type, tmppt);
     }
@@ -1151,8 +1151,8 @@ void Connector::triggerReroute(bool now)
 }
 
 
-static QPainterPath cutPainterPathEnd(const QPainterPath& path, 
-        const QPointF pathPos, const QPolygonF& shape) 
+static QPainterPath cutPainterPathEnd(const QPainterPath& path,
+        const QPointF pathPos, const QPolygonF& shape)
 {
     QPainterPath cutPainterPath;
     QPointF cutPoint;
@@ -1167,7 +1167,7 @@ static QPainterPath cutPainterPathEnd(const QPainterPath& path,
         QLineF connLine(c1Elem.x, c1Elem.y, c2Elem.x, c2Elem.y);
         connLine.translate(pathPos);
         QLineF::IntersectType result = QLineF::NoIntersection;
-        
+
         // Cheap test:
         if (boundingRect.contains(connLine.p1()) ||
                 boundingRect.contains(connLine.p2()))
@@ -1186,11 +1186,11 @@ static QPainterPath cutPainterPathEnd(const QPainterPath& path,
                 }
             }
         }
-      
+
         if (result == QLineF::BoundedIntersection)
         {
             // Found an intersection
-           
+
             if (connLine.p1() == cutPoint)
             {
                 // Intersection point is the same as the first point of
@@ -1219,7 +1219,7 @@ static QPainterPath cutPainterPathEnd(const QPainterPath& path,
                     cutPainterPath.lineTo(cutPoint);
                     break;
                 }
-                else 
+                else
                 {
                     cutPainterPath.lineTo(element.x, element.y);
                 }
@@ -1272,7 +1272,7 @@ void Connector::applyNewRoute(const Avoid::PolyLine& route,
         return;
         qFatal("Conn with too few points in Connector::applyNewRoute()");
     }
-   
+
     if (updateLibavoid)
     {
         avoidRef->set_route(route);
@@ -1362,8 +1362,8 @@ void Connector::buildArrowHeadPath(void)
             ShapeObj *shape = m_dst_pt.shape;
             QPolygonF polygon = shape->shape().toFillPolygon();
             polygon.translate(shape->pos());
-            
-            QPainterPath cutPath = 
+
+            QPainterPath cutPath =
                     cutPainterPathEnd(m_conn_path, pos(), polygon);
 
             size_t path_size = cutPath.elementCount();
@@ -1452,7 +1452,7 @@ void Connector::paint(QPainter *painter,
 #if 0
     painter->setPen(QColor(255, 0, 0, 100));
     painter->setBrush(QBrush(QColor(255, 0, 0, 100)));
-    
+
     painter->drawRect(boundingRect());
 #endif
     bool showDecorations = canvas() && ! canvas()->isRenderingForPrinting();
@@ -1508,7 +1508,7 @@ void Connector::paint(QPainter *painter,
     {
         QVector<qreal> dashes;
         dashes << 5 << 3;
-        pen.setDashPattern(dashes); 
+        pen.setDashPattern(dashes);
     }
     painter->setPen(pen);
     painter->drawPath(painterPath());
@@ -1727,7 +1727,7 @@ void Connector::write_libavoid_path(QDomElement& node, QDomDocument& doc)
         pathStr += str.sprintf("%g %g %d %d ", route.ps[i].x, route.ps[i].y,
                 route.ps[i].id, route.ps[i].vn);
     }
-    
+
     if (!pathStr.isEmpty())
     {
         newProp(node, x_libavoidPath, pathStr);

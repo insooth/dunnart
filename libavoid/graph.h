@@ -45,7 +45,7 @@ typedef std::list<int> ShapeList;
 typedef std::list<bool *> FlagList;
 
 
-class EdgeInf
+class AVOID_EXPORT EdgeInf
 {
     public:
         EdgeInf(VertInf *v1, VertInf *v2, const bool orthogonal = false);

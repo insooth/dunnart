@@ -13,12 +13,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
- * 
+ *
  *
  * Author(s): Tim Dwyer
  *            Michael Wybrow  <http://michael.wybrow.info/>
@@ -111,10 +111,10 @@ static void levelAssignmentTraverse(unsigned ind, unsigned newLevel,
 }
 
 
-GraphData::GraphData(Canvas *canvas, bool ignoreEdges, 
-        GraphLayout::Mode mode, bool beautify, unsigned topologyNodesCount) 
+GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
+        GraphLayout::Mode mode, bool beautify, unsigned topologyNodesCount)
     : canvas_(canvas),
-      topologyNodesCount(topologyNodesCount) 
+      topologyNodesCount(topologyNodesCount)
 {
     Q_UNUSED (beautify)
 
@@ -203,7 +203,7 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
             }
         }
     }
-    for (QSet<cola::Cluster *>::iterator c = allShapeClusters.begin(); 
+    for (QSet<cola::Cluster *>::iterator c = allShapeClusters.begin();
             c != allShapeClusters.end(); ++c)
     {
         // And put remaining cola::clusters at children of the root cluster.
@@ -218,7 +218,7 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
         for (int i = 0; i < canvasObjects.size(); ++i)
         {
             if (Connector *conn = dynamic_cast<Connector *> (canvasObjects.at(i)))
-            {    
+            {
                 connectorToEdge(conn);
             }
         }
@@ -556,7 +556,7 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
 
     // get the corners of the page
     pageBoundary = canvas->pageRect();
-    
+
     // adjust boundary for page_margin
     double page_buffer = canvas->visualPageBuffer();
     QPointF margin(page_buffer, page_buffer);
@@ -582,7 +582,7 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
             separationlist.push_back(separation);
         } else if (cluster && !cluster->isCollapsed()) {
             dunnartClusterToCluster(cluster);
-        } 
+        }
     }
     setUpRootCluster();
     // distribution constraints contain a list of pairs of alignment guidelines
@@ -590,7 +590,7 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
     {
         distroToDistributionConstraint(*i);
     }
-    for(vector<Separation*>::iterator i=separationlist.begin(); 
+    for(vector<Separation*>::iterator i=separationlist.begin();
             i!=separationlist.end(); i++) {
         separationToMultiSeparationConstraint(*i);
     }
@@ -600,7 +600,7 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
     QList<CanvasItem *> canvas_items = canvas_->items();
     for (int i = 0; i < canvas_items.size(); ++i)
     {
-        LinearTemplate *linear = 
+        LinearTemplate *linear =
                 dynamic_cast<LinearTemplate *> (canvas_items.at(i));
         BranchedTemplate *branched =
                 dynamic_cast<BranchedTemplate *> (canvas_items.at(i));
@@ -615,13 +615,13 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
     }
 
     //qDebug("Total connector crossings=%d", noOfConnectorCrossings());
-    
+
     if (canvas_->optFitWithinPage())
     {
-        cerr << "Extracting page boundaries: tl.x=" << 
-                pageBoundary.left() << " tl.y=" << 
-                pageBoundary.top() << " br.x=" << 
-                pageBoundary.right() << " br.y=" << 
+        cerr << "Extracting page boundaries: tl.x=" <<
+                pageBoundary.left() << " tl.y=" <<
+                pageBoundary.top() << " br.x=" <<
+                pageBoundary.right() << " br.y=" <<
                 pageBoundary.bottom() << endl;
         cola::PageBoundaryConstraints* pbc =
                 new cola::PageBoundaryConstraints(
@@ -630,8 +630,8 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
                         pageBoundary.top(),
                         pageBoundary.bottom());
 
-        // for each shape on the canvas create a PageBoundaryConstraint that 
-        // has the shape's center position (its vertex pos) and the offset 
+        // for each shape on the canvas create a PageBoundaryConstraint that
+        // has the shape's center position (its vertex pos) and the offset
         // from that pos being dependant on the shape's dimensions
         //shape_select(lastFreehand);
         for(int i = 0; i < canvasObjects.size(); ++i)
@@ -639,7 +639,7 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
             if (ShapeObj *shape = isShapeForLayout(canvasObjects.at(i)))
             {
                 double w = shape->width();
-                double h = shape->height();  
+                double h = shape->height();
                 // add the offsets for this shape
                 // there is an offset for:
                 //   + pos left from center = w /2
@@ -712,7 +712,7 @@ void resolveOverlappingRectangles(Rectangles &rs, vpsc::Dim dim) {
  * each EdgePoint into an Avoid::PolyLine
  */
 struct GDCopyClusterVertex {
-    GDCopyClusterVertex(GraphData *gd, vector<Avoid::Point>& points) 
+    GDCopyClusterVertex(GraphData *gd, vector<Avoid::Point>& points)
         : gd(gd), points(points), i(0) {}
     void operator() (const topology::EdgePoint* p) {
         assert(gd != NULL);
@@ -782,7 +782,7 @@ void GraphData::generateRoutes() {
         unsigned int clusterID = dunnartClusters[i]->internalId();
         new Avoid::ClusterRef(router, clusterPoly, clusterID);
     }
- 
+
     for(unsigned i=0;i<conn_vec.size();++i) {
         cola::Edge e=edges[i];
         if(e.first>=topologyNodesCount||e.second>=topologyNodesCount)
@@ -816,9 +816,9 @@ void GraphData::generateRoutes() {
                 if (j < last)
                 {
                     // Tracing: Use the ID of the point.
-                    exists = connRef->setEndpoint(Avoid::VertID::tar,
-                            Avoid::VertID(ep.id, ep.vn,  
-                                Avoid::VertID::PROP_ConnPoint), &dstPt);
+                    exists = connRef->setEndpoint(Avoid::VertID::getTar(),
+                            Avoid::VertID(ep.id, ep.vn,
+                                Avoid::VertID::getConnPoint()), &dstPt);
                 }
                 if (!exists)
                 {
@@ -830,7 +830,7 @@ void GraphData::generateRoutes() {
                         dstPt.y = r1->getCentreY();
                     }
                     // Last one, or now non-existant point, use a normal point.
-                    connRef->setEndpoint(Avoid::VertID::tar, dstPt);
+                    connRef->setEndpoint(Avoid::VertID::getTar(), dstPt);
                 }
                 router->processTransaction();
             }
@@ -844,7 +844,7 @@ void GraphData::generateRoutes() {
         vector<topology::EdgePoint*> eps;
         //cout << "addToPath(vs[" << e.first << "],EdgePoint::CENTRE);" << endl;
         assert(e.first<topologyNodesCount);
-        eps.push_back( new topology::EdgePoint( topologyNodes[e.first], 
+        eps.push_back( new topology::EdgePoint( topologyNodes[e.first],
                     topology::EdgePoint::CENTRE));
         for(size_t j=1;j<route.size()-1;j++) {
             const Avoid::Point& p = route.ps[j];
@@ -857,16 +857,16 @@ void GraphData::generateRoutes() {
             topology::Node* node=topologyNodes[nodeID];
             topology::EdgePoint::RectIntersect ri;
             switch(p.vn) {
-                case 0: ri=topology::EdgePoint::BR; 
+                case 0: ri=topology::EdgePoint::BR;
                         //cout << "EdgePoint::BR);" << endl;
                         break;
-                case 1: ri=topology::EdgePoint::TR; 
+                case 1: ri=topology::EdgePoint::TR;
                         //cout << "EdgePoint::TR);" << endl;
                         break;
                 case 2: ri=topology::EdgePoint::TL;
                         //cout << "EdgePoint::TL);" << endl;
                         break;
-                case 3: ri=topology::EdgePoint::BL; 
+                case 3: ri=topology::EdgePoint::BL;
                         //cout << "EdgePoint::BL);" << endl;
                         break;
                 default: ri=topology::EdgePoint::CENTRE;
@@ -1018,7 +1018,7 @@ void GraphData::dunnartClusterToCluster(Cluster* cluster) {
         double clcx = clx + (clw / 2);
         double clcy = cly + (clh / 2);
 
-        // Cluster is collapsed, so create constraints to keep the member 
+        // Cluster is collapsed, so create constraints to keep the member
         // objects positioned relative to each other.
 
         cola::AlignmentConstraint *vac = new cola::AlignmentConstraint(clcx);
@@ -1034,7 +1034,7 @@ void GraphData::dunnartClusterToCluster(Cluster* cluster) {
 
         ShapeList& members = cluster->getMembers();
         ClusterShapeMap& smallShapeInfo = cluster->getSmallShapeInfo();
-        for (ShapeList::iterator curr = members.begin(); 
+        for (ShapeList::iterator curr = members.begin();
             curr != members.end(); ++curr)
         {
             double offx, offy, sw, sh;
@@ -1048,7 +1048,7 @@ void GraphData::dunnartClusterToCluster(Cluster* cluster) {
             (*curr)->getPosAndSize(sx, sy, sw2, sh2);
             qDebug("Real Shape size: %g %g", sw2, sh2);
             qDebug("Real Shape pos: %g %g", sx, sy);
-            
+
             vac->offsets.push_back(make_pair(snMap[(*curr)],-offx));
             hac->offsets.push_back(make_pair(snMap[(*curr)],-offy));
         }
@@ -1079,7 +1079,7 @@ void GraphData::connectorToEdge(Connector* conn)
     if (conn->orthogonalConstraint != Conn::NONE)
     {
         //qDebug("Creating orthogonalConstraint");
-        cola::OrthogonalEdgeConstraint *oec = 
+        cola::OrthogonalEdgeConstraint *oec =
                 new cola::OrthogonalEdgeConstraint(a, b);
         if (conn->orthogonalConstraint == Conn::HORIZONTAL)
         {
@@ -1126,7 +1126,7 @@ void GraphData::setupMultiEdges() {
                 }
             }
         }
-        if(dups.size()>1) { 
+        if(dups.size()>1) {
             conDups.push_back(dups);
         }
     }
@@ -1174,9 +1174,9 @@ void GraphData::generateRectangleConstraints(
  * @param guide the dunnart representation
  */
 void GraphData::guideToAlignmentConstraint(Guideline* guide) {
-    vpsc::Dim dim = 
+    vpsc::Dim dim =
             (guide->get_dir()==GUIDE_TYPE_HORI) ? vpsc::YDIM : vpsc::XDIM;
-    cola::AlignmentConstraint *ac = 
+    cola::AlignmentConstraint *ac =
             new cola::AlignmentConstraint(dim, guide->position());
     ccMap[guide]=ac;
     ac->indicator=(void*)guide;
@@ -1190,7 +1190,7 @@ void GraphData::guideToAlignmentConstraint(Guideline* guide) {
         if(s!=NULL) {
             double width = s->width();
             double height = s->height();
-            
+
             switch((*i)->type) {
                 case ALIGN_RIGHT:
                     offset = -width/2.0; break;
@@ -1212,7 +1212,7 @@ void GraphData::guideToAlignmentConstraint(Guideline* guide) {
 void GraphData::linearTemplateToConstraints(LinearTemplate* templatPtr)
 {
     // Find the cola::CompoundConstraint representing the alignment.
-    cola::AlignmentConstraint *ac = 
+    cola::AlignmentConstraint *ac =
            dynamic_cast<cola::AlignmentConstraint *> (ccMap[templatPtr->guide]);
 
     // Store the IDs of all shapes attached to the guideline.
@@ -1222,7 +1222,7 @@ void GraphData::linearTemplateToConstraints(LinearTemplate* templatPtr)
     // on the orientation of the dunnart guideline object.
     vpsc::Dim dim = (templatPtr->guide->get_dir() == GUIDE_TYPE_HORI) ?
             vpsc::YDIM : vpsc::XDIM;
-    
+
 	double separation = 0;
 	double minAttached, maxAttached;
 	int nodes;
@@ -1253,19 +1253,19 @@ void GraphData::branchedTemplateToConstraints(BranchedTemplate* templatPtr)
     std::list<unsigned> idList;
     // generate the list of alignment constraints for all the guides
     // in the branched template
-    ACList aclist;  
+    ACList aclist;
 
-    // Find the cola::CompoundConstraint representing the alignment of the 
+    // Find the cola::CompoundConstraint representing the alignment of the
     // guides
-    for (GuidelineList::iterator currguide = templatPtr->guidelist.begin(); 
+    for (GuidelineList::iterator currguide = templatPtr->guidelist.begin();
             currguide != templatPtr->guidelist.end(); ++currguide)
     {
-        if (dynamic_cast<Guideline *> (*currguide)) 
+        if (dynamic_cast<Guideline *> (*currguide))
         {
             Guideline* guide = (Guideline*)(*currguide);
-            cola::AlignmentConstraint *ac = 
+            cola::AlignmentConstraint *ac =
                     dynamic_cast<cola::AlignmentConstraint *> (ccMap[guide]);
-    
+
             // Store the IDs of all shapes attached to the guideline.
             std::list<unsigned> idList = ac->subConstraintObjIndexes();
             aclist.push_back(ac);
@@ -1278,32 +1278,32 @@ void GraphData::branchedTemplateToConstraints(BranchedTemplate* templatPtr)
     double sep = 0;
     int longest_branch_index = -1;
     int centreguide_index = -1; int count = 0;
-    for (GuidelineList::iterator curr = templatPtr->guidelist.begin(); 
-            curr != templatPtr->guidelist.end(); ++curr) 
+    for (GuidelineList::iterator curr = templatPtr->guidelist.begin();
+            curr != templatPtr->guidelist.end(); ++curr)
     {
-        if (dynamic_cast<Guideline *> (*curr)) 
+        if (dynamic_cast<Guideline *> (*curr))
         {
             Guideline* guide = (Guideline*)(*curr);
             double minAttached, maxAttached;
             int nodes;
             guide->rangeOfAttachedShapes(minAttached, maxAttached, nodes);
 
-            // Create a list of the IDs of all shapes attached to the 
+            // Create a list of the IDs of all shapes attached to the
             // current guide
-            cola::AlignmentConstraint *ac = 
+            cola::AlignmentConstraint *ac =
                     dynamic_cast<cola::AlignmentConstraint *> (ccMap[guide]);
             std::list<unsigned> idList = ac->subConstraintObjIndexes();
             listOfIdLists.push_back(idList); // store the list of IDs
 
             // check if this is the centre guide, and if it is, keep its index:
-            if (guide == templatPtr->centreguide) 
-            { 
+            if (guide == templatPtr->centreguide)
+            {
                 centreguide_index = count;
             }
             // otherwise, calculate the max branch separation:
-            else if (nodes > 1) 
+            else if (nodes > 1)
             {
-                if ((maxAttached - minAttached) > sep) 
+                if ((maxAttached - minAttached) > sep)
                 {
                     sep = (maxAttached - minAttached);
                     longest_branch_index = count;
@@ -1311,7 +1311,7 @@ void GraphData::branchedTemplateToConstraints(BranchedTemplate* templatPtr)
             }
             count++;
         }
-      
+
     }
 
     // Determine primary dimension.
@@ -1323,11 +1323,11 @@ void GraphData::branchedTemplateToConstraints(BranchedTemplate* templatPtr)
         sep = templatPtr->_explicitNewBranchSpan;
         templatPtr->_explicitNewBranchSpan = 0;
     }
-    // Create the CompoundConstraint for the guides in the Branched Template, 
+    // Create the CompoundConstraint for the guides in the Branched Template,
     // both in the perpendicular dimension to the guideline and the same
     // dimension.
-    BranchedTemplateConstraint *btc = new BranchedTemplateConstraint(dim, 
-          aclist, templatPtr->getPos(), 50, listOfIdLists, sep, 
+    BranchedTemplateConstraint *btc = new BranchedTemplateConstraint(dim,
+          aclist, templatPtr->getPos(), 50, listOfIdLists, sep,
           centreguide_index, longest_branch_index);
     // Add it to the map.
     ccMap[templatPtr] = btc;
@@ -1342,7 +1342,7 @@ void GraphData::branchedTemplateToConstraints(BranchedTemplate* templatPtr)
  * Creates cola::DistributionConstraint for a dunnart Distribution.
  * @param distro the dunnart representation
  */
-void GraphData::distroToDistributionConstraint(Distribution* distro) 
+void GraphData::distroToDistributionConstraint(Distribution* distro)
 {
     if (distro->relationships.size() < 1)
     {
@@ -1356,13 +1356,13 @@ void GraphData::distroToDistributionConstraint(Distribution* distro)
     ccMap[distro]=dc;
     dc->sep = distro->getSeparation();
     for (RelsList::iterator i = distro->relationships.begin();
-            i!=distro->relationships.end();i++) 
+            i!=distro->relationships.end();i++)
     {
         Guideline* g1 = (*i)->guide;
         Guideline* g2 = (*i)->guide2;
         cola::AlignmentConstraint *ac1 =
                 (cola::AlignmentConstraint *) ccMap[g1];
-        cola::AlignmentConstraint *ac2 = 
+        cola::AlignmentConstraint *ac2 =
                 (cola::AlignmentConstraint *) ccMap[g2];
         assert(ac1!=NULL);
         assert(ac2!=NULL);

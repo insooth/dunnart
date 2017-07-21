@@ -5,7 +5,8 @@ find_package(Qt5Widgets REQUIRED)
 
 file(GLOB qtpropertybrowser_SOURCES RELATIVE ${CMAKE_CURRENT_LIST_DIR} "*.cpp")
 
-add_library(qtpropertybrowser SHARED ${qtpropertybrowser_SOURCES} qtpropertybrowser.qrc)
+# STATIC: too much exported static data that confuses VS2015
+add_library(qtpropertybrowser STATIC ${qtpropertybrowser_SOURCES} qtpropertybrowser.qrc)
 
 target_include_directories(qtpropertybrowser PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(qtpropertybrowser Qt5::Widgets)

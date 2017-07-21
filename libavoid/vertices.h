@@ -88,6 +88,9 @@ class AVOID_EXPORT VertID
         bool isDummyPinHelper(void) const;
 
         static VertIDProps getOrthoShapeEdge();
+        static VertIDProps getConnPoint();
+        static unsigned short getSrc();
+        static unsigned short getTar();
 };
 
 
@@ -100,7 +103,7 @@ static const VertID dummyOrthogShapeID(0, 0, VertID::getOrthoShapeEdge());
 
 class ANode;
 
-class VertInf
+class AVOID_EXPORT VertInf
 {
     public:
         VertInf(Router *router, const VertID& vid, const Point& vpoint,

@@ -12,12 +12,12 @@
  * See the file LICENSE.LGPL distributed with the library.
  *
  * Licensees holding a valid commercial license may use this file in
- * accordance with the commercial license agreement provided with the 
+ * accordance with the commercial license agreement provided with the
  * library.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Author(s):  Michael Wybrow
 */
@@ -44,7 +44,7 @@
 
 namespace Avoid {
 
-    
+
 ConnRef::ConnRef(Router *router, const unsigned int id)
     : m_router(router),
       m_type(router->validConnType()),
@@ -196,7 +196,7 @@ std::vector<Checkpoint> ConnRef::routingCheckpoints(void) const
 void ConnRef::setRoutingCheckpoints(const std::vector<Checkpoint>& checkpoints)
 {
     m_checkpoints = checkpoints;
-    
+
     // Clear previous checkpoint vertices.
     for (size_t i = 0; i < m_checkpoint_vertices.size(); ++i)
     {
@@ -208,7 +208,7 @@ void ConnRef::setRoutingCheckpoints(const std::vector<Checkpoint>& checkpoints)
 
     for (size_t i = 0; i < m_checkpoints.size(); ++i)
     {
-        VertID ptID(m_id, 2 + i, 
+        VertID ptID(m_id, 2 + i,
                 VertID::PROP_ConnPoint | VertID::PROP_ConnCheckpoint);
         VertInf *vertex = new VertInf(m_router, ptID, m_checkpoints[i].point);
         vertex->visDirections = ConnDirAll;
@@ -241,7 +241,7 @@ void ConnRef::common_updateEndPoint(const unsigned int type, ConnEnd connEnd)
     {
         makeActive();
     }
-    
+
     VertInf *altered = NULL;
 
     VertIDProps properties = VertID::PROP_ConnPoint;
@@ -273,11 +273,11 @@ void ConnRef::common_updateEndPoint(const unsigned int type, ConnEnd connEnd)
         {
             m_src_connend = new ConnEnd(connEnd);
             m_src_connend->connect(this);
-            // Don't need this to have visibility since we won't 
+            // Don't need this to have visibility since we won't
             // be connecting to it.
             m_src_vert->visDirections = ConnDirNone;
         }
-        
+
         altered = m_src_vert;
     }
     else // if (type == (unsigned int) VertID::tar)
@@ -291,7 +291,7 @@ void ConnRef::common_updateEndPoint(const unsigned int type, ConnEnd connEnd)
             m_dst_vert = new VertInf(m_router, ptID, point);
         }
         m_dst_vert->visDirections = connEnd.directions();
-        
+
         if (m_dst_connend)
         {
             m_dst_connend->disconnect();
@@ -303,14 +303,14 @@ void ConnRef::common_updateEndPoint(const unsigned int type, ConnEnd connEnd)
         {
             m_dst_connend = new ConnEnd(connEnd);
             m_dst_connend->connect(this);
-            // Don't need this to have visibility since we won't 
+            // Don't need this to have visibility since we won't
             // be connecting to it.
             m_dst_vert->visDirections = ConnDirNone;
         }
-        
+
         altered = m_dst_vert;
     }
-    
+
     // XXX: Seems to be faster to just remove the edges and recreate
     bool isConn = true;
     altered->removeFromGraph(isConn);
@@ -345,11 +345,11 @@ void ConnRef::setDestEndpoint(const ConnEnd& dstPoint)
 }
 
 
-// Given the start or end vertex of a connector, returns the ConnEnd that 
+// Given the start or end vertex of a connector, returns the ConnEnd that
 // can be used to reproduce that endpoint.  This is used for hyperedge routing.
 //
-bool ConnRef::getConnEndForEndpointVertex(VertInf *vertex, 
-        ConnEnd& connEnd) const 
+bool ConnRef::getConnEndForEndpointVertex(VertInf *vertex,
+        ConnEnd& connEnd) const
 {
     if (vertex == NULL)
     {
@@ -461,9 +461,9 @@ void ConnRef::outputCode(FILE *fp) const
         fprintf(fp, "    newRoute.ps.resize(%d);\n", (int)currRoute.size());
         for (size_t i = 0; i < currRoute.size(); ++i)
         {
-            fprintf(fp, "    newRoute.ps[%d] = Point(%" PREC "g, %" PREC "g);\n", 
+            fprintf(fp, "    newRoute.ps[%d] = Point(%" PREC "g, %" PREC "g);\n",
                     (int) i, currRoute.ps[i].x, currRoute.ps[i].y);
-            fprintf(fp, "    newRoute.ps[%d].id = %u;\n", 
+            fprintf(fp, "    newRoute.ps[%d].id = %u;\n",
                     (int) i, currRoute.ps[i].id);
             fprintf(fp, "    newRoute.ps[%d].vn = %u;\n",
                     (int) i, currRoute.ps[i].vn);
@@ -479,12 +479,12 @@ void ConnRef::outputCode(FILE *fp) const
         {
             fprintf(fp, "    checkpoints%u[%d] = Checkpoint(Point("
                     "%" PREC "g, %" PREC "g), (ConnDirFlags) %d, "
-                    "(ConnDirFlags) %d);\n", id(), (int) cInd, 
+                    "(ConnDirFlags) %d);\n", id(), (int) cInd,
                     m_checkpoints[cInd].point.x, m_checkpoints[cInd].point.y,
                     m_checkpoints[cInd].arrivalDirections,
                     m_checkpoints[cInd].departureDirections);
         }
-        fprintf(fp, "    connRef->setRoutingCheckpoints(checkpoints%u);\n", 
+        fprintf(fp, "    connRef->setRoutingCheckpoints(checkpoints%u);\n",
                 id());
     }
     fprintf(fp, "\n");
@@ -538,7 +538,7 @@ bool ConnRef::setEndpoint(const unsigned int type, const VertID& pointID,
     // Give this visibility just to the point it is over.
     EdgeInf *edge = new EdgeInf(
             (type == VertID::src) ? m_src_vert : m_dst_vert, vInf);
-    // XXX: We should be able to set this to zero, but can't due to 
+    // XXX: We should be able to set this to zero, but can't due to
     //      assumptions elsewhere in the code.
     edge->setDist(0.001);
 
@@ -550,7 +550,7 @@ bool ConnRef::setEndpoint(const unsigned int type, const VertID& pointID,
 void ConnRef::makeActive(void)
 {
     COLA_ASSERT(!m_active);
-    
+
     // Add to connRefs list.
     m_connrefs_pos = m_router->connRefs.insert(m_router->connRefs.begin(), this);
     m_active = true;
@@ -573,7 +573,7 @@ void ConnRef::freeActivePins(void)
 void ConnRef::makeInactive(void)
 {
     COLA_ASSERT(m_active);
-    
+
     // Remove from connRefs list.
     m_router->connRefs.erase(m_connrefs_pos);
     m_active = false;
@@ -585,7 +585,7 @@ void ConnRef::freeRoutes(void)
     m_route.clear();
     m_display_route.clear();
 }
-    
+
 
 const PolyLine& ConnRef::route(void) const
 {
@@ -622,7 +622,7 @@ void ConnRef::setFixedRoute(const PolyLine& route)
 {
     if (route.size() >= 2)
     {
-        // Set endpoints based on the fixed route incase the 
+        // Set endpoints based on the fixed route incase the
         // fixed route is later cleared.
         setEndpoints(route.ps[0], route.ps[route.size() - 1]);
     }
@@ -657,7 +657,7 @@ Polygon& ConnRef::displayRoute(void)
 
 void ConnRef::calcRouteDist(void)
 {
-    double (*dist)(const Point& a, const Point& b) = 
+    double (*dist)(const Point& a, const Point& b) =
             (m_type == ConnType_PolyLine) ? euclideanDist : manhattanDist;
 
     m_route_dist = 0;
@@ -707,7 +707,7 @@ std::pair<JunctionRef *, ConnRef *> ConnRef::splitAtSegment(
         newJunction = new JunctionRef(router(), junctionPos);
         router()->addJunction(newJunction);
         newJunction->preferOrthogonalDimension(
-                (m_display_route.at(segmentN - 1).x == 
+                (m_display_route.at(segmentN - 1).x ==
                     m_display_route.at(segmentN).x) ? YDIM : XDIM);
 
         // Create a new connection routing from the junction to the original
@@ -715,7 +715,7 @@ std::pair<JunctionRef *, ConnRef *> ConnRef::splitAtSegment(
         ConnEnd newConnSrc = ConnEnd(newJunction);
         ConnEnd newConnDst = *m_dst_connend;
         newConn = new ConnRef(router(), newConnSrc, newConnDst);
-        
+
         // Reroute the endpoint of the original connector to attach to the
         // new junction.
         ConnEnd oldConnDst = ConnEnd(newJunction);
@@ -731,7 +731,7 @@ VertInf *ConnRef::src(void) const
     return m_src_vert;
 }
 
-    
+
 VertInf *ConnRef::dst(void) const
 {
     return m_dst_vert;
@@ -848,7 +848,7 @@ bool validateBendPoint(VertInf *aInf, VertInf *bInf, VertInf *cInf)
 #ifdef PATHDEBUG
     db_printf("(abc == %d) ", abc);
 #endif
-   
+
     if (abc == 0)
     {
         // The three consecutive point on the path are in a line.
@@ -937,7 +937,7 @@ bool ConnRef::generatePath(void)
         // Connector is not fully initialised.
         return false;
     }
-    
+
     //COLA_ASSERT(_srcVert->point != _dstVert->point);
 
     m_false_path = false;
@@ -952,7 +952,7 @@ bool ConnRef::generatePath(void)
     // assign this visibility by adding edges to the visibility graph that we
     // later remove.
     std::pair<bool, bool> isDummyAtEnd = assignConnectionPinVisibility(true);
-    
+
 
     if (m_router->RubberBandRouting && route().size() > 0)
     {
@@ -999,12 +999,12 @@ bool ConnRef::generatePath(void)
         }
 
         VertInf *vertex = vertices[i];
-        if (vertex->pathNext && 
+        if (vertex->pathNext &&
                 (vertex->pathNext->point == vertex->point))
         {
             if (!(vertex->pathNext->id.isConnPt()) && !(vertex->id.isConnPt()))
             {
-                // Check for consecutive points on opposite 
+                // Check for consecutive points on opposite
                 // corners of two touching shapes.
                 COLA_ASSERT(abs(vertex->pathNext->id.vn - vertex->id.vn) != 2);
             }
@@ -1027,20 +1027,20 @@ bool ConnRef::generatePath(void)
         m_dst_connend->usePinVertex(vertices[vertices.size() - 2]);
     }
     clippedPath.insert(clippedPath.end(), pathBegin, pathEnd);
-    
+
     // Clear visibility edges added for connection pins dummy vertices.
     assignConnectionPinVisibility(false);
 
     freeRoutes();
     PolyLine& output_route = m_route;
     output_route.ps = clippedPath;
- 
+
 #ifdef PATHDEBUG
     db_printf("Output route:\n");
     for (size_t i = 0; i < output_route.ps.size(); ++i)
     {
-        db_printf("[%d,%d] %g, %g   ", output_route.ps[i].id, 
-                output_route.ps[i].vn, output_route.ps[i].x, 
+        db_printf("[%d,%d] %g, %g   ", output_route.ps[i].id,
+                output_route.ps[i].vn, output_route.ps[i].x,
                 output_route.ps[i].y);
     }
     db_printf("\n\n");
@@ -1062,18 +1062,18 @@ void ConnRef::generateCheckpointsPath(std::vector<Point>& path,
     std::vector<VertInf *> checkpoints = m_checkpoint_vertices;
     checkpoints.insert(checkpoints.begin(), src());
     checkpoints.push_back(dst());
-    
+
     path.clear();
     vertices.clear();
     path.push_back(src()->point);
     vertices.push_back(src());
- 
+
     size_t lastSuccessfulIndex = 0;
     for (size_t i = 1; i < checkpoints.size(); ++i)
     {
         VertInf *start = checkpoints[lastSuccessfulIndex];
         VertInf *end = checkpoints[i];
-        
+
         // Handle checkpoint directions by disabling some visibility edges.
         if (lastSuccessfulIndex > 0)
         {
@@ -1091,10 +1091,10 @@ void ConnRef::generateCheckpointsPath(std::vector<Point>& path,
                 end->setVisibleDirections(dstCP.arrivalDirections);
             }
         }
-        
+
         AStarPath aStar;
         // Route the connector
-        aStar.search(this, start, end, NULL); 
+        aStar.search(this, start, end, NULL);
 
         // Restore changes made for checkpoint visibility directions.
         if (lastSuccessfulIndex > 0)
@@ -1138,7 +1138,7 @@ void ConnRef::generateCheckpointsPath(std::vector<Point>& path,
             // There is no valid path.
             db_printf("Warning: Path not found...\n");
             m_needs_reroute_flag = true;
-            
+
             path.push_back(dst()->point);
             vertices.push_back(dst());
 
@@ -1147,7 +1147,7 @@ void ConnRef::generateCheckpointsPath(std::vector<Point>& path,
         else
         {
             err_printf("Warning: skipping checkpoint for connector "
-                    "%d at (%g, %g).\n", (int) id(), 
+                    "%d at (%g, %g).\n", (int) id(),
                     checkpoints[i]->point.x, checkpoints[i]->point.y);
             fflush(stderr);
         }
@@ -1155,7 +1155,7 @@ void ConnRef::generateCheckpointsPath(std::vector<Point>& path,
     // Use topbit to differentiate between start and end point of connector.
     // They need unique IDs for nudging.
     unsigned int topbit = ((unsigned int) 1) << 31;
-    path[path.size() - 1].id = m_id | topbit; 
+    path[path.size() - 1].id = m_id | topbit;
     path[path.size() - 1].vn = kUnassignedVertexNumber;
 }
 
@@ -1385,7 +1385,7 @@ size_t PtOrder::insertPoint(const size_t dim, const PtConnPtrPair& pointPair)
     return nodes[dim].size() - 1;
 }
 
-void PtOrder::addPoints(const size_t dim, const PtConnPtrPair& arg1, 
+void PtOrder::addPoints(const size_t dim, const PtConnPtrPair& arg1,
                 const PtConnPtrPair& arg2)
 {
     // Add points, but not ordering information.
@@ -1394,7 +1394,7 @@ void PtOrder::addPoints(const size_t dim, const PtConnPtrPair& arg1,
 }
 
 
-void PtOrder::addOrderedPoints(const size_t dim, const PtConnPtrPair& innerArg, 
+void PtOrder::addOrderedPoints(const size_t dim, const PtConnPtrPair& innerArg,
         const PtConnPtrPair& outerArg, bool swapped)
 {
     PtConnPtrPair inner = (swapped) ? outerArg : innerArg;
@@ -1404,7 +1404,7 @@ void PtOrder::addOrderedPoints(const size_t dim, const PtConnPtrPair& innerArg,
     // Add points.
     size_t innerIndex = insertPoint(dim, inner);
     size_t outerIndex = insertPoint(dim, outer);
-   
+
     // And edge for ordering information.
     links[dim].push_back(std::make_pair(outerIndex, innerIndex));
 }
@@ -1428,7 +1428,7 @@ void PtOrder::sort(const size_t dim)
     std::queue<size_t> queue;
 
     // Populate the dependency matrix.
-    for (NodeIndexPairLinkList::iterator it = links[dim].begin(); 
+    for (NodeIndexPairLinkList::iterator it = links[dim].begin();
             it != links[dim].end(); ++it)
     {
         adjacencyMatrix[it->first][it->second] = true;
@@ -1439,7 +1439,7 @@ void PtOrder::sort(const size_t dim)
     for (size_t i = 0; i < n; ++i)
     {
         int degree = 0;
- 
+
         for (size_t j = 0; j < n; ++j)
         {
             if (adjacencyMatrix[j][i])
@@ -1454,7 +1454,7 @@ void PtOrder::sort(const size_t dim)
             queue.push(i);
         }
     }
- 
+
     while (queue.empty() == false)
     {
         size_t k = queue.front();
@@ -1471,7 +1471,7 @@ void PtOrder::sort(const size_t dim)
             {
                 adjacencyMatrix[k][i] = false;
                 incomingDegree[i]--;
- 
+
                 if (incomingDegree[i] == 0)
                 {
                     queue.push(i);
@@ -1482,14 +1482,14 @@ void PtOrder::sort(const size_t dim)
 }
 
 
-// Returns a vertex number representing a point on the line between 
+// Returns a vertex number representing a point on the line between
 // two shape corners, represented by p0 and p1.
 //
 static int midVertexNumber(const Point& p0, const Point& p1, const Point& c)
 {
     if (c.vn != kUnassignedVertexNumber)
     {
-        // The split point is a shape corner, so doesn't need its 
+        // The split point is a shape corner, so doesn't need its
         // vertex number adjusting.
         return c.vn;
     }
@@ -1567,12 +1567,12 @@ static int midVertexNumber(const Point& p0, const Point& p1, const Point& c)
 }
 
 
-// Break up overlapping parallel segments that are not the same edge in 
+// Break up overlapping parallel segments that are not the same edge in
 // the visibility graph, i.e., where one segment is a subsegment of another.
 void splitBranchingSegments(Avoid::Polygon& poly, bool polyIsConn,
         Avoid::Polygon& conn, const double tolerance)
 {
-    for (std::vector<Avoid::Point>::iterator i = conn.ps.begin(); 
+    for (std::vector<Avoid::Point>::iterator i = conn.ps.begin();
             i != conn.ps.end(); ++i)
     {
         if (i == conn.ps.begin())
@@ -1582,7 +1582,7 @@ void splitBranchingSegments(Avoid::Polygon& poly, bool polyIsConn,
             continue;
         }
 
-        for (std::vector<Avoid::Point>::iterator j = poly.ps.begin(); 
+        for (std::vector<Avoid::Point>::iterator j = poly.ps.begin();
                 j != poly.ps.end(); )
         {
             if (polyIsConn && (j == poly.ps.begin()))
@@ -1599,11 +1599,11 @@ void splitBranchingSegments(Avoid::Polygon& poly, bool polyIsConn,
             Point& p1 = *j;
 
             // Check the first point of the first segment.
-            if (((i - 1) == conn.ps.begin()) && 
+            if (((i - 1) == conn.ps.begin()) &&
                     pointOnLine(p0, p1, c0, tolerance))
             {
                 //db_printf("add to poly %g %g\n", c0.x, c0.y);
-                
+
                 c0.vn = midVertexNumber(p0, p1, c0);
                 j = poly.ps.insert(j, c0);
                 if (j != poly.ps.begin())
@@ -1616,7 +1616,7 @@ void splitBranchingSegments(Avoid::Polygon& poly, bool polyIsConn,
             if (pointOnLine(p0, p1, c1, tolerance))
             {
                 //db_printf("add to poly %g %g\n", c1.x, c1.y);
-                
+
                 c1.vn = midVertexNumber(p0, p1, c1);
                 j = poly.ps.insert(j, c1);
                 if (j != poly.ps.begin())
@@ -1627,7 +1627,7 @@ void splitBranchingSegments(Avoid::Polygon& poly, bool polyIsConn,
             }
 
             // Check the first point of the first segment.
-            if (polyIsConn && ((j - 1) == poly.ps.begin()) && 
+            if (polyIsConn && ((j - 1) == poly.ps.begin()) &&
                         pointOnLine(c0, c1, p0, tolerance))
             {
                 //db_printf("add to conn %g %g\n", p0.x, p0.y);
@@ -1671,7 +1671,7 @@ static int segDir(const Point& p1, const Point& p2)
 }
 
 
-static bool posInlineWithConnEndSegs(const double pos, const size_t dim, 
+static bool posInlineWithConnEndSegs(const double pos, const size_t dim,
         const Avoid::Polygon& poly, const Avoid::Polygon& conn)
 {
     size_t pLast = poly.size() - 1;
@@ -1680,10 +1680,10 @@ static bool posInlineWithConnEndSegs(const double pos, const size_t dim,
          // Is inline with the beginning of the "poly" line
          ((pos == poly.ps[0][dim]) && (pos == poly.ps[1][dim])) ||
          // Is inline with the end of the "poly" line
-         ((pos == poly.ps[pLast][dim]) && (pos == poly.ps[pLast - 1][dim])) 
+         ((pos == poly.ps[pLast][dim]) && (pos == poly.ps[pLast - 1][dim]))
         ) && (
          // Is inline with the beginning of the "conn" line
-         ((pos == conn.ps[0][dim]) && (pos == conn.ps[1][dim])) || 
+         ((pos == conn.ps[0][dim]) && (pos == conn.ps[1][dim])) ||
          // Is inline with the end of the "conn" line
          ((pos == conn.ps[cLast][dim]) && (pos == conn.ps[cLast - 1][dim]))
         ))
@@ -1718,20 +1718,20 @@ void ConnectorCrossings::clear(void)
 
 // Computes the *shared* length of these two shared paths.
 //
-static double pathLength(Avoid::Point **c_path, Avoid::Point **p_path, 
+static double pathLength(Avoid::Point **c_path, Avoid::Point **p_path,
         size_t size)
 {
     double length = 0;
 
     for (unsigned int ind = 1; ind < size; ++ind)
     {
-        if ( (*(c_path[ind - 1]) == *(p_path[ind - 1])) && 
+        if ( (*(c_path[ind - 1]) == *(p_path[ind - 1])) &&
              (*(c_path[ind]) == *(p_path[ind])) )
         {
             // This segment is shared by both paths.
             //
-            // This function will only be used for orthogonal paths, so we 
-            // can use Manhattan distance here since it will be faster to 
+            // This function will only be used for orthogonal paths, so we
+            // can use Manhattan distance here since it will be faster to
             // compute.
             length += manhattanDist(*(c_path[ind - 1]), *(c_path[ind]));
         }
@@ -1749,7 +1749,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
 {
     clear();
 
-    bool polyIsOrthogonal = (polyConnRef && 
+    bool polyIsOrthogonal = (polyConnRef &&
             (polyConnRef->routingType() == ConnType_Orthogonal));
     bool connIsOrthogonal = (connConnRef &&
             (connConnRef->routingType() == ConnType_Orthogonal));
@@ -1757,17 +1757,17 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
     // Fixed routes are will not have segment breaks at possible crossings.
     bool polyIsFixed = (polyConnRef && polyConnRef->hasFixedRoute());
     bool connIsFixed = (connConnRef && connConnRef->hasFixedRoute());
-    
+
     // We need to split apart connectors at potential crossing points if
     // either has a fixed route or it is a polyline connector.  This is not
-    // needed for orthogonal connectors where crossings occur at vertices 
+    // needed for orthogonal connectors where crossings occur at vertices
     // in visibility graph and on the raw connector routes.
     if (checkForBranchingSegments || polyIsFixed || connIsFixed ||
             !polyIsOrthogonal || !connIsOrthogonal)
     {
         double epsilon = std::numeric_limits<double>::epsilon();
         size_t conn_pn = conn.size();
-        // XXX When doing the pointOnLine test we allow the points to be 
+        // XXX When doing the pointOnLine test we allow the points to be
         // slightly non-collinear.  This addresses a problem with clustered
         // routing where connectors could otherwise route cheaply through
         // shape corners that were not quite on the cluster boundary, but
@@ -1828,7 +1828,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
         }
         else if (a2_eq_b1 || a2_eq_b2 || a1_eq_b2)
         {
-            // Each crossing that is at a vertex in the 
+            // Each crossing that is at a vertex in the
             // visibility graph gets noticed four times.
             // We ignore three of these cases.
             // This also catches the case of a shared path,
@@ -1836,15 +1836,15 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
             // endpoint, so we don't care about it.
             continue;
         }
-    
+
         if (a1_eq_b1 || converging)
         {
             if (!converging)
             {
                 if (polyIsConn && (j == 1))
                 {
-                    // Can't be the end of a shared path or crossing path 
-                    // since the common point is the first point of the 
+                    // Can't be the end of a shared path or crossing path
+                    // since the common point is the first point of the
                     // connector path.  This is not a shared path at all.
                     continue;
                 }
@@ -1857,21 +1857,21 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                     continue;
                 }
             }
-            
+
             // If here and not converging, then we know that a2 != b2
             // And a2 and its pair in b are a split.
             COLA_ASSERT(converging || !a2_eq_b2);
 
             bool shared_path = false;
-            
-            // Initial values here don't matter. They are only used after 
+
+            // Initial values here don't matter. They are only used after
             // being set to sensible values, but we set them to stop a MSVC
             // warning.
             bool p_dir_back;
             int p_dir = 0;
             int trace_c = 0;
             int trace_p = 0;
-            
+
             if (converging)
             {
                 // Determine direction we have to look through
@@ -1887,7 +1887,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                         trace_p--;
                     }
                     else
-                    {   
+                    {
                         trace_c--;
                     }
                 }
@@ -1898,7 +1898,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
             {
                 Avoid::Point& b0 = poly.ps[(j - 2 + poly_size) % poly_size];
                 Avoid::Point& a0 = conn.ps[cIndex - 2];
-            
+
                 //db_printf("a0: %g %g\n", a0.x, a0.y);
                 //db_printf("b0: %g %g\n", b0.x, b0.y);
 
@@ -1910,10 +1910,10 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                     p_dir = p_dir_back ? -1 : 1;
                     trace_c = (int) cIndex;
                     trace_p = (int) (p_dir_back ? j : j - 2);
-                    
+
                     shared_path = true;
                 }
-            }    
+            }
 
             if (shared_path)
             {
@@ -1923,10 +1923,10 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
 
                 // Build the shared path, including the diverging points at
                 // each end if the connector does not end at a common point.
-                while ( (trace_c >= 0) && (!polyIsConn || 
+                while ( (trace_c >= 0) && (!polyIsConn ||
                             ((trace_p >= 0) && (trace_p < (int) poly_size))) )
                 {
-                    // If poly is a cluster boundary, then it is a closed 
+                    // If poly is a cluster boundary, then it is a closed
                     // poly-line and so it wraps around.
                     size_t index_p = (size_t)
                             ((trace_p + (2 * poly_size)) % poly_size);
@@ -1951,20 +1951,20 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                 bool terminatesAtJunction = false;
                 if (polyConnRef && connConnRef && (front_same || back_same))
                 {
-                    // To do this we find the two ConnEnds at the common 
-                    // end of the shared path.  Then check if they are 
+                    // To do this we find the two ConnEnds at the common
+                    // end of the shared path.  Then check if they are
                     // attached to a junction and it is the same one.
-                    std::pair<ConnEnd, ConnEnd> connEnds = 
+                    std::pair<ConnEnd, ConnEnd> connEnds =
                             connConnRef->endpointConnEnds();
                     JunctionRef *connJunction = NULL;
 
-                    std::pair<ConnEnd, ConnEnd> polyEnds = 
+                    std::pair<ConnEnd, ConnEnd> polyEnds =
                             polyConnRef->endpointConnEnds();
                     JunctionRef *polyJunction = NULL;
-                   
-                    // The front of the c_path corresponds to destination 
+
+                    // The front of the c_path corresponds to destination
                     // of the connector.
-                    connJunction = (front_same) ? connEnds.second.junction() : 
+                    connJunction = (front_same) ? connEnds.second.junction() :
                             connEnds.first.junction();
                     bool use_first = back_same;
                     if (p_dir_back)
@@ -1972,12 +1972,12 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                         // Reversed, so use opposite.
                         use_first = !use_first;
                     }
-                    // The front of the p_path corresponds to destination 
+                    // The front of the p_path corresponds to destination
                     // of the connector.
                     polyJunction = (use_first) ? polyEnds.second.junction() :
                             polyEnds.first.junction();
-                    
-                    terminatesAtJunction = (connJunction && 
+
+                    terminatesAtJunction = (connJunction &&
                             (connJunction == polyJunction));
                 }
 
@@ -1986,7 +1986,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                     // Store a copy of the shared path
                     size_t start = (front_same) ? 0 : 1;
                     size_t limit = size - ((back_same) ? 0 : 1);
-                
+
                     PointList sPath(limit - start);
                     for (size_t i = start; i < limit; ++i)
                     {
@@ -2033,7 +2033,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                         //
                         // In the example above, altDim is X, and dim is Y.
                         //
-                        
+
                         // For each dimension...
                         for (size_t dim = 0; dim < 2; ++dim)
                         {
@@ -2045,9 +2045,9 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                                 double posBeg = (*c_path[1])[dim];
                                 double posEnd = (*c_path[end - 1])[dim];
                                 // If both segment ends diverge at right-angles...
-                                if ( (posBeg == (*c_path[0])[dim]) && 
+                                if ( (posBeg == (*c_path[0])[dim]) &&
                                         (posBeg == (*p_path[0])[dim]) &&
-                                     (posEnd == (*c_path[end])[dim]) && 
+                                     (posEnd == (*c_path[end])[dim]) &&
                                         (posEnd == (*p_path[end])[dim]) )
                                 {
                                     // and these segments are inline with the conn and path ends themselves...
@@ -2059,9 +2059,9 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                                     // If all endpoints branch at right angles,
                                     // then penalise this since it is a segment
                                     // will will not be able to nudge apart
-                                    // without introducing fixed segment 
+                                    // without introducing fixed segment
                                     // crossings.
-                                    crossingFlags |= 
+                                    crossingFlags |=
                                             CROSSING_SHARES_FIXED_SEGMENT;
                                     }
                                 }
@@ -2070,9 +2070,9 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                     }
 
 #if 0
-                    // XXX: What is this code for?  It is pretty much 
+                    // XXX: What is this code for?  It is pretty much
                     // incomprehensible and also causes one of the test
-                    // cases to fail.  
+                    // cases to fail.
                     //
                     if (!front_same && !back_same)
                     {
@@ -2083,18 +2083,18 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                             {
                                 size_t n = c_path.size();
                                 double yPosB = (*c_path[1])[dim];
-                                if ( (yPosB == (*c_path[0])[dim]) && 
+                                if ( (yPosB == (*c_path[0])[dim]) &&
                                         (yPosB == (*p_path[0])[dim]) )
                                 {
-                                    crossingFlags |= 
+                                    crossingFlags |=
                                             CROSSING_SHARES_FIXED_SEGMENT;
                                 }
 
                                 double yPosE = (*c_path[n - 2])[dim];
-                                if ( (yPosE == (*c_path[n - 1])[dim]) && 
+                                if ( (yPosE == (*c_path[n - 1])[dim]) &&
                                         (yPosE == (*p_path[n - 1])[dim]) )
                                 {
-                                    crossingFlags |= 
+                                    crossingFlags |=
                                             CROSSING_SHARES_FIXED_SEGMENT;
                                 }
                             }
@@ -2103,7 +2103,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
 #endif
                 }
 
-                // {start,end}CornerSide specifies which side of conn the 
+                // {start,end}CornerSide specifies which side of conn the
                 // poly path enters and leaves.
                 int startCornerSide = 1;
                 int endCornerSide = 1;
@@ -2111,17 +2111,17 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                 bool reversed = false;
                 if (!front_same)
                 {
-                    // If there is a divergence at the beginning, 
+                    // If there is a divergence at the beginning,
                     // then order the shared path based on this.
-                    startCornerSide = Avoid::cornerSide(*c_path[0], *c_path[1], 
+                    startCornerSide = Avoid::cornerSide(*c_path[0], *c_path[1],
                             *c_path[2], *p_path[0]);
                 }
                 if (!back_same)
                 {
-                    // If there is a divergence at the end of the path, 
+                    // If there is a divergence at the end of the path,
                     // then order the shared path based on this.
-                    endCornerSide = Avoid::cornerSide(*c_path[size - 3], 
-                            *c_path[size - 2], *c_path[size - 1], 
+                    endCornerSide = Avoid::cornerSide(*c_path[size - 3],
+                            *c_path[size - 2], *c_path[size - 1],
                             *p_path[size - 1]);
                 }
                 else
@@ -2132,7 +2132,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                 {
                     startCornerSide = endCornerSide;
                 }
-                
+
                 if (endCornerSide != startCornerSide)
                 {
                     // Mark that the shared path crosses.
@@ -2148,14 +2148,14 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                 {
                     crossingFlags |= CROSSING_SHARES_PATH_AT_END;
 
-                    // Reduce the cost of paths that stay straight after 
+                    // Reduce the cost of paths that stay straight after
                     // the split, and make this length available so that the
                     // paths can be ordered during the improveCrossings()
-                    // step and the straight (usually better) paths will be 
+                    // step and the straight (usually better) paths will be
                     // left alone while the router attempts to find better
                     // paths for the others.
                     double straightModifier = 200;
-                    firstSharedPathAtEndLength = secondSharedPathAtEndLength = 
+                    firstSharedPathAtEndLength = secondSharedPathAtEndLength =
                             pathLength(c_path, p_path, size);
                     if (back_same && (size > 2))
                     {
@@ -2190,23 +2190,23 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                     int pStartDir = vecDir(*p_path[0], *p_path[1], *p_path[2]);
                     if ((cStartDir != 0) && (cStartDir == -pStartDir))
                     {
-                        // The start segments diverge at 180 degrees to each 
+                        // The start segments diverge at 180 degrees to each
                         // other.  So order based on not introducing overlap
                         // of the diverging segments when these are nudged
                         // apart.
                         startCornerSide = -cStartDir;
                     }
-                    else 
+                    else
                     {
-                        int cEndDir = vecDir(*c_path[size - 3], 
+                        int cEndDir = vecDir(*c_path[size - 3],
                                 *c_path[size - 2], *c_path[size - 1]);
-                        int pEndDir = vecDir(*p_path[size - 3], 
+                        int pEndDir = vecDir(*p_path[size - 3],
                                 *p_path[size - 2], *p_path[size - 1]);
                         if ((cEndDir != 0) && (cEndDir == -pEndDir))
                         {
-                            // The end segments diverge at 180 degrees to 
-                            // each other.  So order based on not introducing 
-                            // overlap of the diverging segments when these 
+                            // The end segments diverge at 180 degrees to
+                            // each other.  So order based on not introducing
+                            // overlap of the diverging segments when these
                             // are nudged apart.
                             startCornerSide = -cEndDir;
                         }
@@ -2224,14 +2224,14 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                     {
                         Avoid::Point& an = *(c_path[i]);
                         Avoid::Point& bn = *(p_path[i]);
-                        int currTurnDir = ((i > 0) && (i < (adj_size - 1))) ?  
+                        int currTurnDir = ((i > 0) && (i < (adj_size - 1))) ?
                                 vecDir(*c_path[i - 1], an,
                                        *c_path[i + 1]) : 0;
                         VertID vID(an.id, true, an.vn);
                         if ( (currTurnDir == (-1 * prevTurnDir)) &&
                                 (currTurnDir != 0) && (prevTurnDir != 0) )
                         {
-                            // The connector turns the opposite way around 
+                            // The connector turns the opposite way around
                             // this shape as the previous bend on the path,
                             // so reverse the order so that the inner path
                             // become the outer path and vice versa.
@@ -2252,7 +2252,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                 {
                     reversed = false;
                     size_t startPt = (front_same) ? 0 : 1;
-                    
+
                     // Orthogonal should always have at least one segment.
                     COLA_ASSERT(size > (startPt + 1));
 
@@ -2293,16 +2293,16 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                             //printf("prevOri %d\n", prevOrientation);
                             //printf("1: %X, %X\n", (int) &(bn), (int) &(an));
                             (*pointOrders)[an].addOrderedPoints(
-                                    orientation, 
-                                    std::make_pair(&bn, polyConnRef), 
-                                    std::make_pair(&an, connConnRef), 
+                                    orientation,
+                                    std::make_pair(&bn, polyConnRef),
+                                    std::make_pair(&an, connConnRef),
                                     reversed);
                             COLA_ASSERT(ap == bp);
                             //printf("2: %X, %X\n", (int) &bp, (int) &ap);
                             (*pointOrders)[ap].addOrderedPoints(
-                                    orientation, 
-                                    std::make_pair(&bp, polyConnRef), 
-                                    std::make_pair(&ap, connConnRef), 
+                                    orientation,
+                                    std::make_pair(&bp, polyConnRef),
+                                    std::make_pair(&ap, connConnRef),
                                     reversed);
                             prevDir = thisDir;
                         }
@@ -2315,7 +2315,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                         // bottom.
                         ymod = +1;
                     }
-                    
+
                     int xmod = -1;
                     if ((id.vn == 0) || (id.vn == 1))
                     {
@@ -2347,21 +2347,21 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                         }
                     }
 #endif
- 
+
                 crossingFlags |= CROSSING_TOUCHES;
             }
             else if (cIndex >= 2)
             {
                 // The connectors cross or touch at this point.
                 //db_printf("Cross or touch at point... \n");
-                
+
                 // Crossing shouldn't be at an endpoint.
                 COLA_ASSERT(cIndex >= 2);
                 COLA_ASSERT(!polyIsConn || (j >= 2));
 
                 Avoid::Point& b0 = poly.ps[(j - 2 + poly_size) % poly_size];
                 Avoid::Point& a0 = conn.ps[cIndex - 2];
-            
+
                 int side1 = Avoid::cornerSide(a0, a1, a2, b0);
                 int side2 = Avoid::cornerSide(a0, a1, a2, b2);
                 if (side1 != side2)
@@ -2386,15 +2386,15 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                         // L-shaped segments touching at the bend.
                         bool reversedX = ((a0.x < a1.x) || (a2.x < a1.x));
                         bool reversedY = ((a0.y < a1.y) || (a2.y < a1.y));
-                        // XXX: Why do we need to invert the reversed values 
+                        // XXX: Why do we need to invert the reversed values
                         //      here?  Are they wrong for orthogonal points
                         //      in the other places?
-                        (*pointOrders)[b1].addOrderedPoints(0, 
-                                std::make_pair(&b1, polyConnRef), 
-                                std::make_pair(&a1, connConnRef), 
+                        (*pointOrders)[b1].addOrderedPoints(0,
+                                std::make_pair(&b1, polyConnRef),
+                                std::make_pair(&a1, connConnRef),
                                 !reversedX);
-                        (*pointOrders)[b1].addOrderedPoints(1, 
-                                std::make_pair(&b1, polyConnRef), 
+                        (*pointOrders)[b1].addOrderedPoints(1,
+                                std::make_pair(&b1, polyConnRef),
                                 std::make_pair(&a1, connConnRef),
                                 !reversedY);
                     }
@@ -2402,27 +2402,27 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
 // Unused code.
                     else
                     {
-                        int turnDirA = vecDir(a0, a1, a2); 
-                        int turnDirB = vecDir(b0, b1, b2); 
-                        bool reversed = (side1 != -turnDirA); 
-                        if (side1 != side2) 
-                        { 
-                            // Interesting case where a connector routes round 
-                            // the edge of a shape and intersects a connector 
-                            // which is connected to a port on the edge of the 
-                            // shape. 
-                            if (turnDirA == 0) 
-                            { 
-                                // We'll make B the outer by preference,  
-                                // because the points of A are collinear. 
-                                reversed = false; 
-                            } 
-                            else if (turnDirB == 0) 
-                            { 
-                                reversed = true; 
-                            } 
-                            // TODO COLA_ASSERT((turnDirB != 0) || 
-                            //          (turnDirA != 0)); 
+                        int turnDirA = vecDir(a0, a1, a2);
+                        int turnDirB = vecDir(b0, b1, b2);
+                        bool reversed = (side1 != -turnDirA);
+                        if (side1 != side2)
+                        {
+                            // Interesting case where a connector routes round
+                            // the edge of a shape and intersects a connector
+                            // which is connected to a port on the edge of the
+                            // shape.
+                            if (turnDirA == 0)
+                            {
+                                // We'll make B the outer by preference,
+                                // because the points of A are collinear.
+                                reversed = false;
+                            }
+                            else if (turnDirB == 0)
+                            {
+                                reversed = true;
+                            }
+                            // TODO COLA_ASSERT((turnDirB != 0) ||
+                            //          (turnDirA != 0));
                         }
                         VertID vID(b1.id, b1.vn);
                         //(*pointOrders)[b1].addOrderedPoints(&b1, &a1, reversed);
@@ -2450,7 +2450,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
 
             if (intersectResult == Avoid::DO_INTERSECT)
             {
-                if (!polyIsConn && 
+                if (!polyIsConn &&
                         ((a1 == cPt) || (a2 == cPt) || (b1 == cPt) || (b2 == cPt)))
                 {
                     // XXX: This shouldn't actually happen, because these
@@ -2461,7 +2461,7 @@ void ConnectorCrossings::countForSegment(size_t cIndex, const bool finalSegment)
                     COLA_ASSERT(b1 != cPt);
                     COLA_ASSERT(b2 != cPt);
                     continue;
-                }                
+                }
                 //db_printf("crossing lines:\n");
                 //db_printf("cPt: %g %g\n", cPt.x, cPt.y);
                 crossingCount += 1;
