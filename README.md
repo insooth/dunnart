@@ -1,3 +1,11 @@
+NOTE: This is the modified Dunnart engine for GENIVI CanDevStudio.
+
+Build with:
+
+```
+cmake -G "Visual Studio 14 2015 Win64" --config=RelWithDebInfo ../dunnart/
+```
+
 Dunnart
 =======
 
@@ -43,6 +51,7 @@ Dunnart are implemented in the open-source Adaptagrams constraint layout
 libraries and are described in my publications and/or PhD thesis.
 
 ![Dunnart screenshot](https://raw.github.com/mjwybrow/dunnart/master/libdunnartcanvas/doc/DunnartScreen.png)
+
 
 ### Building ###
 
