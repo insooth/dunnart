@@ -11,4 +11,6 @@ target_include_directories(cola PUBLIC ${CMAKE_CURRENT_LIST_DIR}/..)
 target_link_libraries(cola vpsc)
 
 set_property(TARGET cola PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set_property(TARGET cola PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET cola PROPERTY CXX_STANDARD 14)
 

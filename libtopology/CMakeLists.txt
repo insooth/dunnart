@@ -11,4 +11,6 @@ target_include_directories(topology PUBLIC ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CUR
 target_link_libraries(topology vpsc cola avoid)
 
 set_property(TARGET topology PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set_property(TARGET topology PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET topology PROPERTY CXX_STANDARD 14)
 

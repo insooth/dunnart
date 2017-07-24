@@ -15,5 +15,5 @@ set_property(TARGET qtpropertybrowser APPEND PROPERTY COMPILE_DEFINITIONS QT_DIS
 set_property(TARGET qtpropertybrowser PROPERTY AUTORCC ON)
 set_property(TARGET qtpropertybrowser PROPERTY AUTOMOC ON)
 
-target_compile_definitions(qtpropertybrowser PUBLIC QT_QTPROPERTYBROWSER_EXPORT=1)
+#target_compile_definitions(qtpropertybrowser PUBLIC QT_QTPROPERTYBROWSER_EXPORT=1)
 

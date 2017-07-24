@@ -17,7 +17,7 @@ execute_process(OUTPUT_FILE ${dunnartcanvas_githash_file}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                 COMMAND git show --abbrev-commit
                 COMMAND grep "^commit"
-                COMMAND cut -f2 -d' '
+                COMMAND cut -d' ' -f2
                 COMMAND xargs printf "#define GITHASH \"%s\"\n")
 
 
@@ -49,6 +49,8 @@ target_compile_definitions(dunnartcanvas PRIVATE NOGRAPHVIZ=1)
 set_property(TARGET dunnartcanvas PROPERTY AUTOMOC ON)
 set_property(TARGET dunnartcanvas PROPERTY AUTORCC ON)
 set_property(TARGET dunnartcanvas PROPERTY AUTOUIC ON)
+set_property(TARGET dunnartcanvas PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET dunnartcanvas PROPERTY CXX_STANDARD 14)
 
 # set output dirs?
 set(dunnartcanvas_AUTOUIC_OPTS)

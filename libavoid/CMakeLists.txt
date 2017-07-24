@@ -13,4 +13,6 @@ target_compile_definitions(avoid PUBLIC LIBAVOID_EXPORTS=1)
 
 # sometimes AVOID_EXPORT is missing...
 set_property(TARGET avoid PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set_property(TARGET avoid PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET avoid PROPERTY CXX_STANDARD 14)
 
