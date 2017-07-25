@@ -29,6 +29,9 @@
  * Author: Michael Wybrow <mjwybrow@users.sourceforge.net>
 */
 
+#include <cassert>
+#include <limits>
+
 #include "libdunnartcanvas/stronglyconnectedcomponents.h"
 #include "libdunnartcanvas/graphdata.h"
 #include "libdunnartcanvas/connector.h"
@@ -45,7 +48,8 @@ QVector<int> SCCDetector::stronglyConnectedComponentIndexes(GraphData *graph)
     m_graph = graph;
     m_index = 0;
     m_scc_index = 0;
-    int shapesCount = m_graph->shape_vec.size();
+    assert(m_graph->shape_vec.size() <= std::numeric_limits<int>::max());
+    int shapesCount = static_cast<int>(m_graph->shape_vec.size());
 
     m_indexes = QVector<int>(shapesCount, k_undefined);
     m_scc_indexes = QVector<int>(shapesCount, 0);

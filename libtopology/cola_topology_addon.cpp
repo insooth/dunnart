@@ -319,7 +319,7 @@ void ColaTopologyAddon::makeFeasible(bool generateNonOverlapConstraints,
         topologyNodes = topology::Nodes(nodesTotal);
         for (size_t id = 0; id < nodesTotal; ++id)
         {
-            COLA_ASSERT(id <= std::numeric_limits<unsigned int>::max());
+            COLA_ASSERT(id <= std::numeric_limits<unsigned int>::(max)());
             topologyNodes[id] = new topology::Node(static_cast<unsigned int>(id), boundingBoxes[id]);
         }
     }

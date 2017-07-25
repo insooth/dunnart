@@ -1394,7 +1394,7 @@ void ConstrainedFDLayout::outputInstanceToSVG(std::string instanceName)
         {
             if (G[i][j] == 1)
             {
-                COLA_ASSERT(std::numeric_limits<unsigned long>::max() >= std::numeric_limits<size_t>::max());
+                COLA_ASSERT(std::numeric_limits<unsigned long>::(max)() >= std::numeric_limits<size_t>::(max)());
                 fprintf(fp, "    es.push_back(std::make_pair(%lu, %lu));\n"
                       , static_cast<unsigned long>(i), static_cast<unsigned long>(j));
             }

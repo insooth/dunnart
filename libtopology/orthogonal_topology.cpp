@@ -1281,7 +1281,8 @@ static void setupOrthogonalLayoutConstraints(Router *router,
                 reverse);
         if (colaIndex != obstacle.shape()->id())
         {
-            colaToCurrMap.addMappingForVariable(colaIndex, index);
+            COLA_ASSERT(index <= std::numeric_limits<unsigned int>::max());
+            colaToCurrMap.addMappingForVariable(colaIndex, static_cast<unsigned int>(index));
         }
         
         // Calculate offsets in case the cola and libavoid shapes have 

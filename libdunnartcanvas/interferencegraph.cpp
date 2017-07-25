@@ -50,7 +50,9 @@
 **
 */
 
+#include <cassert>
 #include <iostream>
+#include <limits>
 #include <list>
 
 #include "libcola/commondefs.h"
@@ -122,6 +124,7 @@ InterferenceGraph::InterferenceGraph(ConnPairSet &interfering_conns) {
    // set the degree in each node
    for (NodePtrList::iterator node_iter = nodes->begin();
         node_iter != nodes->end(); ++node_iter) {
+        assert((*node_iter)->NodeList.size() <= std::numeric_limits<unsigned int>::max());
        (*node_iter)->degree = (*node_iter)->NodeList.size();
    }
 }

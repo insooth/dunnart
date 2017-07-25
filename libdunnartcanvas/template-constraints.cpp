@@ -22,6 +22,9 @@
  * Author(s): Michael Wybrow  <http://michael.wybrow.info/>
 */
 
+#include <cassert>
+#include <limits>
+
 #include "libvpsc/rectangle.h"
 #include "libvpsc/variable.h"
 #include "libvpsc/constraint.h"
@@ -55,7 +58,8 @@ void LinearTemplateConstraint::generateVariables(const vpsc::Dim dim,
     if (dim == _primaryDim)
     {
         // Create a variable representing the position of the template.
-        variable = new vpsc::Variable(vars.size(),position,0.0001);
+        assert(vars.size() <= std::numeric_limits<int>::max());
+        variable = new vpsc::Variable(static_cast<int>(vars.size()),position,0.0001);
         if(isFixed) {
             variable->fixedDesiredPosition=true;
             variable->weight=100000;
@@ -118,19 +122,23 @@ void RectangleConstraint::generateVariables(const vpsc::Dim dim,
     if (dim == vpsc::XDIM)
     {
         // Create a variable representing the position of the template.
-        xVariableLow = new vpsc::Variable(vars.size(),xLow,100000000);
+        assert(vars.size() <= std::numeric_limits<int>::max());
+        xVariableLow = new vpsc::Variable(static_cast<int>(vars.size()),xLow,100000000);
         vars.push_back(xVariableLow);
-        
-        xVariableHigh = new vpsc::Variable(vars.size(),xHigh,100000000);
+
+        assert(vars.size() <= std::numeric_limits<int>::max());
+        xVariableHigh = new vpsc::Variable(static_cast<int>(vars.size()),xHigh,100000000);
         vars.push_back(xVariableHigh);
     }
     else
     {
         // Create a variable representing the position of the template.
-        yVariableLow = new vpsc::Variable(vars.size(),yLow,100000000);
+        assert(vars.size() <= std::numeric_limits<int>::max());
+        yVariableLow = new vpsc::Variable(static_cast<int>(vars.size()),yLow,100000000);
         vars.push_back(yVariableLow);
         
-        yVariableHigh = new vpsc::Variable(vars.size(),yHigh,100000000);
+        assert(vars.size() <= std::numeric_limits<int>::max());
+        yVariableHigh = new vpsc::Variable(static_cast<int>(vars.size()),yHigh,100000000);
         vars.push_back(yVariableHigh);
     }
 }
@@ -241,7 +249,9 @@ void BranchedTemplateConstraint::generateVariables(const vpsc::Dim dim,
     if (dim == _primaryDim)
     {
         // Create a variable representing the position of the template.
-        variable = new vpsc::Variable(vars.size(),position,0.0001);
+
+        assert(vars.size() <= std::numeric_limits<int>::max());
+        variable = new vpsc::Variable(static_cast<int>(vars.size()),position,0.0001);
         if(isFixed) {
             variable->fixedDesiredPosition=true;
             variable->weight=100000;

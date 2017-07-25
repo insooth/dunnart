@@ -313,7 +313,7 @@ struct ClusterPosInfo : PosInfo
           hasBoundary(true),
           hasFixedSizeAndPosition(false)
     {
-        unsigned n = e->nSegments + 1;
+        size_t n = e->nSegments + 1;
         points.resize(n);
         e->forEachEdgePoint(CopyClusterVertex(gl, points));
     }
@@ -414,7 +414,8 @@ struct ConnPosInfo : PosInfo {
             : conn(conn) 
     {
         // Copy the new route into dunnart:
-        route = Avoid::PolyLine(e->nSegments+1);
+        assert(e->nSegments <= std::numeric_limits<int>::max());
+        route = Avoid::PolyLine(static_cast<int>(e->nSegments)+1);
         e->forEachEdgePoint(CopyPoint(g,route));
     }
     ~ConnPosInfo() {
@@ -995,7 +996,8 @@ int GraphLayout::processReturnPositions()
     retPositionsHandled = true;
     m_return_positions_mutex.unlock();
 
-    int movesCount = returnPositions.size();
+    assert(returnPositions.size() <= std::numeric_limits<int>::max());
+    int movesCount = static_cast<int>(returnPositions.size());
     //qDebug() << "processReturnPositions: retPositions.size() = " <<
     //        returnPositions.size();
     returnPositions.sort(CmpPosInfoPtrs());

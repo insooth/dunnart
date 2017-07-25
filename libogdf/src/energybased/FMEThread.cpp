@@ -89,7 +89,7 @@ void FMEThreadPool::allocate()
 		m_pThreads[i] = new FMEThread(this, i);
 #ifdef OGDF_SYSTEM_WINDOWS
 		m_pThreads[i]->priority(Thread::tpCritical);
-		m_pThreads[i]->cpuAffinity(1 << static_cast<__uint64>(i));
+		m_pThreads[i]->cpuAffinity(static_cast<__uint64>(1) << static_cast<__uint64>(i));
 #endif
 	};
 };

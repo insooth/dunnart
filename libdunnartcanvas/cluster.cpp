@@ -680,7 +680,8 @@ void Cluster::calculateBoundary(void)
             xValues[index + i] = poly.ps[i].x;
             yValues[index + i] = poly.ps[i].y;
             ids[index + i] = poly.id();
-            vns[index + i] = i;
+            assert(i <= std::numeric_limits<int>::max());
+            vns[index + i] = static_cast<int>(i);
         }
         index += poly.size();
     }

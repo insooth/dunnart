@@ -53,7 +53,11 @@ TextShape::TextShape()
     :ShapeObj(x_shTextShape)
 {
     _colour = Qt::black;
+#if defined(_MSC_VER)
+    txtStr = _strdup("Text");
+#else
     txtStr = strdup("Text");
+#endif
     //QT unicodeStr = SDLGui::UTF16_fromChar(txtStr);
     fontSize = 16;
 }

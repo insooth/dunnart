@@ -28,7 +28,9 @@
  * graph structure and various mapping lookups using the methods defined here
  */
 
+#include <cassert>
 #include <algorithm>
+#include <limits>
 
 #include "libavoid/libavoid.h"
 
@@ -312,7 +314,8 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
                 {
                     if (nodeInfo[ind].isRoot && nodeInfo[ind].sighted)
                     {
-                        levelAssignmentTraverse(ind, nodeInfo[ind].level + 1,
+                        assert(ind <= std::numeric_limits<unsigned int>::max());
+                        levelAssignmentTraverse(static_cast<unsigned int>(ind), nodeInfo[ind].level + 1,
                                 maxLevel, nodeInfo);
                     }
                 }
@@ -334,7 +337,8 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
                     if (nodeInfo[ind].level > 0)
                     {
                         size_t level = nodeInfo[ind].level - 1;
-                        levelLists[level].insert(ind);
+                        assert(ind <= std::numeric_limits<unsigned int>::max());
+                        levelLists[level].insert(static_cast<unsigned int>(ind));
                         levelShapeLength[level] = qMax(
                                 levelShapeLength[level],
                                 rs[ind]->length(dimension));
@@ -671,7 +675,7 @@ GraphData::GraphData(Canvas *canvas, bool ignoreEdges,
 
 
 void resolveOverlappingRectangles(Rectangles &rs, vpsc::Dim dim) {
-    unsigned n=rs.size();
+    size_t n=rs.size();
     //qDebug("resolveOverlappingRectangles: n=%d",n);
     Variables vs(n);
     unsigned i=0;
@@ -774,7 +778,8 @@ void GraphData::generateRoutes() {
         vector<Avoid::Point> points;
         points.resize(e->nSegments + 1);
         e->forEachEdgePoint(GDCopyClusterVertex(this, points));
-        Avoid::Polygon clusterPoly(e->nSegments);
+        assert(e->nSegments <= std::numeric_limits<int>::max());
+        Avoid::Polygon clusterPoly(static_cast<int>(e->nSegments));
         for (unsigned int n = 0; n < e->nSegments; ++n)
         {
             clusterPoly.ps[n] = points[n];
@@ -925,7 +930,8 @@ unsigned GraphData::getConnectionPoint(const CPoint& connPointInfo)
 
     // create dummy node for start handle and constraints to
     // position dummy node relative to centre of node
-    unsigned dummyNodeID=rs.size();
+    assert(rs.size() <= std::numeric_limits<unsigned int>::max());
+    unsigned dummyNodeID=static_cast<unsigned int>(rs.size());
     rs.push_back(new vpsc::Rectangle(x,X,y,Y,true));
     ccs.push_back(new cola::SeparationConstraint(vpsc::XDIM, nodeID,
                 dummyNodeID, cx, true));
@@ -945,7 +951,8 @@ size_t GraphData::shapeToNode(ShapeObj* shape) {
     double g=0;
     double buffer = shape->canvas()->optShapeNonoverlapPadding();
     QRectF rect = shape->shapeRect(buffer + g);
-    unsigned nodeID=rs.size();
+    assert(rs.size() <= std::numeric_limits<unsigned int>::max());
+    unsigned nodeID=static_cast<unsigned int>(rs.size());
     snMap[shape]=nodeID;
     rootNodes.insert(nodeID);
     bool allowOverlap = false;
@@ -1136,7 +1143,8 @@ void GraphData::setupMultiEdges() {
         for(list<Connector*>::iterator j=i->begin();j!=i->end();j++) {
             QPair<ShapeObj *, ShapeObj *> p = (*j)->getAttachedShapes();
             qDebug("+-(%d, %d)", p.first->internalId(), p.second->internalId());
-            (*j)->m_multiedge_size=i->size();
+            assert(i->size() <= std::numeric_limits<unsigned int>::max());
+            (*j)->m_multiedge_size=static_cast<unsigned int>(i->size());
             (*j)->m_multiedge_index=ctr++;
         }
     }
