@@ -1621,7 +1621,7 @@ void_row:
 					if (pril) printf("Invalid bound input %1s!\n", itembuf);
 					return ALPS_LPREAD_INVALIDBOUND;
 				}
-				else sscanf(itembuf,"%s",&varname);
+				else sscanf(itembuf,"%s",varname);
 				mult = 1.0;
 				getnextitem(pril,&itemtype,itembuf,&ip);
 				if (itemtype==LE) {

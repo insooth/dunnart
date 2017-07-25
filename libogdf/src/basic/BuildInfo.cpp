@@ -145,12 +145,12 @@ const char *BuildInfo::buildStamp()
 // es gilt:    zahl1 < zahl2  <==>  buildDate(zahl1) < buildDate(zahl2)
 long BuildInfo::buildDate(const char *date)
 {
-    unsigned int retVal;
-    unsigned int d, m, y;
+    int retVal;
+    int d, m, y;
 
     char buf[8];
 
-    sscanf(date, "%s%d%d", &buf, &d, &y);
+    sscanf(date, "%s%d%d", buf, &d, &y);
 
     int i;
     for (i = 0; i < 12; ++i)

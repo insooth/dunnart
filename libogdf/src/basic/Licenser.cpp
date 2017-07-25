@@ -612,7 +612,7 @@ time_t Licenser::getExpirationTime(char*expDate)
 	date.tm_min   = date.tm_sec = 59;
 	date.tm_isdst = 0;
 
-	sscanf(expDate, "%d%s%d", &date.tm_mday, &month, &date.tm_year);
+	sscanf(expDate, "%d%s%d", &date.tm_mday, month, &date.tm_year);
 	date.tm_year -= 1900;
 
 	expDate[2] = expDate[6] = '-';
