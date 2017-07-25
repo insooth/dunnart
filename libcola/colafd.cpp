@@ -33,6 +33,7 @@
 #include "libvpsc/variable.h"
 #include "libvpsc/constraint.h"
 #include "libvpsc/rectangle.h"
+#include "libvpsc/assertions.h"
 
 #include "libcola/commondefs.h"
 #include "libcola/cola.h"
@@ -89,7 +90,7 @@ ConstrainedFDLayout::ConstrainedFDLayout(const vpsc::Rectangles& rs,
         const std::vector< Edge >& es, const double idealLength,
         const bool preventOverlaps, const EdgeLengths& eLengths,
         TestConvergence *doneTest, PreIteration* preIteration)
-    : n(rs.size()),
+    : n(static_cast<unsigned int>(rs.size())),
       X(valarray<double>(n)),
       Y(valarray<double>(n)),
       done(doneTest),
@@ -105,6 +106,8 @@ ConstrainedFDLayout::ConstrainedFDLayout(const vpsc::Rectangles& rs,
       m_edge_lengths(eLengths.data(), eLengths.size()),
       m_nonoverlap_exemptions(new NonOverlapConstraintExemptions())
 {
+    COLA_ASSERT(rs.size() <= std::numeric_limits<unsigned int>::(max)());
+
     minD = DBL_MAX;
 
     if (done == NULL)
@@ -200,7 +203,7 @@ void ConstrainedFDLayout::computePathLengths(
 
 typedef valarray<double> Position;
 void getPosition(Position& X, Position& Y, Position& pos) {
-    unsigned n=X.size();
+    size_t n=X.size();
     COLA_ASSERT(Y.size()==n);
     COLA_ASSERT(pos.size()==2*n);
     for(unsigned i=0;i<n;++i) {
@@ -362,22 +365,26 @@ void ConstrainedFDLayout::recGenerateClusterVariablesAndConstraints(
         // Then create left and right variables for the boundary of this
         // cluster.
         vpsc::Variable *variable = NULL;
-        cluster->clusterVarId = vars[XDIM].size();
+
+        COLA_ASSERT(vars[XDIM].size() <= std::numeric_limits<unsigned int>::(max)());
+        cluster->clusterVarId = static_cast<unsigned int>(vars[XDIM].size());
         COLA_ASSERT(vars[XDIM].size() == vars[YDIM].size());
         // Left:
-        variable = new vpsc::Variable(vars[XDIM].size(),
+        variable = new vpsc::Variable(static_cast<unsigned int>(vars[XDIM].size()),
                 cluster->bounds.getMinX(), freeWeight);
         vars[XDIM].push_back(variable);
         // Right:
-        variable = new vpsc::Variable(vars[XDIM].size(),
+        COLA_ASSERT(vars[XDIM].size() <= std::numeric_limits<int>::(max)());
+        variable = new vpsc::Variable(static_cast<int>(vars[XDIM].size()),
                 cluster->bounds.getMaxX(), freeWeight);
         vars[XDIM].push_back(variable);
         // Bottom::
-        variable = new vpsc::Variable(vars[YDIM].size(),
+        COLA_ASSERT(vars[YDIM].size() <= std::numeric_limits<int>::(max)());
+        variable = new vpsc::Variable(static_cast<int>(vars[YDIM].size()),
                 cluster->bounds.getMinY(), freeWeight);
         vars[YDIM].push_back(variable);
         // Top:
-        variable = new vpsc::Variable(vars[YDIM].size(),
+        variable = new vpsc::Variable(static_cast<unsigned int>(vars[YDIM].size()),
                 cluster->bounds.getMaxY(), freeWeight);
         vars[YDIM].push_back(variable);
 
@@ -939,7 +946,7 @@ void updateCompoundConstraints(const vpsc::Dim dim,
     }
 }
 void project(vpsc::Variables& vs, vpsc::Constraints& cs, valarray<double>& coords) {
-    unsigned n=coords.size();
+    size_t n=coords.size();
     vpsc::IncSolver s(vs,cs);
     s.solve();
     for(unsigned i=0;i<n;++i) {
@@ -951,9 +958,9 @@ void setVariableDesiredPositions(vpsc::Variables& vs, vpsc::Constraints& cs,
 {
     COLA_UNUSED(cs);
 
-    unsigned n=coords.size();
+    size_t n=coords.size();
     COLA_ASSERT(vs.size()>=n);
-    for(unsigned i=0;i<n;++i) {
+    for(size_t i=0;i<n;++i) {
         vpsc::Variable* v=vs[i];
         v->desiredPosition = coords[i];
         v->weight=1;
@@ -1387,7 +1394,9 @@ void ConstrainedFDLayout::outputInstanceToSVG(std::string instanceName)
         {
             if (G[i][j] == 1)
             {
-                fprintf(fp, "    es.push_back(std::make_pair(%lu, %lu));\n", i, j);
+                COLA_ASSERT(std::numeric_limits<unsigned long>::max() >= std::numeric_limits<size_t>::max());
+                fprintf(fp, "    es.push_back(std::make_pair(%lu, %lu));\n"
+                      , static_cast<unsigned long>(i), static_cast<unsigned long>(j));
             }
         }
     }

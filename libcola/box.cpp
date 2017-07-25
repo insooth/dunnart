@@ -20,6 +20,9 @@
  *
 */
 
+#include <limits>
+
+#include <libvpsc/assertions.h>
 #include "libcola/box.h"
 
 namespace cola {
@@ -56,9 +59,13 @@ Box::~Box()
 bool Box::empty(void) const
 {
     // values will be nonnegative so can sum to check if empty.
-    int total = m_min[vpsc::XDIM] + m_max[vpsc::XDIM] + 
+    const double total = m_min[vpsc::XDIM] + m_max[vpsc::XDIM] + 
             m_min[vpsc::YDIM] + m_max[vpsc::YDIM];
-    return (total == 0);
+
+    COLA_ASSERT(!(total > std::numeric_limits<int>::max()));
+    COLA_ASSERT(!(total < std::numeric_limits<int>::min()));
+
+    return (static_cast<int>(total) == 0);
 }
 
 void Box::outputCode(FILE *fp) const

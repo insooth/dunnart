@@ -259,7 +259,7 @@ void TopologyConstraints::computeForces(valarray<double>& gradient,
         Edge* e=*i;
         ConstEdgePoints path;
         e->getPath(path);
-        unsigned n=path.size();
+        size_t n=path.size();
         FILE_LOG(logDEBUG2) << "  path: n="<<n;
         COLA_ASSERT(n>=2);
         double d=e->idealLength;

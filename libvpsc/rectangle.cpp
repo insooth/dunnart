@@ -264,7 +264,7 @@ int compare_events(const void *a, const void *b) {
 void generateXConstraints(const Rectangles& rs, const Variables& vars,
         Constraints& cs, const bool useNeighbourLists)
 {
-    const unsigned n = rs.size();
+    const size_t n = rs.size();
     COLA_ASSERT(vars.size()>=n);
     Event **events=new Event*[2*n];
     unsigned i,ctr=0;
@@ -354,7 +354,7 @@ void generateXConstraints(const Rectangles& rs, const Variables& vars,
 void generateYConstraints(const Rectangles& rs, const Variables& vars,
         Constraints& cs)
 {
-    const unsigned n = rs.size();
+    const size_t n = rs.size();
     COLA_ASSERT(vars.size()>=n);
     Event **events=new Event*[2*n];
     unsigned ctr=0;
@@ -614,7 +614,7 @@ void removeoverlaps(Rectangles& rs, const set<unsigned>& fixed, bool thirdPass) 
     const double xBorder=Rectangle::xBorder, yBorder=Rectangle::yBorder;
     static const double EXTRA_GAP=1e-3;
     static const size_t ARRAY_UNUSED=1;
-    unsigned n=rs.size();
+    size_t n=rs.size();
     try {
         // The extra gap avoids numerical imprecision problems
         Rectangle::setXBorder(xBorder+EXTRA_GAP);

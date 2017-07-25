@@ -150,7 +150,7 @@ long BuildInfo::buildDate(const char *date)
 
     char buf[8];
 
-    sscanf(date, "%s%d%d", buf, &d, &y);
+    sscanf(date, "%s%d%d", &buf, &d, &y);
 
     int i;
     for (i = 0; i < 12; ++i)

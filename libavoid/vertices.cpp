@@ -375,7 +375,7 @@ void VertInf::setVisibleDirections(const ConnDirFlags directions)
         {
             VertInf *otherVert = (*edge)->otherVert(this);
             ConnDirFlags direction = otherVert->directionFrom(this);
-            bool visible = (direction & directions);
+            bool visible = (0 != (direction & directions));
             (*edge)->setDisabled(!visible);
         }
     }
@@ -391,7 +391,7 @@ void VertInf::setVisibleDirections(const ConnDirFlags directions)
         {
             VertInf *otherVert = (*edge)->otherVert(this);
             ConnDirFlags direction = otherVert->directionFrom(this);
-            bool visible = (direction & directions);
+            bool visible = (0 != (direction & directions));
             (*edge)->setDisabled(!visible);
         }
     }

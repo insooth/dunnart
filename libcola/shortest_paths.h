@@ -25,6 +25,7 @@
 #include <vector>
 #include <valarray>
 #include <cfloat>
+#include <cstddef>
 #include <cassert>
 #include <algorithm>
 #include <iostream>
@@ -185,7 +186,7 @@ void dijkstra(
         std::vector<Node<T> > & vs,
         T* d)
 {
-    const unsigned n=vs.size();
+    const size_t n=vs.size();
     COLA_ASSERT(s<n);
     for(unsigned i=0;i<n;i++) {
         vs[i].id=i;

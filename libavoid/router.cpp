@@ -24,6 +24,7 @@
 
 
 #include <algorithm>
+#include <limits>
 #include <cmath>
 #include <cfloat>
 
@@ -1278,7 +1279,8 @@ class CrossingConnectorsInfo
             connSet.clear();
 
             // Return the candidate connector and its original crossing count.
-            return std::make_pair(candidateCrossingCount, candidateConnector);
+            COLA_ASSERT(std::numeric_limits<double>::max() >= std::numeric_limits<size_t>::max());
+            return std::make_pair(static_cast<double>(candidateCrossingCount), candidateConnector);
         }
 
         // Returns the iterator to the group that the given conn is in,
@@ -3065,7 +3067,8 @@ void Router::outputDiagramText(std::string instanceName)
             fprintf(fp, "id=%u\n", connRef->id());
             for (size_t i = 0; i < route.size(); ++i)
             {
-                fprintf(fp, "p%lu: %g %g ", i, route.ps[i].x, route.ps[i].y);
+                COLA_ASSERT(std::numeric_limits<unsigned long>::max() >= std::numeric_limits<size_t>::max());
+                fprintf(fp, "p%lu: %g %g ", static_cast<unsigned long>(i), route.ps[i].x, route.ps[i].y);
                 fprintf(fp, "\n");
             }
             fprintf(fp, "\n");

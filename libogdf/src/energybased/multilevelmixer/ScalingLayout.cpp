@@ -119,7 +119,8 @@ void ScalingLayout::call(MultilevelGraph &MLG)
 			} else { 
 					if (m_scalingType == st_relativeToDesiredLength)
 					{
-						scaling = scalingFactor * m_desEdgeLength / avgEdgeLength;
+                        const double checked = scalingFactor * m_desEdgeLength / avgEdgeLength;
+						scaling = static_cast<float>(checked);  // FIXME: assert on bounds
 					} else //st_relativeToAvgLength
 						scaling = scalingFactor * avgDesiredEdgeLength / avgEdgeLength;
 #ifdef OGDF_DEBUG

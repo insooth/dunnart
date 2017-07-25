@@ -29,6 +29,7 @@
 //#include <tr1/functional>
 #include <functional>
 #include <iostream>
+#include <limits>
 
 #include <ogdf/fileformats/GmlParser.h>
 #include <ogdf/energybased/FMMMLayout.h>
@@ -274,7 +275,8 @@ Canvas *Graph::canvas(void) const
 
 
 unsigned Graph::getCanvasShapesCount() const {
-    return canvasShapes.size();
+    assert(canvasShapes.size() <= std::numeric_limits<unsigned>::max());
+    return static_cast<unsigned>(canvasShapes.size());
 }
 
 #if 0
@@ -603,7 +605,8 @@ void Graph::expandNeighbours(ogdf::node centre) {
     // between the previous neighbourhood and the new neighbourhood.
     // We apply topology preserving layout initially only between shapes in
     // this neighbourhood.
-    gl->topologyNodesCount = canvasShapes.size();
+    assert(canvasShapes.size() <= std::numeric_limits<unsigned int>::max());
+    gl->topologyNodesCount = static_cast<unsigned int>(canvasShapes.size());
     // now we add the remaining primary nodes to the canvas with an
     // updated timestamp.
     time++;

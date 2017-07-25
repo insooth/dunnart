@@ -35,6 +35,7 @@
 #include <cstdlib>
 #include <cfloat>
 #include <cmath>
+#include <limits>
 
 #include "libavoid/libavoid.h"
 using Avoid::VertID;
@@ -355,7 +356,8 @@ void Connector::loneSelectedChange(const bool value)
     {
         std::vector<Avoid::Checkpoint> checkpoints =
                 avoidRef->routingCheckpoints();
-        m_handles.resize(checkpoints.size() + 2);
+        assert(checkpoints.size() <= std::numeric_limits<int>::max());
+        m_handles.resize(static_cast<int>(checkpoints.size()) + 2);
         m_handles[0] = new ConnectorEndpointHandle(this, SRCPT);
         canvas()->addItem(m_handles[0]);
         m_handles[1] = new ConnectorEndpointHandle(this, DSTPT);
@@ -1312,7 +1314,7 @@ void Connector::applyNewRoute(const Avoid::Polygon& oroute)
     setPos(m_offset_route.ps[0].x, m_offset_route.ps[0].y);
     // Reset the painter path for this connector.
     QPainterPath painter_path = QPainterPath();
-    int route_pn = m_offset_route.size();
+    size_t route_pn = m_offset_route.size();
     for (int j = 0; j < route_pn; ++j)
     {
         // Switch to local coordinates.
@@ -1373,15 +1375,16 @@ void Connector::buildArrowHeadPath(void)
                 // endpoints at the same position.  This in turn results in
                 // a QPainterPath with only a single element.  So, we only
                 // add the arrow if there are at least two elements.
-                QPainterPath::Element last = cutPath.elementAt(path_size - 1);
-                QPainterPath::Element prev = cutPath.elementAt(path_size - 2);
+                assert(path_size <= std::numeric_limits<int>::max());
+                QPainterPath::Element last = cutPath.elementAt(static_cast<int>(path_size) - 1);
+                QPainterPath::Element prev = cutPath.elementAt(static_cast<int>(path_size) - 2);
                 m_arrow_head_outline = drawArrow(m_arrow_path, prev.x,
                         prev.y, last.x, last.y, arrowHeadType());
             }
         }
         else
         {
-            int line_size = m_offset_route.size();
+            size_t line_size = m_offset_route.size();
             // The destination end is not attached to any shape.
             m_arrow_head_outline = drawArrow(m_arrow_path,
                     m_offset_route.ps[line_size - 2].x,

@@ -25,6 +25,7 @@
 #include <set>
 #include <list>
 #include <algorithm>
+#include <limits>
 
 #include "libavoid/router.h"
 #include "libavoid/geomtypes.h"
@@ -43,6 +44,7 @@
 #include "libvpsc/solve_VPSC.h"
 #include "libvpsc/variable.h"
 #include "libvpsc/constraint.h"
+#include "libvpsc/assertions.h"
 
 //#define ORTHOG_TOPOLOGY_DEBUG
 
@@ -1090,7 +1092,8 @@ static void buildOrthogonalLayoutSegments(Router *router,
                         {
                             minLim = std::max(minLim, shapeMin);
                             maxLim = std::min(maxLim, shapeMax);
-                            endsInShapeIndexes.push_back(k);
+                            COLA_ASSERT(k <= std::numeric_limits<int>::max());
+                            endsInShapeIndexes.push_back(static_cast<int>(k));
                             continue;
                         }
                         if (last && insideLayoutObstacleBounds(displayRoute.ps[i], 
@@ -1098,7 +1101,8 @@ static void buildOrthogonalLayoutSegments(Router *router,
                         {
                             minLim = std::max(minLim, shapeMin);
                             maxLim = std::min(maxLim, shapeMax);
-                            endsInShapeIndexes.push_back(k);
+                            COLA_ASSERT(k <= std::numeric_limits<int>::max());
+                            endsInShapeIndexes.push_back(static_cast<int>(k));
                         }
                     }
                     }
@@ -1271,7 +1275,7 @@ static void setupOrthogonalLayoutConstraints(Router *router,
         
         obstacle.createSolverVariable();
         vs.push_back(obstacle.variable);
-        unsigned index = vs.size() - 1;
+        size_t index = vs.size() - 1;
         bool reverse = false;
         unsigned colaIndex = idMap.mappingForVariable(obstacle.shape()->id(), 
                 reverse);
@@ -1284,7 +1288,8 @@ static void setupOrthogonalLayoutConstraints(Router *router,
         // different sizes.
         if (colaIndex < rs.size())
         {
-            double offset = rs[colaIndex]->getCentreD(dim) -
+            COLA_ASSERT(dim <= std::numeric_limits<unsigned int>::max());
+            double offset = rs[colaIndex]->getCentreD(static_cast<unsigned int>(dim)) -
                     obstacleVector[i].centre()[dim];
             if (fabs(offset) > 0.001)
             {

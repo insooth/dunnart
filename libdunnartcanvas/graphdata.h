@@ -31,6 +31,8 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <limits>
+#include <cassert>
 
 #include "libdunnartcanvas/graphlayout.h"
 #include "libcola/cola.h"
@@ -99,10 +101,12 @@ public:
         elengths = edgeLengths;
     }
     unsigned getNodeCount() {
-        return rs.size();
+        assert(rs.size() <= std::numeric_limits<unsigned>::max());
+        return static_cast<unsigned>(rs.size());
     }
     unsigned getEdgeCount() {
-        return edges.size();
+        assert(edges.size() <= std::numeric_limits<unsigned>::max());
+        return static_cast<unsigned>(edges.size());
     }
     unsigned getConnStart(unsigned i) {
         return edges[i].first;
@@ -143,10 +147,11 @@ public:
 private:
     unsigned addEdge(unsigned u, unsigned v, double l) {
         //printf("edges[%d]=Edge(%d,%d);\n",edges.size(),u,v);
-        unsigned id = edges.size();
+        size_t id = edges.size();
         edges.push_back(std::make_pair(u,v));
         edgeLengths.push_back(l);
-        return id;
+        assert(id <= std::numeric_limits<unsigned>::max());
+        return static_cast<unsigned>(id);
     }
     void setUpRootCluster();
     unsigned getConnectionPoint(const CPoint& connPointInfo);

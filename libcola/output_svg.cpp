@@ -39,7 +39,7 @@ using std::vector;
 using std::list;
 
 void OutputFile::generate() {
-    unsigned E=es.size();
+    size_t E=es.size();
     bool cleanupRoutes=false;
     if(routes==NULL) {
         cleanupRoutes=true;

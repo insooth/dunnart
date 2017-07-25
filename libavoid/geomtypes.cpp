@@ -27,6 +27,7 @@
 #include <cfloat>
 #include <cstdlib>
 #include <algorithm>
+#include <limits>
 
 #include "libavoid/geomtypes.h"
 #include "libavoid/shape.h"
@@ -333,7 +334,9 @@ Polygon PolygonInterface::offsetPolygon(double offset) const
                     at(i).y + (normals[j].y + normals[i].y) * q);
 
             pt.id = id();
-            pt.vn = newPoly.size();
+
+			COLA_ASSERT(newPoly.size() <= std::numeric_limits<unsigned short>::max());
+            pt.vn = static_cast<unsigned short>(newPoly.size());
             newPoly.ps.push_back(pt);
         }
         else
@@ -345,15 +348,18 @@ Polygon PolygonInterface::offsetPolygon(double offset) const
                     at(i).y + normals[i].y * offset);
 
             pt1.id = id();
-            pt1.vn = newPoly.size();
+			COLA_ASSERT(newPoly.size() <= std::numeric_limits<unsigned short>::max());
+            pt1.vn = static_cast<unsigned short>(newPoly.size());
             newPoly.ps.push_back(pt1);
 
             pt2.id = id();
-            pt2.vn = newPoly.size();
+			COLA_ASSERT(newPoly.size() <= std::numeric_limits<unsigned short>::max());
+            pt2.vn = static_cast<unsigned short>(newPoly.size());
             newPoly.ps.push_back(pt2);
 
             pt3.id = id();
-            pt3.vn = newPoly.size();
+			COLA_ASSERT(newPoly.size() <= std::numeric_limits<unsigned short>::max());
+            pt3.vn = static_cast<unsigned short>(newPoly.size());
             newPoly.ps.push_back(pt3);
         }
         j = i;

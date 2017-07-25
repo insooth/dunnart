@@ -41,8 +41,8 @@ matrix_times_vector(valarray<double> const &matrix, /* m * n */
             valarray<double> const &vec,  /* n */
             valarray<double> &result) /* m */
 {
-    unsigned n = vec.size();
-    unsigned m = result.size();
+    size_t n = vec.size();
+    size_t m = result.size();
     COLA_ASSERT(m*n == matrix.size());
 #   if defined(_MSC_VER)
     // magmy: The following lines show how operator[] is defined for valarray under MSVC

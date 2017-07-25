@@ -26,6 +26,7 @@
  **********************************************************/
 
 #include <iostream>
+#include <limits>
 #include <cmath>
 #include <ctime>
 
@@ -119,7 +120,8 @@ GradientProjection::GradientProjection(
         clusterHierarchy->createVars(k,*rs,vars);
     }
     */
-    numStaticVars=vars.size();
+    COLA_ASSERT(vars.size() <= std::numeric_limits<unsigned int>::max());
+    numStaticVars=static_cast<unsigned int>(vars.size());
     //solver=setupVPSC();
 }
 static inline double dotProd(valarray<double> const & a, valarray<double> const & b) {
@@ -269,7 +271,7 @@ unsigned GradientProjection::solve(
 #endif
     // it may be that we have to consider dummy vars, which the caller didn't know
     // about.  Thus vars.size() may not equal x.size()
-    unsigned n = vars.size();
+    size_t n = vars.size();
     valarray<double> b(n);
     result.resize(n);
     

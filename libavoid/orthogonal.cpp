@@ -1129,7 +1129,7 @@ public:
                         }
                         --side;
                     }
-                    bool canSeeDown = (vert->dirs & VisDirDown);
+                    bool canSeeDown = (0 != (vert->dirs & VisDirDown));
                     if (canSeeDown && !(side->vert->id.isConnPt()))
                     {
                         EdgeInf *edge = new 

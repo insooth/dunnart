@@ -18,6 +18,8 @@
  * Author(s):  Tim Dwyer
 */
 
+#include <limits>
+
 #include "libvpsc/assertions.h"
 #include "libvpsc/rectangle.h"
 #include "libvpsc/constraint.h"
@@ -101,7 +103,8 @@ struct CreateLeftRightDummyNodes
         const double l = ro->getMinD(dim);
         Rectangle *lhsRect=new Rectangle(*ro);
         lhsRect->reset(dim, l, l + DW);
-        Variable* lv = new Variable(vs.size(),
+        COLA_ASSERT(vs.size() <= std::numeric_limits<int>::max());
+        Variable* lv = new Variable(static_cast<int>(vs.size()),
                 targetRect->getMinD(dim) + DW2, FIXED_WEIGHT);
         vs.push_back(lv);
         ri.lhsNode=new topology::Node(id,lhsRect,lv);
@@ -110,7 +113,8 @@ struct CreateLeftRightDummyNodes
         const double r = ro->getMaxD(dim);
         Rectangle *rhsRect=new Rectangle(*ro);
         rhsRect->reset(dim, r - DW, r);
-        Variable* rv = new Variable(vs.size(), 
+        COLA_ASSERT(vs.size() <= std::numeric_limits<int>::max());
+        Variable* rv = new Variable(static_cast<int>(vs.size()), 
                 targetRect->getMaxD(dim) - DW2, FIXED_WEIGHT);
         vs.push_back(rv);
         ri.rhsNode=new topology::Node(id, rhsRect, rv);

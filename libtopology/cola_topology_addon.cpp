@@ -22,9 +22,11 @@
 #include <cmath>
 
 #include <algorithm>
+#include <limits>
 #include <utility>
 
 #include "libvpsc/rectangle.h"
+#include "libvpsc/assertions.h"
 #include "libvpsc/constraint.h"
 #include "libcola/compound_constraints.h"
 #include "libtopology/topology_constraints.h"
@@ -313,11 +315,12 @@ void ColaTopologyAddon::makeFeasible(bool generateNonOverlapConstraints,
     if (generateNonOverlapConstraints)
     {
         // Set up topologyNodes:
-        unsigned nodesTotal = boundingBoxes.size();
+        size_t nodesTotal = boundingBoxes.size();
         topologyNodes = topology::Nodes(nodesTotal);
-        for (unsigned id = 0; id < nodesTotal; ++id)
+        for (size_t id = 0; id < nodesTotal; ++id)
         {
-            topologyNodes[id] = new topology::Node(id, boundingBoxes[id]);
+            COLA_ASSERT(id <= std::numeric_limits<unsigned int>::max());
+            topologyNodes[id] = new topology::Node(static_cast<unsigned int>(id), boundingBoxes[id]);
         }
     }
 

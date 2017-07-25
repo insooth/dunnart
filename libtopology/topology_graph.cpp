@@ -357,7 +357,8 @@ struct copyEdgePointsToRoute {
     double *x, *y;
 };
 straightener::Route* Edge::getRoute() const {
-    straightener::Route* r = new straightener::Route(nSegments+1);
+    COLA_ASSERT(nSegments <= std::numeric_limits<unsigned int>::max());
+    straightener::Route* r = new straightener::Route(static_cast<unsigned int>(nSegments)+1);
     forEachEdgePoint(copyEdgePointsToRoute(r));
     return r;
 }

@@ -76,7 +76,7 @@ void convex(const unsigned n, const double* X, const double* Y, vector<unsigned>
  * The result is returned in hull as a list of indices referencing points in X and Y.
  */
 void convex(valarray<double> const & X, valarray<double> const & Y, vector<unsigned> & h) {
-    unsigned n=X.size();
+    size_t n=X.size();
     COLA_ASSERT(n==Y.size());
     unsigned p0=0;
     // find point p0 with min Y position, choose leftmost in case of tie.

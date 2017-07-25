@@ -131,7 +131,8 @@ void BoundaryConstraint::generateVariables(const vpsc::Dim dim,
     {
         // Just one variable is generated, associated with the position
         // of the boundary.  This variable can float freely.
-        variable = new vpsc::Variable(vars.size(), position, freeWeight);
+        COLA_ASSERT(vars.size() <= std::numeric_limits<unsigned int>::max());
+        variable = new vpsc::Variable(static_cast<unsigned int>(vars.size()), position, freeWeight);
         vars.push_back(variable);
     }
 }
@@ -263,7 +264,8 @@ void AlignmentConstraint::generateVariables(const vpsc::Dim dim,
     if (dim == _primaryDim)
     {
         // Variable representing the position of a guideline.
-        variable = new vpsc::Variable(vars.size(), _position, freeWeight);
+        COLA_ASSERT(vars.size() <= std::numeric_limits<unsigned int>::max());
+        variable = new vpsc::Variable(static_cast<unsigned int>(vars.size()), _position, freeWeight);
         if (_isFixed) 
         {
             variable->fixedDesiredPosition = true;
@@ -1363,14 +1365,16 @@ void PageBoundaryConstraints::generateVariables(const vpsc::Dim dim,
     // create 2 dummy vars, based on the dimension we are in
     if (leftWeight[dim]) 
     {
-        vars.push_back(vl[dim] = new vpsc::Variable(vars.size(), 
+        COLA_ASSERT(vars.size() <= std::numeric_limits<unsigned int>::max());
+        vars.push_back(vl[dim] = new vpsc::Variable(static_cast<unsigned int>(vars.size()), 
                     leftMargin[dim], leftWeight[dim]));
         vl[dim]->fixedDesiredPosition = true;
     }
     
     if (rightWeight[dim]) 
     {
-        vars.push_back(vr[dim] = new vpsc::Variable(vars.size(), 
+        COLA_ASSERT(vars.size() <= std::numeric_limits<unsigned int>::max());
+        vars.push_back(vr[dim] = new vpsc::Variable(static_cast<unsigned int>(vars.size()), 
                     rightMargin[dim], rightWeight[dim]));
         vr[dim]->fixedDesiredPosition = true;
     }

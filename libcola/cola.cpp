@@ -19,6 +19,7 @@
  * Author(s):  Tim Dwyer
 */
 
+#include <limits>
 #include <cmath>
 
 #include "libvpsc/assertions.h"
@@ -45,7 +46,7 @@ ConstrainedMajorizationLayout
         EdgeLengths eLengths,
         TestConvergence *doneTest,
         PreIteration* preIteration)
-    : n(rs.size()),
+    : n(static_cast<unsigned int>(rs.size())),
       lap2(valarray<double>(n*n)), 
       Dij(valarray<double>(n*n)),
       tol(1e-7),
@@ -69,6 +70,8 @@ ConstrainedMajorizationLayout
       externalSolver(false),
       majorization(true)
 {
+    COLA_ASSERT(rs.size() <= std::numeric_limits<unsigned int>::max());
+
     if (done == NULL)
     {
         done = new TestConvergence();
@@ -524,7 +527,8 @@ void ConstrainedMajorizationLayout::straighten(vector<straightener::Edge*>& sedg
     }
     //std::cout << (dim==HORIZONTAL?"X":"Y") << " snodes.size "<<snodes.size()<< " n="<<n<<std::endl;
     //std::cout << "Generated "<<linearConstraints.size()<< " linear constraints"<<std::endl;
-    SparseMap Q(snodes.size());
+    COLA_ASSERT(snodes.size() <= std::numeric_limits<unsigned int>::max());
+    SparseMap Q(static_cast<unsigned int>(snodes.size()));
     for(straightener::LinearConstraints::iterator i=linearConstraints.begin();
            i!= linearConstraints.end();i++) {
         straightener::LinearConstraint* c=*i;

@@ -969,8 +969,7 @@ void HyperedgeImprover::execute(bool canMakeMajorChanges)
                 curr != m_hyperedge_tree_roots.end(); ++curr)
         {
             HyperedgeTreeNode *treeRoot = m_hyperedge_tree_junctions[*curr];
-            COLA_ASSERT(treeRoot);
-            treeRoot->updateConnEnds(NULL, m_router, m_changed_connectors);
+            treeRoot->updateConnEnds(NULL, (nullptr != m_router), m_changed_connectors);
         
             // Validate the rewrtten connections.
             treeRoot->validateHyperedge(NULL, 0);

@@ -29,6 +29,7 @@
 #include <list>
 #include <cassert>
 #include <iostream>
+#include <limits>
 #include <cmath>
 
 #include "libvpsc/assertions.h"
@@ -175,7 +176,8 @@ namespace straightener {
         }
         delete [] xs;
         delete [] ys;
-        n=rxs.size();
+        COLA_ASSERT(rxs.size() <= std::numeric_limits<unsigned int>::max());
+        n=static_cast<unsigned int>(rxs.size());
         COLA_ASSERT(rys.size()==n);
         xs = new double[n];
         ys = new double[n];
@@ -220,18 +222,21 @@ namespace straightener {
             }
             for(set<pair<double,unsigned> >::iterator j=pntsOnLineSegment.begin();j!=pntsOnLineSegment.end();j++) {
                 if(allActive && nodes[j->second]->active) {
-                    activePath.push_back(path.size());
+                    COLA_ASSERT(path.size() <= std::numeric_limits<unsigned int>::max());
+                    activePath.push_back(static_cast<unsigned int>(path.size()));
                 }
                 path.push_back(j->second);
             }
             //printf("\n");
         }
-        activePath.push_back(path.size());
+        COLA_ASSERT(path.size() <= std::numeric_limits<unsigned int>::max());
+        activePath.push_back(static_cast<unsigned int>(path.size()));
         path.push_back(endNode);
         COLA_ASSERT(ds.empty());
     }
     void Edge::createRouteFromPath(std::vector<Node *> const & nodes) {
-        Route* r=new Route(path.size());
+        COLA_ASSERT(path.size() <= std::numeric_limits<unsigned int>::max());
+        Route* r=new Route(static_cast<unsigned int>(path.size()));
 #ifdef STRAIGHTENER_DEBUG
         //printf("Route:");
 #endif
@@ -335,9 +340,10 @@ namespace straightener {
             // nodes associated with the same edge within some
             // range of (pos,conjpos), rather than creating new ones.
             // Would require some sort of quad-tree structure
+            COLA_ASSERT(nodes.size() <= std::numeric_limits<unsigned int>::max());
             Node* d=dim==vpsc::HORIZONTAL?
-                new Node(nodes.size(),pos,conjpos,e):
-                new Node(nodes.size(),conjpos,pos,e);
+                new Node(static_cast<unsigned int>(nodes.size()),pos,conjpos,e):
+                new Node(static_cast<unsigned int>(nodes.size()),conjpos,pos,e);
             L.push_back(d);
             nodes.push_back(d);
         }
@@ -356,9 +362,10 @@ namespace straightener {
             if(e->startNode==v->id||e->endNode==v->id) continue;
             //if(r!=NULL&&(e->startNode==r->id||e->endNode==r->id)) continue;
             //cerr << "edge("<<e->startNode<<","<<e->endNode<<",pts="<<e->pts<<")"<<endl;
+            COLA_ASSERT(nodes.size() <= std::numeric_limits<unsigned int>::max());
             Node* d=dim==vpsc::HORIZONTAL?
-                new Node(nodes.size(),pos,conjpos,e):
-                new Node(nodes.size(),conjpos,pos,e);
+                new Node(static_cast<unsigned int>(nodes.size()),pos,conjpos,e):
+                new Node(static_cast<unsigned int>(nodes.size()),conjpos,pos,e);
             L.push_back(d);
             nodes.push_back(d);
         }
@@ -521,7 +528,8 @@ namespace straightener {
 #ifdef STRAIGHTENER_DEBUG
                     printf("EdgeOpen@%f,eid=%d,(u,v)=(%d,%d)\n", e->pos,e->e->id,e->e->startNode,e->e->endNode);
 #endif
-                    e->e->openInd=openEdges.size();
+                    COLA_ASSERT(openEdges.size() <= std::numeric_limits<unsigned int>::max());
+                    e->e->openInd=static_cast<unsigned int>(openEdges.size());
                     openEdges.push_back(e->e);
                 }
             } else {
@@ -576,21 +584,23 @@ namespace straightener {
                 sclusters.push_back(sc);
                 c->computeBoundary(rs);
                 // create a chain of dummy nodes for the boundary
-                Node* first = new Node(nodes.size(),c->hullX[0],c->hullY[0]);
+                COLA_ASSERT(nodes.size() <= std::numeric_limits<unsigned int>::max());
+                Node* first = new Node(static_cast<unsigned int>(nodes.size()),c->hullX[0],c->hullY[0]);
                 nodes.push_back(first);
                 Node* u = first;
-                unsigned i=1;
+                COLA_ASSERT(edges.size() <= std::numeric_limits<unsigned int>::max());
+                size_t i=1;
                 for(;i<c->hullX.size();i++) {
-                    Node* v = new Node(nodes.size(),c->hullX[i],c->hullY[i]);
+                    Node* v = new Node(static_cast<unsigned int>(nodes.size()),c->hullX[i],c->hullY[i]);
                     nodes.push_back(v);
-                    Edge* e = new Edge(edges.size(),u->id,v->id,
+                    Edge* e = new Edge(static_cast<unsigned int>(edges.size()),u->id,v->id,
                                 c->hullX[i-1],c->hullY[i-1],c->hullX[i],c->hullY[i]);
                     edges.push_back(e);
                     sc->boundary.push_back(e);
                     u=v;
                 }
                 edges.push_back(
-                        new Edge(edges.size(),u->id,first->id,
+                        new Edge(static_cast<unsigned int>(edges.size()),u->id,first->id,
                             c->hullX[i-1],c->hullY[i-1],c->hullX[0],c->hullY[0]));
             }
         }
@@ -633,25 +643,28 @@ namespace straightener {
           vs(vs), 
           lvs(lvs) 
     {
-        unsigned n=rs.size();
-        for (unsigned i=0;i<n;i++) {
-            nodes.push_back(new straightener::Node(i,rs[i]));
+        size_t n=rs.size();
+        for (size_t i=0;i<n;i++) {
+            COLA_ASSERT(i <= std::numeric_limits<unsigned int>::max());
+            nodes.push_back(new straightener::Node(static_cast<unsigned int>(i),rs[i]));
         }
         vector<cola::SeparationConstraint*> cs;
         straightener::generateConstraints(dim,nodes,edges,cs);
         // after generateConstraints we have new dummy nodes at the end of snodes and
         // constraints in cs
         //   need to create variables for dummy nodes in lvs and constraints in lcs
-        N=nodes.size();
+        COLA_ASSERT(nodes.size() <= std::numeric_limits<unsigned int>::max());
+        N=static_cast<unsigned int>(nodes.size());
         g.resize(N);
         coords.resize(N);
-        for(unsigned i=0;i<n;i++) {
+        for(size_t i=0;i<n;i++) {
             g[i]=oldG[i];
             coords[i]=oldCoords[i];
         }
-        for (unsigned i=n;i<N;i++) {
+        for (size_t i=n;i<N;i++) {
             double desiredPos = nodes[i]->pos[dim];
-            lvs.push_back(new vpsc::Variable(i,desiredPos,1));
+            COLA_ASSERT(i <= std::numeric_limits<unsigned int>::max());
+            lvs.push_back(new vpsc::Variable(static_cast<unsigned int>(i),desiredPos,1));
             g[i]=0;
             coords[i]=desiredPos;
         }

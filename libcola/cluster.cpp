@@ -20,6 +20,8 @@
  *             Michael Wybrow
 */
 
+#include <limits>
+
 #include "libvpsc/assertions.h"
 #include "libcola/commondefs.h"
 #include "libcola/cola.h"
@@ -120,8 +122,10 @@ void Cluster::computeVarRect(vpsc::Variables& vars, size_t dim)
 {
     if ((clusterVarId > 0) && (vars.size() > clusterVarId))
     {
-        varRect.setMinD(dim, vars[clusterVarId]->finalPosition);
-        varRect.setMaxD(dim, vars[clusterVarId + 1]->finalPosition);
+        COLA_ASSERT(dim <= std::numeric_limits<unsigned int>::max());
+
+        varRect.setMinD(static_cast<unsigned int>(dim), vars[clusterVarId]->finalPosition);
+        varRect.setMaxD(static_cast<unsigned int>(dim), vars[clusterVarId + 1]->finalPosition);
     }
 
     for (vector<Cluster*>::const_iterator i = clusters.begin(); 
@@ -138,7 +142,7 @@ bool Cluster::clusterIsFromFixedRectangle(void) const
 
 void ConvexCluster::computeBoundary(const vpsc::Rectangles& rs) 
 {
-    unsigned n = 4 * nodes.size();
+    size_t n = 4 * nodes.size();
     valarray<double> X(n);
     valarray<double> Y(n);
     unsigned pctr = 0;
@@ -545,8 +549,13 @@ void RootCluster::calculateClusterPathsToEachNode(size_t nodesCount)
                 // (siblings of a particular cluster usually have 
                 // non-overlap constraints generated for them).
                 Cluster *lcaCluster = pathJ[lcaIndex - 1];
+
+                COLA_ASSERT(lcaChildJIndex <= std::numeric_limits<unsigned int>::max());
+                COLA_ASSERT(lcaChildKIndex <= std::numeric_limits<unsigned int>::max());
+
                 lcaCluster->m_cluster_cluster_overlap_exceptions.insert(
-                        ShapePair(lcaChildJIndex, lcaChildKIndex));
+                        ShapePair(static_cast<unsigned int>(lcaChildJIndex)
+                                , static_cast<unsigned int>(lcaChildKIndex)));
 
                 if (lcaChildJCluster)
                 {
@@ -660,11 +669,16 @@ void Cluster::createVars(const vpsc::Dim dim, const vpsc::Rectangles& rs,
             desiredMinX = desiredBounds.getMinX();
             desiredMaxX = desiredBounds.getMaxX();
         }
-        clusterVarId = vars.size(); 
+
+        COLA_ASSERT(vars.size() <= std::numeric_limits<unsigned int>::max());
+        clusterVarId = static_cast<unsigned int>(vars.size()); 
+
+        COLA_ASSERT(vars.size() <= std::numeric_limits<int>::max());
+
         vars.push_back(vXMin = new vpsc::Variable(
-                    vars.size(), desiredMinX, varWeight));
+                    static_cast<int>(vars.size()), desiredMinX, varWeight));
         vars.push_back(vXMax = new vpsc::Variable(
-                    vars.size(), desiredMaxX, varWeight));
+                    static_cast<int>(vars.size()), desiredMaxX, varWeight));
     } 
     else 
     {
@@ -674,11 +688,14 @@ void Cluster::createVars(const vpsc::Dim dim, const vpsc::Rectangles& rs,
             desiredMinY = desiredBounds.getMinY();
             desiredMaxY = desiredBounds.getMaxY();
         }
-        clusterVarId = vars.size(); 
+        COLA_ASSERT(vars.size() <= std::numeric_limits<unsigned int>::max());
+        clusterVarId = static_cast<unsigned int>(vars.size());
+
+        COLA_ASSERT(vars.size() <= std::numeric_limits<int>::max());
         vars.push_back(vYMin = new vpsc::Variable(
-                    vars.size(), desiredMinY, varWeight));
+                    static_cast<int>(vars.size()), desiredMinY, varWeight));
         vars.push_back(vYMax = new vpsc::Variable(
-                    vars.size(), desiredMaxY, varWeight));
+                    static_cast<int>(vars.size()), desiredMaxY, varWeight));
     }
 }
 

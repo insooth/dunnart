@@ -19,6 +19,9 @@
  * Author(s):  Tim Dwyer
 */
 
+#include <limits>
+
+#include <libvpsc/assertions.h>
 #include "libcola/pseudorandom.h"
 
 namespace cola {
@@ -28,8 +31,9 @@ PseudoRandom::PseudoRandom(double s)
       c(2531011),
       m(2147483648),
       range(32767),
-      seed(s)
+      seed(static_cast<unsigned int>(s))
 {
+    COLA_ASSERT(!(s > std::numeric_limits<unsigned int>::max()));
 }
 
 double PseudoRandom::getNext(void)

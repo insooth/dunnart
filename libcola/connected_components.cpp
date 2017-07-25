@@ -21,6 +21,7 @@
 
 #include <map>
 #include <list>
+#include <limits>
 
 #include "libvpsc/rectangle.h"
 #include "libvpsc/assertions.h"
@@ -71,7 +72,8 @@ namespace cola {
                 map<unsigned,pair<Component*,unsigned> > &cmap) {
             v->visited=true;
             remaining.erase(v->listPos);
-            cmap[v->id]=make_pair(component,component->node_ids.size());
+            COLA_ASSERT(component->node_ids.size() <= std::numeric_limits<unsigned int>::max());
+            cmap[v->id]=make_pair(component,static_cast<unsigned int>(component->node_ids.size()));
             component->node_ids.push_back(v->id);
             component->rects.push_back(v->r);
             for(unsigned i=0;i<v->neighbours.size();i++) {
@@ -92,7 +94,7 @@ namespace cola {
             //const SeparationConstraints &scx,
             //const SeparationConstraints &scy,
             vector<Component*> &components) {
-        unsigned n=rs.size();
+        size_t n=rs.size();
         vector<Node> vs(n);
         list<Node*> remaining;
         for(unsigned i=0;i<n;i++) {
@@ -140,7 +142,7 @@ namespace cola {
         */
     }
     void separateComponents(const vector<Component*> &components) {
-        unsigned n=components.size();
+        size_t n=components.size();
         vector<Rectangle*> bbs(n);
         valarray<double> origX(n);
         valarray<double> origY(n);

@@ -111,7 +111,7 @@ void nudgeConnectors(Canvas *canvas, const double nudgeDist,
                 if (count > 0)
                 {
                     // If not the first point.
-                    printf("%lX ", (long) connPt);
+                    printf("%p ", static_cast<void*>(connPt));
                     printf("%g, %g : ", connPt->x, connPt->y);
                     if (dim == 0)
                     {

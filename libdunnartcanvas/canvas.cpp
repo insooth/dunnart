@@ -26,6 +26,8 @@
 // Make sure that SIZE_MAX is available from the first includion of limits.h
 #define __STDC_LIMIT_MACROS
 
+#include <limits>
+
 #include <QtWidgets>
 #include <QtSvg>
 #include <QParallelAnimationGroup>
@@ -55,6 +57,7 @@
 
 #include "libavoid/libavoid.h"
 #include "libtopology/orthogonal_topology.h"
+#include "libvpsc/assertions.h"
 
 
 namespace dunnart {
@@ -2508,7 +2511,8 @@ void Canvas::storeSelectionResizeInfo(void)
                     (shapeBR.bottomRight() - selectionTopLeft);
             bottomRight = QPointF(bottomRight.x() / selectionDimensions.x(),
                                   bottomRight.y() / selectionDimensions.y());
-            m_selection_resize_info[index] = QRectF(topLeft, bottomRight);
+            COLA_ASSERT(index <= std::numeric_limits<int>::max());
+            m_selection_resize_info[static_cast<int>(index)] = QRectF(topLeft, bottomRight);
         }
         ++index;
     }
@@ -2599,8 +2603,9 @@ void Canvas::moveSelectionResizeHandle(const int index, const QPointF pos)
         ShapeObj *shape = dynamic_cast<ShapeObj *> (item);
         if (shape && !shape->sizeLocked())
         {
-            QPointF topLeft = m_selection_resize_info[ind].topLeft();
-            QPointF bottomRight = m_selection_resize_info[ind].bottomRight();
+            COLA_ASSERT(ind <= std::numeric_limits<size_t>::max());
+            QPointF topLeft = m_selection_resize_info[static_cast<int>(ind)].topLeft();
+            QPointF bottomRight = m_selection_resize_info[static_cast<int>(ind)].bottomRight();
 
             topLeft = QPointF(topLeft.x() * selectionDimensions.x(),
                               topLeft.y() * selectionDimensions.y());

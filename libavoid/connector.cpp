@@ -208,7 +208,10 @@ void ConnRef::setRoutingCheckpoints(const std::vector<Checkpoint>& checkpoints)
 
     for (size_t i = 0; i < m_checkpoints.size(); ++i)
     {
-        VertID ptID(m_id, 2 + i,
+		COLA_ASSERT(i <= (std::numeric_limits<size_t>::max() - 2));
+        COLA_ASSERT((2 + i) <= std::numeric_limits<unsigned short>::max());
+
+        VertID ptID(m_id, static_cast<unsigned short>(2 + i),
                 VertID::PROP_ConnPoint | VertID::PROP_ConnCheckpoint);
         VertInf *vertex = new VertInf(m_router, ptID, m_checkpoints[i].point);
         vertex->visDirections = ConnDirAll;

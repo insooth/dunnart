@@ -27,6 +27,7 @@
 #include <QByteArray>
 #include <cassert>
 #include <utility>
+#include <limits>
 
 #include "libavoid/libavoid.h"
 using Avoid::Polygon;
@@ -660,14 +661,15 @@ void Cluster::calculateBoundary(void)
                    (*curr)->internalId());
         }
         Avoid::Polygon poly = (*curr)->avoidRef->routingPolygon();
-        totalPoints += poly.size();
+        assert(poly.size() <= std::numeric_limits<int>::max());
+        totalPoints += static_cast<int>(poly.size());
     }
 
     std::valarray<double> xValues(totalPoints);
     std::valarray<double> yValues(totalPoints);
     std::valarray<int> ids(totalPoints);
     std::valarray<int> vns(totalPoints);
-    int index = 0;
+    size_t index = 0;
     for (ShapeList::iterator curr = members.begin();
             curr != members.end(); ++curr)
     {
@@ -685,7 +687,8 @@ void Cluster::calculateBoundary(void)
 
     hull::convex(xValues, yValues, hullIndexes);
 
-    psn = hullIndexes.size();
+    assert(psn <= std::numeric_limits<int>::max());
+    psn = static_cast<int>(hullIndexes.size());
     assert(psn != 0);
     
     boundary.resize(psn);
@@ -712,7 +715,8 @@ void Cluster::setNewBoundary(std::vector<Avoid::Point>& points)
     }
     // QT restore_behind();
 
-    psn = points.size() - 1; // libcola returns one point twice.
+    assert(psn <= std::numeric_limits<int>::max());
+    psn = static_cast<int>(points.size()) - 1; // libcola returns one point twice.
     assert(psn > 1);
     
     boundary.resize(psn);
