@@ -16,3 +16,7 @@ set_property(TARGET avoid PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set_property(TARGET avoid PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET avoid PROPERTY CXX_STANDARD 14)
 
+# foo needs to have dll-interface to be used by clients of bar
+# https://support.microsoft.com/en-us/help/168958
+target_compile_options(avoid PRIVATE "/wd4251")
+
