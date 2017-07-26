@@ -10,6 +10,10 @@ add_library(ogdf STATIC ${ogdf_SOURCES})
 
 target_include_directories(ogdf PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
+set_property(TARGET ogdf PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set_property(TARGET ogdf PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET ogdf PROPERTY CXX_STANDARD 14)
+
 if(MSVC)
   target_compile_definitions(ogdf PUBLIC OGDF_DLL=1)
   target_compile_definitions(ogdf PUBLIC OGDF_INSTALL=1)
@@ -22,9 +26,8 @@ if(MSVC)
     message(WARNING "PSAPI library not found. Will use explicit psapi.lib")
     target_link_libraries(ogdf "psapi.lib")
   endif()
-endif()
 
-set_property(TARGET ogdf PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
-set_property(TARGET ogdf PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_property(TARGET ogdf PROPERTY CXX_STANDARD 14)
+  # warnings as errors
+  target_compile_options(ogdf PRIVATE "/WX")
+endif()
 

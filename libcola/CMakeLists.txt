@@ -14,5 +14,10 @@ set_property(TARGET cola PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set_property(TARGET cola PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET cola PROPERTY CXX_STANDARD 14)
 
-target_compile_definitions(cola PRIVATE "_CRT_SECURE_NO_WARNINGS=1")
+if(MSVC)
+  # warnings as errors
+  target_compile_options(cola PRIVATE "/WX")
+
+  target_compile_definitions(cola PRIVATE "_CRT_SECURE_NO_WARNINGS=1")
+endif()
 

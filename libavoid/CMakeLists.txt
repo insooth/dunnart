@@ -16,9 +16,14 @@ set_property(TARGET avoid PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set_property(TARGET avoid PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET avoid PROPERTY CXX_STANDARD 14)
 
-# foo needs to have dll-interface to be used by clients of bar
-# https://support.microsoft.com/en-us/help/168958
-target_compile_options(avoid PUBLIC "/wd4251")
+if(MSVC)
+  # foo needs to have dll-interface to be used by clients of bar
+  # https://support.microsoft.com/en-us/help/168958
+  target_compile_options(avoid PUBLIC "/wd4251")
 
-target_compile_definitions(avoid PRIVATE "_CRT_SECURE_NO_WARNINGS=1")
+  # warnings as errors
+  target_compile_options(avoid PRIVATE "/WX")
+
+  target_compile_definitions(avoid PRIVATE "_CRT_SECURE_NO_WARNINGS=1")
+endif()
 

@@ -45,7 +45,6 @@ target_link_libraries(dunnartcanvas avoid vpsc topology cola ogdf
 
 # TODO: link against libgvc and add gvc.h to inlude path
 target_compile_definitions(dunnartcanvas PRIVATE NOGRAPHVIZ=1)
-target_compile_definitions(dunnartcanvas PRIVATE "_CRT_SECURE_NO_WARNINGS=1")
 
 set_property(TARGET dunnartcanvas PROPERTY AUTOMOC ON)
 set_property(TARGET dunnartcanvas PROPERTY AUTORCC ON)
@@ -58,4 +57,11 @@ set(dunnartcanvas_AUTOUIC_OPTS)
 set_property(TARGET dunnartcanvas APPEND PROPERTY INTERFACE_AUTOUIC_OPTIONS ${dunnartcanvas_AUTOUIC_OPTS})
 
 set_property(TARGET dunnartcanvas PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+if(MSVC)
+  # warnings as errors
+  target_compile_options(dunnartcanvas PRIVATE "/WX")
+
+  target_compile_definitions(dunnartcanvas PRIVATE "_CRT_SECURE_NO_WARNINGS=1")
+endif()
 

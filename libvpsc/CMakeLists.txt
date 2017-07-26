@@ -13,3 +13,8 @@ set_property(TARGET vpsc PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set_property(TARGET vpsc PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET vpsc PROPERTY CXX_STANDARD 14)
 
+if(MSVC)
+  # warnings as errors
+  target_compile_options(vpsc PRIVATE "/WX")
+endif()
+
