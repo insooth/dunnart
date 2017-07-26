@@ -357,7 +357,11 @@ struct copyEdgePointsToRoute {
     double *x, *y;
 };
 straightener::Route* Edge::getRoute() const {
+#if defined(_MSC_VER)
     COLA_ASSERT(nSegments <= std::numeric_limits<unsigned int>::(max)());
+#else
+    COLA_ASSERT(nSegments <= std::numeric_limits<unsigned int>::max());
+#endif
     straightener::Route* r = new straightener::Route(static_cast<unsigned int>(nSegments)+1);
     forEachEdgePoint(copyEdgePointsToRoute(r));
     return r;

@@ -106,7 +106,11 @@ ConstrainedFDLayout::ConstrainedFDLayout(const vpsc::Rectangles& rs,
       m_edge_lengths(eLengths.data(), eLengths.size()),
       m_nonoverlap_exemptions(new NonOverlapConstraintExemptions())
 {
+#if defined(_MSC_VER)
     COLA_ASSERT(rs.size() <= std::numeric_limits<unsigned int>::(max)());
+#else
+    COLA_ASSERT(rs.size() <= std::numeric_limits<unsigned int>::max());
+#endif
 
     minD = DBL_MAX;
 
@@ -366,7 +370,11 @@ void ConstrainedFDLayout::recGenerateClusterVariablesAndConstraints(
         // cluster.
         vpsc::Variable *variable = NULL;
 
+#if defined(_MSC_VER)
         COLA_ASSERT(vars[XDIM].size() <= std::numeric_limits<unsigned int>::(max)());
+#else
+        COLA_ASSERT(vars[XDIM].size() <= std::numeric_limits<unsigned int>::max());
+#endif
         cluster->clusterVarId = static_cast<unsigned int>(vars[XDIM].size());
         COLA_ASSERT(vars[XDIM].size() == vars[YDIM].size());
         // Left:
@@ -374,12 +382,20 @@ void ConstrainedFDLayout::recGenerateClusterVariablesAndConstraints(
                 cluster->bounds.getMinX(), freeWeight);
         vars[XDIM].push_back(variable);
         // Right:
+#if defined(_MSC_VER)
         COLA_ASSERT(vars[XDIM].size() <= std::numeric_limits<int>::(max)());
+#else
+        COLA_ASSERT(vars[XDIM].size() <= std::numeric_limits<int>::max());
+#endif
         variable = new vpsc::Variable(static_cast<int>(vars[XDIM].size()),
                 cluster->bounds.getMaxX(), freeWeight);
         vars[XDIM].push_back(variable);
         // Bottom::
+#if defined(_MSC_VER)
         COLA_ASSERT(vars[YDIM].size() <= std::numeric_limits<int>::(max)());
+#else
+        COLA_ASSERT(vars[YDIM].size() <= std::numeric_limits<int>::max());
+#endif
         variable = new vpsc::Variable(static_cast<int>(vars[YDIM].size()),
                 cluster->bounds.getMinY(), freeWeight);
         vars[YDIM].push_back(variable);
@@ -1394,7 +1410,11 @@ void ConstrainedFDLayout::outputInstanceToSVG(std::string instanceName)
         {
             if (G[i][j] == 1)
             {
+#if defined(_MSC_VER)
                 COLA_ASSERT(std::numeric_limits<unsigned long>::(max)() >= std::numeric_limits<size_t>::(max)());
+#else
+                COLA_ASSERT(std::numeric_limits<unsigned long>::max() >= std::numeric_limits<size_t>::max());
+#endif
                 fprintf(fp, "    es.push_back(std::make_pair(%lu, %lu));\n"
                       , static_cast<unsigned long>(i), static_cast<unsigned long>(j));
             }
