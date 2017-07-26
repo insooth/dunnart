@@ -93,7 +93,13 @@ int checkopt( int pril, char *probname, double optval )
 	fname[ep-ap] = '\0';
 
 	for (i=1;i<=nprobs;i++) {
-		fscanf(fd,"%s %le",&pname[0],&trueval);
+#if defined(_MSC_VER)
+        fscanf_s(fd, "%s %le"
+               , &pname[0], static_cast<unsigned>(sizeof(pname[0]) / sizeof(char))
+               , &trueval);
+#else
+        fscanf(fd, "%s %le", &pname[0], &trueval);
+#endif
 		fgets(&cc[0],100,fd);
 		if (!OGDF_STRICMP(fname,pname)) { //KK: statt strcmpi
 			if (fabs(optval)>0.0001) {

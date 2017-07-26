@@ -1621,7 +1621,14 @@ void_row:
 					if (pril) printf("Invalid bound input %1s!\n", itembuf);
 					return ALPS_LPREAD_INVALIDBOUND;
 				}
-				else sscanf(itembuf,"%s",varname);
+                else
+                {
+#if defined(_MSC_VER)
+                    sscanf_s(itembuf, "%s", varname, static_cast<unsigned>(sizeof(varname) / sizeof(char)));
+#else
+                    sscanf(itembuf, "%s", varname);
+#endif
+                }
 				mult = 1.0;
 				getnextitem(pril,&itemtype,itembuf,&ip);
 				if (itemtype==LE) {

@@ -76,7 +76,11 @@ void alps_readbasis(
 	fgets(keyword,10,abfile);
 	if (strncmp(keyword,"COLUMNS",7)) printf("COLUMNS expected, %s found.\n",keyword);
 	for (k=0;k<ncols;k++) {
+#if defined(_MSC_VER)
+        fscanf_s(abfile, "%d %c\n", &j, &basisstatus, static_cast<unsigned>(sizeof(basisstatus)));
+#else
 		fscanf(abfile,"%d %c\n",&j,&basisstatus);
+#endif
 		switch (basisstatus) {
 	case 'B': basiccolstat[j] = ALPS_BASIC;        break; 
 	case 'L': basiccolstat[j] = ALPS_NONBASICLOWB; break;
@@ -87,7 +91,11 @@ void alps_readbasis(
 	fgets(keyword,10,abfile);
 	if (strncmp(keyword,"ROWS",4)) printf("ROWS expected, %s found.\n",keyword);
 	for (k=0;k<nrows;k++) {
-		fscanf(abfile,"%d %c\n",&i,&basisstatus);
+#if defined(_MSC_VER)
+        fscanf(abfile, "%d %c\n", &i, &basisstatus, static_cast<unsigned>(sizeof(basisstatus)));
+#else
+        fscanf(abfile, "%d %c\n", &i, &basisstatus);
+#endif
 		switch (basisstatus) {
 	case 'B': basicrowstat[i] = ALPS_BASIC;        break; 
 	case 'L': basicrowstat[i] = ALPS_NONBASICLOWB; break;

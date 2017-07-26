@@ -150,7 +150,11 @@ long BuildInfo::buildDate(const char *date)
 
     char buf[8];
 
+#if defined(_MSC_VER)
+    sscanf_s(date, "%s%d%d", buf, static_cast<unsigned>(sizeof(buf) / sizeof(char)), &d, &y);
+#else
     sscanf(date, "%s%d%d", buf, &d, &y);
+#endif
 
     int i;
     for (i = 0; i < 12; ++i)
