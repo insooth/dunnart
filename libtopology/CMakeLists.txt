@@ -19,5 +19,7 @@ if(MSVC)
   target_compile_options(topology PRIVATE "/WX")
 
   target_compile_definitions(topology PRIVATE "_CRT_SECURE_NO_WARNINGS=1")
+else()
+#  target_compile_definitions(topology PRIVATE "-Werror")
 endif()
 

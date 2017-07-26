@@ -16,5 +16,7 @@ set_property(TARGET vpsc PROPERTY CXX_STANDARD 14)
 if(MSVC)
   # warnings as errors
   target_compile_options(vpsc PRIVATE "/WX")
+else()
+  target_compile_options(vpsc PRIVATE "-Werror")
 endif()
 

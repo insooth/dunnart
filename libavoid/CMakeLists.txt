@@ -25,5 +25,7 @@ if(MSVC)
   target_compile_options(avoid PRIVATE "/WX")
 
   target_compile_definitions(avoid PRIVATE "_CRT_SECURE_NO_WARNINGS=1")
+else()
+  target_compile_options(avoid PRIVATE "-Werror")
 endif()
 
