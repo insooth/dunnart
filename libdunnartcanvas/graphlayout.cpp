@@ -962,7 +962,7 @@ class ObjectsRepositionedAnimation : public QAbstractAnimation
         {
             return ANIMATION_DURATION;
         }
-        void updateCurrentTime(const int value)
+        void updateCurrentTime(int value)
         {
             Q_UNUSED (value)
 

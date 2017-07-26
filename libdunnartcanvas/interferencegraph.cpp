@@ -125,7 +125,7 @@ InterferenceGraph::InterferenceGraph(ConnPairSet &interfering_conns) {
    for (NodePtrList::iterator node_iter = nodes->begin();
         node_iter != nodes->end(); ++node_iter) {
         assert((*node_iter)->NodeList.size() <= std::numeric_limits<unsigned int>::max());
-       (*node_iter)->degree = (*node_iter)->NodeList.size();
+       (*node_iter)->degree = static_cast<unsigned int>((*node_iter)->NodeList.size());
    }
 }
 
