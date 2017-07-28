@@ -1,21 +1,21 @@
 /*
  * $Revision: $
- * 
+ *
  * last checkin:
- *   $Author: $ 
- *   $Date:  $ 
+ *   $Author: $
+ *   $Date:  $
  ***************************************************************/
- 
+
 /** \file
  * \brief Declaration of Spring-Embedder algorithm (Kamada,Kawai).
- *   
- * 
+ *
+ *
  * \author Karsten Klein
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2009
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,19 +32,19 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
@@ -86,10 +86,10 @@ namespace ogdf {
  * First of all note that the algorithm uses all pairs shortest path
  * to compute the graph theoretic distance. This can be done either
  * with BFS (ignoring node sizes) in quadratic time or by using
- * e.g. Floyd's algorithm in cubic time with given edge lengths 
- * that may reflect the node sizes. 
+ * e.g. Floyd's algorithm in cubic time with given edge lengths
+ * that may reflect the node sizes.
  * TODO: Fixed number of iterations vs stop criterion
- *       Radii computation 
+ *       Radii computation
  * The layout provides the following optional parameters.
  *
  * <table>
@@ -105,7 +105,7 @@ class OGDF_EXPORT  StressMajorization : public LayoutModule
 {
 public:
 	typedef Tuple2<double, double> dpair;
-	
+
 	//! The scaling method used for the desirable length.
 	//! TODO: Non-functional so far, scScaleFunction is used
 	enum Scaling {
@@ -114,20 +114,20 @@ public:
 		scScaleFunction,    //!< automatic scaling is used, computed using only the node sizes.
 		scScaleAdaptive    //!< automatic scaling is used, adapting the value per iteration.
 	};
-	
+
 	enum Constraints {
 		cRadial = 0x0001,	//radial level depending on some centrality measure
 		cUpward = 0x0002  //level depending on edge direction
 	};
-	
+
 	//! Constructor: Constructs instance of Kamada Kawai Layout
-	StressMajorization() 
+	StressMajorization()
 	      : m_tolerance(0.001),
-		m_ltolerance(0.0001), 
-		m_computeMaxIt(true),  
-		m_K(5.0), 
+		m_ltolerance(0.0001),
+		m_computeMaxIt(true),
+		m_K(5.0),
 		m_desLength(0.0),
-		m_distFactor(2.0), 
+		m_distFactor(2.0),
 		m_useLayout(false),
 		m_radiiStyle(0),
 		m_radiusFactor(1.1),
@@ -137,38 +137,38 @@ public:
 		m_gItFactor(16),
 		m_numSteps(300),
 		m_itFac(0.0),
-		m_constraints(cUpward), 
+		m_constraints(cUpward),
 		m_upward(false)
 	{
 		m_maxLocalIt = m_maxGlobalIt = maxVal;
 	}
-						 
+
 	//! Destructor
 	~ StressMajorization() {}
-	
+
 	//! Calls the layout algorithm for graph attributes \a GA.
 	//! Currently, GA.doubleWeight is NOT used to allow simple
 	//! distinction of BFS/APSS. Precondition: Graph is connected.
-	void call(GraphAttributes& GA); 
+	void call(GraphAttributes& GA);
 	//! Calls the layout algorithm for graph attributes \a GA
 	//! using values in eLength for distance computation.
 	//! Precondition: Graph is connected.
-	void call(GraphAttributes& GA, const EdgeArray<double>& eLength); 
-	
+	void call(GraphAttributes& GA, const EdgeArray<double>& eLength);
+
     //! Sets a fixed number of iterations for stress majorization in main step
     void setIterations(int i) { if (i > 0) m_numSteps = i;}
-    
+
     //! Number of total iterations is m_numSteps+m_itFac*<<numberofGraphnodes>>
     void setGraphSizeIterationFactor(double d) {if (DIsGreaterEqual(d, 0.0)) m_itFac = d; }
-        
+
 	//! Sets the value for the stop tolerance, below which the
 	//! system is regarded stable (balanced) and the optimization stopped
 	void setStopTolerance(double s) {m_tolerance = s;}
-	
+
 	//! If set to true, the given layout is used for the initial positions
 	void setUseLayout(bool b) {m_useLayout = b;}
 	bool useLayout() {return m_useLayout;}
-	
+
 	//! It is possible to limit the number of iterations to a fixed value
 	//! Returns the current setting of iterations.
 	//! These values are only used if m_computeMaxIt is set to true.
@@ -207,16 +207,16 @@ public:
     void radial(bool b) {m_radial = b;}
 	//! If set to true, radial constraints are added
     void upward(bool b) {m_upward = b;}
-    
+
 protected:
 	//! Does the actual call
 	void doCall(GraphAttributes& GA, const EdgeArray<double>& eLength, bool simpleBFS);
 
         //radius on level \a level, (1 denotes first level)
-        double radius(int level) 
-        { 
+        double radius(int level)
+        {
             if (m_radiiStyle == 0) return m_baseRadius*level;
-            else 
+            else
             {
                 double rad = m_baseRadius;
                 for (int i = 1; i < level; i++)
@@ -227,7 +227,7 @@ protected:
                 return rad;
             }
         }
-    
+
 	//radius of a specific node, depending on its level
     double radius(node v)
     {
@@ -238,13 +238,13 @@ protected:
 
 	//! Checks if main loop is finished because local optimum reached
 	bool finished(double maxdelta)
-	{ 
+	{
         if (m_prevEnergy == startVal) //first step
         {
           m_prevEnergy = maxdelta;
           return false;
         }
-          
+
         double diff = m_prevEnergy - maxdelta; //energy difference
         if (diff < 0.0) diff = -diff;
 #ifdef OGDF_DEBUG
@@ -252,16 +252,16 @@ protected:
 #endif
 		//check if we want to stop
         bool done = (maxdelta < m_tolerance);// || (diff / m_prevEnergy) < m_tolerance);
-        
-        m_prevEnergy = maxdelta;   //save previous energy level 
+
+        m_prevEnergy = maxdelta;   //save previous energy level
         m_prevLEnergy =  startVal; //reset energy level for local node decision
-        
-        return done;		
+
+        return done;
 	}//finished
 	//! Checks if inner loop (current node) is finished
 	bool finishedNode(double deltav)
 	{
-		if (m_prevLEnergy == startVal) 
+		if (m_prevLEnergy == startVal)
 		{
           m_prevLEnergy = deltav;
           return deltav == 0.0;//<m_ltolerance; //locally stable
@@ -272,32 +272,32 @@ protected:
         double diff = m_prevLEnergy - deltav;
         //check if we want to stop
         bool done = (deltav == 0.0 || (diff / m_prevLEnergy) < m_ltolerance);
-        
+
         m_prevLEnergy = deltav; //save previous energy level
-        
+
         return done;
 	}//finishedNode
 	//! Changes given edge lengths (interpreted as weight factors)
 	//! according to additional parameters like node size etc.
 	void adaptLengths(const Graph& G,
 				  const GraphAttributes& GA,
-				  const EdgeArray<double>& eLengths, 
+				  const EdgeArray<double>& eLengths,
 				  EdgeArray<double>& adaptedLengths);
 	//! Adapts positions to avoid degeneracy (all nodes on a single point)
 	void shufflePositions(GraphAttributes& GA);
 	//! Computes contribution of node u to the first partial
 	//! derivatives (dE/dx_m, dE/dy_m) (for node m) (eq. 7 and 8 in paper)
-	dpair computeParDer(node m, 
+	dpair computeParDer(node m,
 					node u,
-					GraphAttributes& GA, 
+					GraphAttributes& GA,
 					NodeArray< NodeArray<double> >& ss,
 					NodeArray< NodeArray<double> >& dist);
 	//! Compute partial derivative for v
-	dpair computeParDers(node v, 
+	dpair computeParDers(node v,
 					 GraphAttributes& GA,
-					 NodeArray< NodeArray<double> >& ss, 
+					 NodeArray< NodeArray<double> >& ss,
 					 NodeArray< NodeArray<double> >& dist);
-	//! Does the necessary initialization work for the call functions					 
+	//! Does the necessary initialization work for the call functions
 	void initialize(GraphAttributes& GA,
 					const EdgeArray<double>& eLength,
 					NodeArray< NodeArray<double> >& oLength,
@@ -312,56 +312,55 @@ protected:
 	//! Does the scaling if no edge lengths are given but node sizes
 	//! are respected
 	void scale(GraphAttributes& GA);
-	
+
 private:
-	//! The stop criterion when the forces of all strings are 
-	//! considered to be balanced 
+	//! The stop criterion when the forces of all strings are
+	//! considered to be balanced
 	double m_tolerance;  //!<value for stop criterion
 	double m_ltolerance;  //!<value for local stop criterion
-	int m_maxGlobalIt;   //!< Maximum number of global iterations
-	int m_maxLocalIt;   //!< Maximum number of local iterations
-	bool m_computeMaxIt; //!< If true, number of iterations is computed 
-						 //! depending on number of nodes 
+	bool m_computeMaxIt; //!< If true, number of iterations is computed
+						 //! depending on number of nodes
 	double m_K; //! Big K constant for strength computation
-	double m_prevEnergy; //!<max energy value
-	double m_prevLEnergy;//!<local energy
-	double m_zeroLength; //!< Length of a side of the display area, used for
-						 //! edge length computation if > 0
 	double m_desLength; //!< Desirable edge length, used instead if > 0
 	double m_distFactor; //introduces some distance for scaling in case BFS is used
-	
+
 	bool m_useLayout; //!< use positions or allow to shuffle nodes to
-	
-	bool m_radial; //!< if set to true, radial constraints are added
-	
-	int m_radiiStyle; //!< defines how radii are calculated: 
+
+	int m_radiiStyle; //!< defines how radii are calculated:
                           //!  0 = fixed distance m_firstRadius
                           //!  1 = increasing with factor m_radiusFactor
                           //!  2 = ...functions?
 	double m_radiusFactor; //!< defines radius transformation from level 1 to k
 	double m_baseRadius; //!< radius of first level
-	NodeArray<double> m_radii; //!< stores computed radius for each node
+	bool m_radial; //!< if set to true, radial constraints are added
 	int m_gItBaseVal; //!< minimum number of global iterations
 	int m_gItFactor;  //!< factor for global iterations: m_gItBaseVal+m_gItFactor*|V|
 	int m_numSteps;     //!< number of iteration steps
 	double m_itFac;     //!< Factor for additional number of iterations based on graph size
-	
 	int m_constraints; //constraints bit pattern
 			  //!< avoid degeneration
 	bool m_upward;
+	NodeArray<double> m_radii; //!< stores computed radius for each node
 
-	double allpairsspBFS(const Graph& G, NodeArray< NodeArray<double> >& distance, 
+	int m_maxGlobalIt;   //!< Maximum number of global iterations
+	int m_maxLocalIt;   //!< Maximum number of local iterations
+	double m_prevEnergy; //!<max energy value
+	double m_prevLEnergy;//!<local energy
+	double m_zeroLength; //!< Length of a side of the display area, used for
+						 //! edge length computation if > 0
+
+	double allpairsspBFS(const Graph& G, NodeArray< NodeArray<double> >& distance,
 		NodeArray< NodeArray<double> >& weights);
-	double allpairssp(const Graph& G, const EdgeArray<double>& eLengths, 
+	double allpairssp(const Graph& G, const EdgeArray<double>& eLengths,
 		NodeArray< NodeArray<double> >& distance, NodeArray< NodeArray<double> >& weights,
 		const double threshold = DBL_MAX);
-		
+
 	static const double startVal;
 	static const double minVal;
 	static const double desMinLength; //!< Defines minimum desired edge length.
 									  //! Smaller values are treated as zero
-	static const int maxVal = INT_MAX; //! defines infinite upper bound for iteration number 
-	
+	static const int maxVal = INT_MAX; //! defines infinite upper bound for iteration number
+
 };// StressMajorization
 
 //Things that potentially could be added

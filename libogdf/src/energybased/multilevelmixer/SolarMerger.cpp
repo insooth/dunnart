@@ -141,7 +141,7 @@ std::vector<node> SolarMerger::selectSuns(MultilevelGraph &MLG)
 			if (sunCandidates.empty()) {
 				continue;
 			}
-			
+
 			node minNode = sunCandidates.front().first;
 			unsigned int minMass = sunCandidates.front().second;
 			// select sun with smalles mass from sunCandidates
@@ -217,7 +217,7 @@ void SolarMerger::buildAllLevels(MultilevelGraph &MLG)
 	}
 	MLG.updateReverseIndizes();
 	while (buildOneLevel(MLG))
-	{//this is not needed anymore locally since Multilevelbuilder keeps this info	
+	{//this is not needed anymore locally since Multilevelbuilder keeps this info
 		m_numLevels++;
 	}
 	MLG.updateReverseIndizes();
@@ -283,6 +283,7 @@ float SolarMerger::distanceToSun(node object, MultilevelGraph &MLG)
 		}
 	}
 	OGDF_ASSERT(found);
+    (void) found;
 
 	return distanceToSun(center, MLG) + dist;
 }
@@ -300,7 +301,7 @@ void SolarMerger::findInterSystemPaths(Graph &G, MultilevelGraph &MLG)
 			len = distanceToSun(source, MLG) + distanceToSun(target, MLG) + MLG.weight(e);
 			OGDF_ASSERT(len > 0);
 			addPath(sunOf(source), sunOf(target), len);
-			
+
 			// save positions of nodes on the path.
 			node src = source;
 			do {
@@ -308,7 +309,7 @@ void SolarMerger::findInterSystemPaths(Graph &G, MultilevelGraph &MLG)
 				m_pathDistances[src].push_back(PathData(sunOf(target)->index(), dist / len, 1));
 				src = m_orbitalCenter[src];
 			} while(src != 0);
-			
+
 			node tgt = target;
 			do {
 				float dist = distanceToSun(tgt, MLG);
@@ -376,6 +377,7 @@ bool SolarMerger::buildOneLevel(MultilevelGraph &MLG)
 
 bool SolarMerger::collapsSolarSystem(MultilevelGraph &MLG, node sun, int level)
 {
+    (void) G;
 	Graph &G = MLG.getGraph();
 
 	bool retVal = false;
@@ -409,7 +411,7 @@ bool SolarMerger::collapsSolarSystem(MultilevelGraph &MLG, node sun, int level)
 			}
 		}
 	}
-	
+
 	if (m_massAsNodeRadius || !m_sunSelectionSimple) {
 		for(std::vector<node>::iterator i = systemNodes.begin(); i != systemNodes.end(); i++) {
 			mass += m_mass[*i];
@@ -431,7 +433,7 @@ bool SolarMerger::collapsSolarSystem(MultilevelGraph &MLG, node sun, int level)
 		for (std::vector<PathData>::iterator j = positions.begin(); j != positions.end(); j++) {
 			NM->m_position.push_back(std::pair<int, float>((*j).targetSun, (*j).length));
 		}
-		
+
 		bool ret;
 		if (i == systemNodes.begin() && m_massAsNodeRadius) {
 			ret = MLG.changeNode(NM, sun, sqrt((float)m_mass[sun]) * m_radius[sun], mergeNode);

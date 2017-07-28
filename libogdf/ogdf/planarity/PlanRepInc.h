@@ -1,11 +1,11 @@
 /*
  * $Revision: 1.5 $
- * 
+ *
  * last checkin:
- *   $Author: gutwenger $ 
- *   $Date: 2008-01-17 22:56:41 +0100 (Thu, 17 Jan 2008) $ 
+ *   $Author: gutwenger $
+ *   $Date: 2008-01-17 22:56:41 +0100 (Thu, 17 Jan 2008) $
  ***************************************************************/
- 
+
 /** \file
  * \brief Declaration of class PlanRepInc.
  *
@@ -13,13 +13,13 @@
  * modes. It derives from GraphObserver and therefore is always
  * informed about changes of the underlying graph. Keeps the
  * m_nodesInCC and m_numCC fields up-to-date.
- * 
+ *
  * \author Karsten Klein
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,19 +36,19 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
@@ -85,7 +85,7 @@ namespace ogdf {
 //===============================================
 
 class OGDF_EXPORT PlanRepInc : public PlanRepUML, public GraphObserver
-{	
+{
 public:
 	//construction
 	//constructor for interactive updates (parts added step by step)
@@ -98,7 +98,7 @@ public:
 	void initActiveCC(int i);
 	//but with at least one active node, makes a node active if necessary
 	//and returns it. returns 0 otherwise
-	node initMinActiveCC(int i); 
+	node initMinActiveCC(int i);
 
 	//in the case that the underlying incremental structure
 	//changes, we update this copy
@@ -106,7 +106,7 @@ public:
 	virtual void nodeAdded(node v);
 	virtual void edgeDeleted(edge e);
 	virtual void edgeAdded(edge e);
-	virtual void reInit(); 
+	virtual void reInit();
 	virtual void cleared();//Graph cleared
 
 	//sets activity status to true and updates the structures
@@ -116,16 +116,16 @@ public:
 	//void activateNode(node v, bool b);
 	void activateEdge(edge e);
 
-	//handles copies of original CCs that are split into 
+	//handles copies of original CCs that are split into
 	//unconnected parts of active nodes by connecting them
-	//tree-like adding necessary edges at "external" nodes 
+	//tree-like adding necessary edges at "external" nodes
 	//of the partial CCs. Note that this only makes sense
 	//when the CC parts are already correctly embedded
 	bool makeTreeConnected(adjEntry adjExternal);
 	//delete an edge again
 	void deleteTreeConnection(int i, int j);
 	void deleteTreeConnection(int i, int j, CombinatorialEmbedding &E);
-	//sets a list of adjentries on "external" faces of 
+	//sets a list of adjentries on "external" faces of
 	//unconnected active parts of the current CC
 	void getExtAdjs(List<adjEntry> &extAdjs);
 	adjEntry getExtAdj(GraphCopy &GC, CombinatorialEmbedding &E);
@@ -135,7 +135,7 @@ public:
 
 	bool& treeEdge(edge e) {return m_treeEdge[e];}
 	//only valid if m_eTreeArray initialized, should be replaced later
-	const edge  treeEdge(int i, int j) const 
+	edge  treeEdge(int i, int j) const
 		{
 			if (m_treeInit) return m_eTreeArray(i, j);
 			else return 0;
@@ -149,7 +149,7 @@ public:
 	// splits edge e, can be removed when edge status in edgetype
 	// m_treedge can be removed afterwards
 	virtual edge split(edge e) {
-        
+
 		edge eNew = PlanRepUML::split(e);
 		if (m_treeEdge[e]) m_treeEdge[eNew] = true;
 
@@ -179,7 +179,7 @@ public:
 	int genusLayout(Layout &drawing) const;
 #endif
 
-protected: 
+protected:
 	void initMembers(const UMLGraph &UG);
 	//initialize CC with active nodes (minNode ? at least one node)
 	node initActiveCCGen(int i, bool minNode);

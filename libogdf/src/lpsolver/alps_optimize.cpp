@@ -1,29 +1,29 @@
 /*
  * $Revision: 1.1 $
- * 
+ *
  * last checkin:
- *   $Author: klein $ 
- *   $Date: 2007-11-14 16:18:10 +0100 (Wed, 14 Nov 2007) $ 
+ *   $Author: klein $
+ *   $Date: 2007-11-14 16:18:10 +0100 (Wed, 14 Nov 2007) $
  ***************************************************************/
- 
+
 /** \file
  * \brief Implementation of Optimize.
- * 
- * The layout of this routine is as follows. First, 
+ *
+ * The layout of this routine is as follows. First,
  * |alps_initproblem| is called in order to set up the internal
- * problem definition and do scaling and preprocessing. Then 
- * |alps_phase1prim| prepares the alps_auxiliary LP that is 
- * subsequently solved by |primalsimplex| in order to obtain a 
- * primally feasible basis. Then the original objective function 
+ * problem definition and do scaling and preprocessing. Then
+ * |alps_phase1prim| prepares the alps_auxiliary LP that is
+ * subsequently solved by |primalsimplex| in order to obtain a
+ * primally feasible basis. Then the original objective function
  * is restored and |primalsimplex| is called again to find the
  * optimum solution.
- * 
+ *
  * \author Michael Juenger, Gerhard Reinelt
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -40,19 +40,19 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
@@ -75,6 +75,7 @@ int alps_optimize(
 				  )
 {
 	int maxviolindex;
+	(void) maxviolindex;
 	int status;
 	int truepisel;
 	int i,j,k;
@@ -129,12 +130,14 @@ int alps_optimize(
 				return status;
 			}
 			if (pril>=1) {
-				if (lp->problemstatus==ALPS_UNBOUNDED) 
+				if (lp->problemstatus==ALPS_UNBOUNDED)
+                {
 					if (pril>=1) printf("\n\nUNBOUNDED\n\n");
-				else {
-					printf("\n\nOPTIMAL\n\n");
-					if (pril>=4) printprimalsol(lp);
-				}
+                }
+                else {
+                    printf("\n\nOPTIMAL\n\n");
+                    if (pril>=4) printprimalsol(lp);
+                }
 			}
 		}
 		else {
@@ -226,8 +229,10 @@ int alps_optimize(
 			lp->problemstatus = ALPS_UNKNOWN;
 			return status;
 		}
-		if (lp->problemstatus==ALPS_UNBOUNDED) 
+		if (lp->problemstatus==ALPS_UNBOUNDED)
+        {
 			if (pril>=1) printf("\n\nUNBOUNDED\n\n");
+        }
 		else {
 			if (pril>=1) printf("\n\nOPTIMAL\n\n");
 			if (pril>=4) printprimalsol(lp);
@@ -276,7 +281,7 @@ hell:
 			lp->objval += lp->x[j]*lp->aobj[j];
 		}
 	}
-	if (lp->aobjminmax==ALPS_MINIMIZE) lp->objval =- lp->objval;  
+	if (lp->aobjminmax==ALPS_MINIMIZE) lp->objval =- lp->objval;
 
 
 	if (!lp->preprocessing) {
@@ -285,7 +290,7 @@ hell:
 		lp->abasisstatus = lp->basisstatus;
 		for (j=lp->inorig;j<lp->in;j++) {
 			i = lp->imatcolind[lp->imatcolbeg[j]];
-			if (lp->aconstrainttype[i]=='G') 
+			if (lp->aconstrainttype[i]=='G')
 				lp->aslack[i] = -lp->x[j];
 			else
 				lp->aslack[i] = lp->x[j];
@@ -315,7 +320,7 @@ hell:
 			}
 		}
 		if (pril>=1) printf("\n  Maximum bound violation      : %.4le\n",maxviol);
-		if (maxviol>0.0001) 
+		if (maxviol>0.0001)
 			if (pril>=1) printf("\n\n  Strong bound violation!\n\n");
 
 		if (pril>=1) printf("\n");
@@ -328,7 +333,7 @@ hell:
 				trhs[i] -=  lp->ax[j]*lp->amatcolcoeff[k];
 			}
 		}
-		for (i=0;i<lp->am;i++) { 
+		for (i=0;i<lp->am;i++) {
 			viol = trhs[i];
 			if (lp->aconstrainttype[i]=='E') {
 				if (viol<0.0) viol = -viol;
@@ -337,8 +342,8 @@ hell:
 				if (viol<0.0) viol = -viol; else viol = 0.0;
 			}
 			else {
-				if (viol<0.0) viol = 0.0;    
-			}  
+				if (viol<0.0) viol = 0.0;
+			}
 			if (viol>0.001) {
 				if (pril>=1) {
 					if(lp->arownamestr)
@@ -356,7 +361,7 @@ hell:
 		}
 		ffree((char **) &trhs);
 		if (pril>=1) printf("\n  Maximum constraint violation : %.4le\n",maxviol);
-		if (maxviol>0.001) 
+		if (maxviol>0.001)
 			if (pril>=1) printf("\n\n  Strong constraint violation!\n");
 
 
@@ -388,7 +393,7 @@ hell:
 			}
 		}
 		if (pril>=1) printf("\n  Maximum bound violation      : %.4le\n",maxviol);
-		if (maxviol>0.0001) 
+		if (maxviol>0.0001)
 			if (pril>=1) printf("\n\n  Strong bound violation!\n\n");
 
 		if (pril>=1) printf("\n");
@@ -401,7 +406,7 @@ hell:
 				trhs[i] -=  lp->ax[j]*lp->amatcolcoeff[k];
 			}
 		}
-		for (i=0;i<lp->am;i++) { 
+		for (i=0;i<lp->am;i++) {
 			viol = trhs[i];
 			if (lp->aconstrainttype[i]=='E') {
 				if (viol<0.0) viol = -viol;
@@ -410,10 +415,10 @@ hell:
 				if (viol<0.0) viol = -viol; else viol = 0.0;
 			}
 			else {
-				if (viol<0.0) viol = 0.0;    
-			}  
+				if (viol<0.0) viol = 0.0;
+			}
 			if (viol>0.001) {
-				if (pril>=1) 
+				if (pril>=1)
 					printf("  Constraint violation (%.4lf) in constraint %d (%s)!\n",
 					viol,i,lp->arownamestr+lp->arownameind[i]);
 			}
@@ -424,7 +429,7 @@ hell:
 		}
 		ffree((char **) &trhs);
 		if (pril>=1) printf("\n  Maximum constraint violation : %.4le\n",maxviol);
-		if (maxviol>0.001) 
+		if (maxviol>0.001)
 			if (pril>=1) printf("\n\n  Strong constraint violation!\n");
 		if (pril>=1) printf("\n");
 	}

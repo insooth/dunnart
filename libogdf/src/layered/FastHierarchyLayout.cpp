@@ -1,21 +1,21 @@
 /*
  * $Revision: 1.3 $
- * 
+ *
  * last checkin:
- *   $Author: gutwenger $ 
- *   $Date: 2007-12-07 16:35:45 +0100 (Fri, 07 Dec 2007) $ 
+ *   $Author: gutwenger $
+ *   $Date: 2007-12-07 16:35:45 +0100 (Fri, 07 Dec 2007) $
  ***************************************************************/
- 
+
 /** \file
  * \brief Implementation of the third phase of the Sugiyama
  * algorithm
- * 
+ *
  * \author Sebastian Leipert
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,19 +32,19 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
@@ -131,7 +131,7 @@ void FastHierarchyLayout::doCall(const Hierarchy& H,
 	// Compute first.
 	first[0]	= 0;
 	foralllayers {
-		first[actLayer+1] = first[actLayer]+H[actLayer].size(); 
+		first[actLayer+1] = first[actLayer]+H[actLayer].size();
 		height[actLayer] = 0;
 	}
 
@@ -150,10 +150,10 @@ void FastHierarchyLayout::doCall(const Hierarchy& H,
 			newEdge->pushBack(n1);
 			longEdge[n1] = newEdge;
 		}
-	}	
+	}
 
 	// compute long Edge for virtual nodes
-	//forall_edges(e1,GC.original()){ 
+	//forall_edges(e1,GC.original()){
 	edge e;
 	forall_edges(e,GC)
 	{
@@ -171,7 +171,7 @@ void FastHierarchyLayout::doCall(const Hierarchy& H,
 				newEdge->pushBack(n1);
 			}
 			newEdge->popBack(); // last node is nonvirtual and must be
-			                    // removed from list. 
+			                    // removed from list.
 
 			// CG: avoid assigning a redirected edge to a dummy node twice
 			if(newEdge->size() == 1 && longEdge[newEdge->front()] != 0) {
@@ -189,8 +189,8 @@ void FastHierarchyLayout::doCall(const Hierarchy& H,
 		}
 	}
 
-	
-	// Compute adjacencylists adj[0] and adj[1] for every node. 
+
+	// Compute adjacencylists adj[0] and adj[1] for every node.
 	forall_edges(e1,GC) {
 		v1 = e1->source();
 		v2 = e1->target();
@@ -248,65 +248,65 @@ void FastHierarchyLayout::doCall(const Hierarchy& H,
 }
 
 
-double FastHierarchyLayout::nodeDistance() const 
+double FastHierarchyLayout::nodeDistance() const
 {
 	return m_minNodeDist;
 }
 
 
-void FastHierarchyLayout::nodeDistance(double d) 
+void FastHierarchyLayout::nodeDistance(double d)
 {
 	m_minNodeDist = d;
 }
 
 
-double FastHierarchyLayout::layerDistance() const 
+double FastHierarchyLayout::layerDistance() const
 {
 	return m_minLayerDist;
 }
 
 
-void FastHierarchyLayout::layerDistance(double d) 
+void FastHierarchyLayout::layerDistance(double d)
 {
 	m_minLayerDist = d;
 }
 
 
-bool FastHierarchyLayout::fixedLayerDistance() const 
+bool FastHierarchyLayout::fixedLayerDistance() const
 {
 	return m_fixedLayerDist;
 }
 
 
-void FastHierarchyLayout::fixedLayerDistance(bool b) 
+void FastHierarchyLayout::fixedLayerDistance(bool b)
 {
 	m_fixedLayerDist = b;
 }
 
 
-void FastHierarchyLayout::incrTo(double& d,double t) 
+void FastHierarchyLayout::incrTo(double& d,double t)
 {
 	if(d<t) d=t;
 }
 
 
-void FastHierarchyLayout::decrTo(double& d,double t) 
+void FastHierarchyLayout::decrTo(double& d,double t)
 {
 	if(d>t) d=t;
 }
 
 
-bool FastHierarchyLayout::sameLayer(int n1,int n2) const 
+bool FastHierarchyLayout::sameLayer(int n1,int n2) const
 {
-	return (n1 >= 0 && 
-		n1 < n  && 
-		n2 >=0  && 
-		n2 < n  && 
+	return (n1 >= 0 &&
+		n1 < n  &&
+		n2 >=0  &&
+		n2 < n  &&
 		layer[n1] == layer[n2]);
 }
 
 
-bool FastHierarchyLayout::isFirst(int actNode) const 
+bool FastHierarchyLayout::isFirst(int actNode) const
 {
 	return (actNode < 0  ||
 		actNode >= n ||
@@ -314,7 +314,7 @@ bool FastHierarchyLayout::isFirst(int actNode) const
 }
 
 
-bool FastHierarchyLayout::isLast(int actNode) const 
+bool FastHierarchyLayout::isLast(int actNode) const
 {
 	return (actNode < 0  ||
 		actNode >= n ||
@@ -330,7 +330,7 @@ bool FastHierarchyLayout::isLast(int actNode) const
 
 
 The function sortLongEdges places the node actNode as far as possible to the
-left (if dir = 1) or to the right (if dir = -1) within a block. 
+left (if dir = 1) or to the right (if dir = -1) within a block.
 A proper definition of blocks is given in Techreport zpr99-368, pp 5, where
 blocks are named classes. If actNode is virtual (and thus belongs to a long
 edge), the function sortLongEdges places the actNode as far as possible to
@@ -341,10 +341,10 @@ dir    :  Stores the direction of placement: 1 for placing long edges to the
 pos    :  array for all nodes. Stores the computed position.
 marked :  array for all nodes. Stores for every node, whether sortLongEdges
           has already been applied to it.
-block  :  array for all nodes. Stores for every node the block it belongs to. 
-exD    :  is 1, if there exists a node w on the longEdge of actNode, 
+block  :  array for all nodes. Stores for every node the block it belongs to.
+exD    :  is 1, if there exists a node w on the longEdge of actNode,
           that has a direct right sibling (if moving to the left (depending on
-		  the direction)) on the same layer which belongs to a different block.    
+		  the direction)) on the same layer which belongs to a different block.
 dist   :  if exD is 1, it gives the minimal distance between any w of long
           edge (see exD) and its direct right (left) sibling if the sibling
 		  belongs to ANOTHER block. if exD is 0, dist is not relevant.
@@ -356,27 +356,27 @@ void FastHierarchyLayout::sortLongEdges(int actNode,
 	bool& exD,
 	double &dist,
 	int *block,
-	bool *marked) 
+	bool *marked)
 {
 
     ListConstIterator<int> _it = 0;
 
-    if(marked[actNode]) 
+    if(marked[actNode])
 	// if node was already placed.
 		return;
 
     bool exB=0;
     double best=0;
     int next;
-    
+
     // Mark the long edge. Thus all virtual nodes on the long edge will be
 	// regarded as placed.
     for (_it = (*longEdge[actNode]).begin(); _it.valid(); _it++){
 		next = *_it;
 		marked[next] = 1;
     }
-    
-    // Traverse the long Edge. 
+
+    // Traverse the long Edge.
     // If for a virtual node there exists a left direct sibling w and w belongs
 	// to the same block then call sortLongEdges recursively for w. Store
 	// leftmost (rightmost) position in best.
@@ -384,7 +384,7 @@ void FastHierarchyLayout::sortLongEdges(int actNode,
 		next = *_it;
 		if( sameLayer(next - dir, next) && block[next - dir] == block[next]) {
 			sortLongEdges(next - dir, dir, pos, exD, dist, block, marked);
-			if(!exB || 
+			if(!exB ||
 			   dir * (best - pos[next - dir]) <
 			   dir * (totalB[next] - totalB[next - dir]))
 			{
@@ -405,12 +405,12 @@ void FastHierarchyLayout::sortLongEdges(int actNode,
 			 dir*(totalB[next + dir] - totalB[next] - pos[next + dir]
 			  + pos[next]) > dist))
 		{
-			dist = dir*(totalB[next + dir] - totalB[next] 
+			dist = dir*(totalB[next + dir] - totalB[next]
 				- pos[next + dir] + pos[next]);
 			exD = 1;
 		}
     }
-    
+
 }
 
 
@@ -423,7 +423,7 @@ void FastHierarchyLayout::sortLongEdges(int actNode,
 **************************************************************************
 
 The function placeSingleNode places a sequence of nonvirtual nodes containing
-exactly one node. 
+exactly one node.
 
 actNode  : is an nonvirtual node that has to be placed.
 best     : is the position that is computed for actNode by placeSingleNode.
@@ -453,25 +453,25 @@ bool FastHierarchyLayout::placeSingleNode(int leftBnd,
 	int rightBnd,
 	int actNode,
 	double& best,
-	int d) 
+	int d)
 {
 	int next;
 	kList neighbours;
-	ListConstIterator<int> _it = 0;	
+	ListConstIterator<int> _it = 0;
 
 	for (_it = adj[d][actNode].begin(); _it.valid(); _it++) {
 		next = *_it;
 		neighbours.add(0,x[next]);
 	}
-	if(neighbours.empty()) 
+	if(neighbours.empty())
 		return 0;
 	best = neighbours.median();
 
 	// if median outside boundaries, get free position as close as possible
 	// to boundary.
-	if(leftBnd != -1) 
+	if(leftBnd != -1)
 		incrTo(best,x[leftBnd] + mDist[actNode] - mDist[leftBnd]);
-	if(rightBnd != -1) 
+	if(rightBnd != -1)
 		decrTo(best,x[rightBnd] + mDist[actNode] - mDist[rightBnd]);
 	return 1;
 }
@@ -505,7 +505,7 @@ rightBnd : contains the number of the next virtual sibling to the right of the
 
 The total length of all edges of the sequence to the previous layer (if d = 0)
 or next layer (if d = 1) is minimized observing the bounds given by leftBnd
-and rightBnd. 
+and rightBnd.
 
 The position that is computed for every node of the sequence is stored in the
 global variable x. The position of the neighbours is given by the global
@@ -518,15 +518,15 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 	int rightBnd,
 	int left,
 	int right,
-	int d) 
+	int d)
 {
-	ListConstIterator<int> _it = 0;	
-	
-	if(left == right) 
+	ListConstIterator<int> _it = 0;
+
+	if(left == right)
 	    // The sequence consists of a single node.
 		placeSingleNode(leftBnd,rightBnd,left,x[left],d);
 
-	else if(left < right) {	   
+	else if(left < right) {
 	    // Introduce variables to handle the two subsequences analogously.
 
 	    int mdl[2];
@@ -534,7 +534,7 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 	    mdl[1] = mdl[0] + 1;       // leftmost node of right subsequence.
 
 	    int bnd[2];         // technically for left and right boundary.
-	    bnd[0] = leftBnd;   
+	    bnd[0] = leftBnd;
 	    bnd[1] = rightBnd;
 
 	    int res[2];  // res[0] startresistance to push mdl[0] to the left
@@ -543,10 +543,10 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 	    int actNode, next; // auxiliary variables for nodes.
 	    int resChange,resCh0,resCh1; // auxiliary variables for the resistance
 
-	    int dir; // variable to distinguish left and right subsequence. 
+	    int dir; // variable to distinguish left and right subsequence.
 	             // -1 for the left, 1 for the right subsequence.
 
-	    double mD; // minimal distance between mdl[0] and mdl[1] 
+	    double mD; // minimal distance between mdl[0] and mdl[1]
 	    mD = mDist[mdl[1]] - mDist[mdl[0]];
 
 
@@ -560,16 +560,16 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 		                // of incresing the resistance.
 
 	    kList bds;      // auxiliary variable for constructing bends.
-	    double newBend; // a position of a resistance change. 
+	    double newBend; // a position of a resistance change.
 
-	    double diff,diff1,diff2; // auxiliary variables 
+	    double diff,diff1,diff2; // auxiliary variables
 
 
 	    //recursive call for the left and the right subsequence
 	    placeNodes(leftBnd,rightBnd,left,mdl[0],d);
 	    placeNodes(leftBnd,rightBnd,mdl[1],right,d);
 
-	
+
 	    // Scan the left (i =0) and then the right subsequence (i = 1) to
 		// compute the bends[i]; for technical details see report.
 	    for(int i = 0;i < 2;i++) {
@@ -579,7 +579,7 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 				resChange = 0;
 				for (_it = adj[d][actNode].begin(); _it.valid(); _it++) {
 					next = *_it;
-					if(dir*(x[next] - x[actNode]) < ALLOW) 
+					if(dir*(x[next] - x[actNode]) < ALLOW)
 						resChange++;
 					else {
 						resChange--;
@@ -597,7 +597,7 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 				newBend = x[actNode] + mDist[mdl[i]] - mDist[actNode];
 				if(dir*(x[mdl[i]] - newBend) >- ALLOW) {
 					res[i] += resChange;
-				} else if((bnd[i] == -1 || 
+				} else if((bnd[i] == -1 ||
 					 dir *
 					 (newBend - x[bnd[i]] + mDist[bnd[i]] - mDist[mdl[i]])
 					 < ALLOW) && dir*(newBend - x[mdl[1 - i]]) < mD - ALLOW)
@@ -605,12 +605,12 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 					bds.add(resChange,newBend);
 				}
 			}
-			if(bnd[i] != -1) 
+			if(bnd[i] != -1)
 				bds.add(m,x[bnd[i]] - mDist[bnd[i]] + mDist[mdl[i]]);
 			bds.quicksort(_cmp);
 			bds.reduce(bends[i]);
 	    }
-	    if(!bends[0].empty()) 
+	    if(!bends[0].empty())
 		bends[0].reverse();
 
 
@@ -621,14 +621,14 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 		// as long as distance too small
 
 		resCh0=resCh1=0;
-		if(res[0] < res[1]) { // if smaller resistance to the left. 
+		if(res[0] < res[1]) { // if smaller resistance to the left.
 		    // Go to the next resistance change and update resCh0 and x[mdl[0]].
-		    if(!bends[0].pop(resCh0,x[mdl[0]]) || x[mdl[1]] - x[mdl[0]] > mD + ALLOW) 
+		    if(!bends[0].pop(resCh0,x[mdl[0]]) || x[mdl[1]] - x[mdl[0]] > mD + ALLOW)
 				x[mdl[0]] = x[mdl[1]] - mD;
 		}
-		else if(res[1] < res[0]) { // if smaller resistance to the right. 
+		else if(res[1] < res[0]) { // if smaller resistance to the right.
 		    // Go to the next resistance change and update resCh1 and x[mdl[1]].
-		    if(!bends[1].pop(resCh1,x[mdl[1]]) || x[mdl[1]] - x[mdl[0]] > mD + ALLOW) 
+		    if(!bends[1].pop(resCh1,x[mdl[1]]) || x[mdl[1]] - x[mdl[0]] > mD + ALLOW)
 				x[mdl[1]] = x[mdl[0]] + mD;
 		}
 		else { // same resistance to the left and to the right.
@@ -637,13 +637,13 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 		    diff = (mD - x[mdl[1]] + x[mdl[0]])/2;
 		    diff1 = bends[0].empty() ? diff + 1 : x[mdl[0]] - bends[0].peek();
 		    diff2 = bends[1].empty() ? diff + 1 : bends[1].peek()-x[mdl[1]];
-		    if(diff1 < diff + ALLOW && diff1 < diff2 + ALLOW) 
+		    if(diff1 < diff + ALLOW && diff1 < diff2 + ALLOW)
 				bends[0].pop(resCh0,newBend);
-		    if(diff2 < diff + ALLOW && diff2 < diff1 + ALLOW) 
+		    if(diff2 < diff + ALLOW && diff2 < diff1 + ALLOW)
 				bends[1].pop(resCh1,newBend);
 		    decrTo(diff,diff1);
 		    decrTo(diff,diff2);
-		    x[mdl[0]] -= diff; 
+		    x[mdl[0]] -= diff;
 		    x[mdl[1]] += diff;
 		}
 		res[0] += resCh0; // Update the resistance by the change of resistance
@@ -671,7 +671,7 @@ void FastHierarchyLayout::placeNodes(int leftBnd,
 				moveLongEdge
 **************************************************************************
 
-The function moveLongEdge is used for postprocessing the layout. 
+The function moveLongEdge is used for postprocessing the layout.
 If the two nonvirtual ndoes of the long edge are both to the left (right) of
 the virtual nodes, the function moveLongEdge tries to reduce the length of the
 two outermost segments by moving the virtual nodes simultaneously as far as
@@ -685,8 +685,8 @@ the current long edge, the function moveLongEdge is first applied recursively
 to this long edge.
 
 actNode :  a representative node of the long edge
-dir     :  is -1 if it is preferred to move the long edge to the left,  
-           1 if it is preferred to move the long edge to the right, 
+dir     :  is -1 if it is preferred to move the long edge to the left,
+           1 if it is preferred to move the long edge to the right,
      	   0 if there is no preference
 marked  :  array for all nodes. Stores for every node, whether moveLongEdge
            has already been applied to it.
@@ -697,31 +697,31 @@ marked  :  array for all nodes. Stores for every node, whether moveLongEdge
 
 void FastHierarchyLayout::moveLongEdge(int actNode,
 	int dir,
-	bool *marked) 
+	bool *marked)
 {
 	ListConstIterator<int> _it = 0;
 
 
-	if(!marked[actNode]&&virt[actNode]) { 
+	if(!marked[actNode]&&virt[actNode]) {
 	    // if actNode belongs to a long edge and has not been moved yet.
 	    int next;
 	    // mark all virtual nodes of the long edge
 	    for (_it = (*longEdge[actNode]).begin(); _it.valid(); _it++){
 		next = *_it;
 		marked[(*_it)]=1;
-	    }	    
+	    }
 
-		// first non virtual node of long edge 
+		// first non virtual node of long edge
 	    int fst=adj[0][longEdge[actNode]->front()].front();
 
-		// second non virtual node of long edge 
+		// second non virtual node of long edge
 	    int lst=adj[1][longEdge[actNode]->back()].front();
 
 		// Contains an order of the two positions of the nonvirtual nodes of
 		// the long edge. The function moveLongEdge first tries to place the
 		// long edge onto the first position If not successful, moveLongEdge
 		// tries to place the long edge onto the second position
-		List<double> toTest; 
+		List<double> toTest;
 
 	    if(dir < 0) {
 			toTest.pushBack(x[fst] < x[lst] ? x[fst] : x[lst]);
@@ -731,7 +731,7 @@ void FastHierarchyLayout::moveLongEdge(int actNode,
 			toTest.pushBack(x[fst] < x[lst] ? x[lst] : x[fst]);
 			toTest.pushBack(x[fst] < x[lst] ? x[fst] : x[lst]);
 	    }
-	    else {      
+	    else {
 			toTest.pushBack(x[fst]);
 			toTest.pushBack(x[lst]);
 	    }
@@ -748,16 +748,16 @@ void FastHierarchyLayout::moveLongEdge(int actNode,
 			done = 1;
 			for (_it = (*longEdge[actNode]).begin(); _it.valid(); _it++) {
 				// for all virtual nodes on the long edge
-				next = *_it;		    
+				next = *_it;
 
 				// Try moving to the left
 				if(!isFirst(next)) {
 					// next does have a left sibling
-					if(xOpt - x[next-1] < totalB[next] - totalB[next-1]) 
+					if(xOpt - x[next-1] < totalB[next] - totalB[next-1])
 						// there is a conflict moving next to the position xOpt.
 						moveLongEdge(next - 1,-1,marked);
-					
-					// done = 0 if minimal distances cannot be repsected. 
+
+					// done = 0 if minimal distances cannot be repsected.
 					done = done &&
 						xOpt - x[next-1] >=
 						totalB[next] - totalB[next-1] - ALLOW;
@@ -765,12 +765,12 @@ void FastHierarchyLayout::moveLongEdge(int actNode,
 
 				// Try moving to the right
 				if(!isLast(next)) {
-					// next does have a right sibling 
-					if(xOpt - x[next+1] > totalB[next] - totalB[next+1]) 
+					// next does have a right sibling
+					if(xOpt - x[next+1] > totalB[next] - totalB[next+1])
 						// there is a conflict moving next to the position xOpt.
 						moveLongEdge(next + 1,1,marked);
 
-					// done = 0 if minimal distances cannot be respected. 
+					// done = 0 if minimal distances cannot be respected.
 					done = done &&
 						xOpt - x[next+1] <=
 						totalB[next] - totalB[next+1] + ALLOW;
@@ -795,7 +795,7 @@ void FastHierarchyLayout::moveLongEdge(int actNode,
 			x[(*_it)] = xOpt;
 	    }
 	}
-}  
+}
 
 
 /*************************************************************************
@@ -817,7 +817,7 @@ this node.
 */
 
 
-void FastHierarchyLayout::straightenEdge(int actNode,bool *marked) 
+void FastHierarchyLayout::straightenEdge(int actNode,bool *marked)
 {
     if(!marked[actNode] && // breadth[actNode] < ALLOW &&
        adj[0][actNode].size() == 1 &&
@@ -825,7 +825,7 @@ void FastHierarchyLayout::straightenEdge(int actNode,bool *marked)
        longEdge[actNode]->size() < 2)
 	{
 		marked[actNode]=1;
-		
+
 		int fst=adj[0][actNode].front();
 		int lst=adj[1][actNode].front();
 
@@ -871,25 +871,25 @@ The function findPlacement computes the layout of an embedded layered graph.
 */
 
 
-void FastHierarchyLayout::findPlacement() 
+void FastHierarchyLayout::findPlacement()
 {
     int actNode,next,last,actLayer,dir,leftBnd,leftNxt,rightNxt;
     bool *marked=new bool[n];
     ListConstIterator<int> _it = 0;
-    
+
     // Replace all virtual nodes in an edge traversing only one layer by a
 	// nonvirtual node.
     forallnodes if(virt[actNode] &&
 		!virt[adj[0][actNode].front()] &&
-		!virt[adj[1][actNode].front()]) 
+		!virt[adj[1][actNode].front()])
 	virt[actNode] = 0;
-    
+
     // Compute minimal distances between nodes (totalB)
 
     totalB = new double[n];
     double toAdd;
     forallnodes {
-		if(!actNode || actNode && layer[actNode-1] < layer[actNode]) 
+		if(!actNode || (actNode && layer[actNode-1] < layer[actNode]))
 			totalB[actNode]=0;
 		else {
 			toAdd = breadth[actNode-1] / 2 + breadth[actNode] / 2;
@@ -902,17 +902,17 @@ void FastHierarchyLayout::findPlacement()
 			totalB[actNode] = totalB[actNode-1] + toAdd;
 		}
     }
-    
+
     // Remove crossings of long edges
     // Applied for long edges that cross each other in inner segments.
 
     List<int> *newEdge,*oldEdge;
     int down,spl;
-    
+
 
     // For every two consecutive layers l and l+1 , traverse the inner edge
 	// segments between the two layers according to the order of virtual nodes
-	// on layer l. We consider consecutive pairs of inner edges segments 
+	// on layer l. We consider consecutive pairs of inner edges segments
     // from left to right.  If two inner edge segments cross, we split the
 	// right long edge between the two layers by parting the corresponding list
 	// into two sublists.
@@ -932,7 +932,7 @@ void FastHierarchyLayout::findPlacement()
 							next = *_it;
 							longEdge[next] = newEdge;
 						}
-					} else 
+					} else
 						last = down;
 				}
 			}
@@ -948,8 +948,8 @@ void FastHierarchyLayout::findPlacement()
     List<int> *blockNodes;
     kList neighbours;
     double dist;
-    
-    forallnodes 
+
+    forallnodes
 		x[actNode] = 0;
     for(dir = 1; dir >= -1;dir -= 2) {
 		// for dir = 1, move long edges as far as possible to the left
@@ -958,7 +958,7 @@ void FastHierarchyLayout::findPlacement()
 
 		// Partition the graph into blocks according to the technical report.
 		blockCount = 0;
-		forallnodes 
+		forallnodes
 			block[actNode] = marked[actNode] = 0;
 		foralllayers {
 			actNode = (dir == 1 ? first[actLayer] : first[actLayer+1] - 1);
@@ -994,7 +994,7 @@ void FastHierarchyLayout::findPlacement()
 
 		for(int i = 0; i < blockCount;i++) {
 			// for every block
-			exD = 0; 
+			exD = 0;
 			dist = 0;
 			for (_it = blockNodes[i].begin(); _it.valid(); _it++) {
 				// for every node of the block apply sortLongEdges
@@ -1032,8 +1032,8 @@ void FastHierarchyLayout::findPlacement()
 
 		// Compute for every node the average of the two positions of the left
 		// and right placement.
-		forallnodes 
-			x[actNode] += pos[actNode] / 2; 
+		forallnodes
+			x[actNode] += pos[actNode] / 2;
 
 		delete[] blockNodes;
     }
@@ -1049,9 +1049,9 @@ void FastHierarchyLayout::findPlacement()
     // -1 : is not yet clear
     // 0  : top down traversal
     // 1  : bottom up traversal
-    int *nodeDir = new int[n]; 
+    int *nodeDir = new int[n];
 
-    forallnodes 
+    forallnodes
 		nodeDir[actNode] = -1;
 
 
@@ -1061,18 +1061,18 @@ void FastHierarchyLayout::findPlacement()
     forallnodes {
 		if(virt[actNode]) {
 			next = actNode + 1;
-			while(sameLayer(next,actNode) && !virt[next]) 
+			while(sameLayer(next,actNode) && !virt[next])
 				next++;
 
 			// If actNode is representative of a fixed inner sequence, the
 			// sequence is already placed and marked is set
-			marked[actNode] = sameLayer(next,actNode) && 
+			marked[actNode] = sameLayer(next,actNode) &&
 			x[next] - x[actNode] < totalB[next] - totalB[actNode] + ALLOW;
-			
-		} else 
+
+		} else
 			marked[actNode] = 0;
     }
-    
+
     forallnodes {
 		if(marked[actNode] && nodeDir[actNode] == -1) {
 			// for every fixed sequence, traverse the long edge belonging to
@@ -1095,7 +1095,7 @@ void FastHierarchyLayout::findPlacement()
     mDist = new double[n];
     // Die folgende forallnodes Schleife wurde f?r den Vorschlag von
 	// Christoph (siehe unten) entfernt, da ?berfl?ssig
-	forallnodes 
+	forallnodes
 		mDist[actNode] = totalB[actNode];
 
     for(dir = 0;dir < 2;dir++) {
@@ -1139,7 +1139,7 @@ void FastHierarchyLayout::findPlacement()
 			forallnodesonlayer {
 				if(virt[actNode]) {
 				// For every sequence, bounded by leftBnd and actNode.
-					if(leftBnd == -1) {                    
+					if(leftBnd == -1) {
 						// leftBnd is not a node. The sequence is external. Place it.
 						placeNodes(-1,actNode,first[actLayer],actNode - 1,dir);
 						for(next = first[actLayer]; next < actNode; next++)
@@ -1147,7 +1147,7 @@ void FastHierarchyLayout::findPlacement()
 					}
 					else if(nodeDir[leftBnd] != !dir) { // nodeDir[leftBnd] == dir ||  nodeDir[leftBnd] == -1
 					// internal sequence
- 
+
 					if(!marked[leftBnd])
 						// sequence has not been placed yet. Place it.
 						placeNodes(leftBnd,actNode,leftBnd + 1,
@@ -1157,7 +1157,7 @@ void FastHierarchyLayout::findPlacement()
 					leftNxt = adj[!dir][leftBnd].front();
 					rightNxt = adj[!dir][actNode].front();
 					if(virt[leftNxt] && virt[rightNxt])
-						for(next = leftNxt + 1;next < rightNxt; next++) 
+						for(next = leftNxt + 1;next < rightNxt; next++)
 							nodeDir[next] = dir;
 					}
 					leftBnd = actNode;
@@ -1175,13 +1175,13 @@ void FastHierarchyLayout::findPlacement()
 				for (next = first[actLayer+1] - 1;next > leftBnd; next--)
 					mDist[next] = mDist[leftBnd] - x[leftBnd] + x[next];
 			}
-		} 
+		}
     }
     delete[] nodeDir;
     delete[] mDist;
-	
-    // Apply moveLongEdge to every long edge. 
-    forallnodes 
+
+    // Apply moveLongEdge to every long edge.
+    forallnodes
 	marked[actNode] = 0;
     foralllayers {
 		for (actNode = (first[actLayer] + first[actLayer + 1]) / 2;
@@ -1195,12 +1195,12 @@ void FastHierarchyLayout::findPlacement()
 			moveLongEdge(actNode,0,marked);
 		}
     }
-    
+
     // Compute ordinates for the layers and boxY
 
     double boxY = k ? height[0] / 2 : 0; // y-value for the bounding box.
     double minD;
-    
+
     foralllayers {
 		y[actLayer] = boxY;
 		minD = m_minLayerDist;
@@ -1216,13 +1216,13 @@ void FastHierarchyLayout::findPlacement()
 			decrTo(minD,10 * m_minLayerDist);
 		}
 		boxY += height[actLayer] / 2;
-		if(actLayer < k - 1) 
+		if(actLayer < k - 1)
 			boxY += minD + height[actLayer+1] / 2;
     }
 
-    // Apply straightenEdge to every long edge with one virtual node. 
+    // Apply straightenEdge to every long edge with one virtual node.
 
-    forallnodes 
+    forallnodes
 	marked[actNode] = 0;
     foralllayers {
 		for (actNode = (first[actLayer] + first[actLayer+1]) / 2;

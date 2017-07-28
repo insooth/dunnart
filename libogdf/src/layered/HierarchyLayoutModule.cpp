@@ -1,12 +1,12 @@
 /** \file
  * \brief Implementation of the static functions.
- * 
+ *
  * \author Hoi-Ming Wong
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,19 +23,19 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
@@ -136,6 +136,7 @@ void HierarchyLayoutModule::addBends(ogdf::GraphCopyAttributes &AGC, ogdf::Hiera
 			bool incomming = false;
 			// v is the node of splitMe on current level i
 			node s, v;
+            (void) s;
 			s = v = splitMe->source();
 			node t = splitMe->target();
 
@@ -566,6 +567,6 @@ void HierarchyLayoutModule::overlap(ogdf::GraphCopyAttributes &AGC, ogdf::Hierar
 
 
 
-	
-	
+
+
 

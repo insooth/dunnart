@@ -212,7 +212,7 @@ void ConvexHull::leftHull(std::vector<DPoint> points, DPoint &start, DPoint &end
 	int indexQ = 0;
 	DPoint q(points[qCandidates[0]]);
 	for (unsigned int i = 0; i < qCandidates.size(); i++) {
-		if ( indexQ != i && sameDirection(points[qCandidates[i]], q, q1, q2) ) {
+		if ( indexQ != static_cast<unsigned int>(i) && sameDirection(points[qCandidates[i]], q, q1, q2) ) {
 			q = points[qCandidates[i]];
 			indexQ = i;
 		}

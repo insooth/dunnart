@@ -1,22 +1,22 @@
 /*
  * $Revision: 1.1 $
- * 
+ *
  * last checkin:
- *   $Author: klein $ 
- *   $Date: 2007-11-14 16:18:10 +0100 (Wed, 14 Nov 2007) $ 
+ *   $Author: klein $
+ *   $Date: 2007-11-14 16:18:10 +0100 (Wed, 14 Nov 2007) $
  ***************************************************************/
- 
+
 /** \file
  * \brief The routine for loading the problem.
- * 
+ *
  * This is only a preliminary -- \e Text missing??
- * 
+ *
  * \author Michael Juenger, Gerhard Reinelt
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,23 +33,23 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
-#include "alps.h" 
+#include "alps.h"
 
 namespace ogdf {
 
@@ -58,7 +58,7 @@ int alps_loadproblem(
 					 int nrows,
 					 int ncols,
 					 int nonz,
-					 int minmax, 
+					 int minmax,
 					 double *obj,
 					 int *matbeg,
 					 int *matcount,
@@ -79,6 +79,8 @@ int alps_loadproblem(
 {
 	/** Declare alps_loadproblem scalars */
 	int i,j,k,ind;
+
+    (void) ind;
 
 	/** Allocate space for original LP data */
 	lp->an = ncols;
@@ -122,7 +124,7 @@ int alps_loadproblem(
 	if (ncolstrchars) {
 		lp->acolnameind = (int *) malloc( lp->an * sizeof(int) );
 		lp->acolnamestr = (char *) malloc( ncolstrchars * sizeof(char) );
-		if (!lp->acolnameind || !lp->acolnamestr) 
+		if (!lp->acolnameind || !lp->acolnamestr)
 			// run out of memory
 		{
 			fprintf (stderr, "run out of memory\n");

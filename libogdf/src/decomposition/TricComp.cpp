@@ -1,21 +1,21 @@
 /*
  * $Revision: 1.9 $
- * 
+ *
  * last checkin:
- *   $Author: klein $ 
- *   $Date: 2007-11-14 16:18:10 +0100 (Wed, 14 Nov 2007) $ 
+ *   $Author: klein $
+ *   $Date: 2007-11-14 16:18:10 +0100 (Wed, 14 Nov 2007) $
  ***************************************************************/
- 
+
 /** \file
  * \brief Implements Hopcroft/Tarjan algorithm for finding the
  * triconnected components of a biconnected multi-graph
- * 
+ *
  * \author Carsten Gutwenger
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,19 +32,19 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
@@ -357,7 +357,7 @@ void TricComp::splitMultiEdges()
 				minI == minIndex[*it] && maxI == maxIndex[*it];	++it)
 			{
 				C << *it;
-				m_TYPE[*it] = removed; 
+				m_TYPE[*it] = removed;
 			}
 		}
 	}
@@ -641,7 +641,7 @@ void TricComp::DFS1 (const Graph& G, node v, node u)
 			}
 
 			m_ND[v] += m_ND[w];
-		
+
 		} else {
 
 			m_TYPE[e] = frond;
@@ -700,7 +700,7 @@ void TricComp::DFS1 (const Graph& G, node v, node u, node &s1)
 			}
 
 			m_ND[v] += m_ND[w];
-		
+
 		} else {
 
 			m_TYPE[e] = frond;
@@ -869,7 +869,7 @@ void TricComp::pathSearch (const Graph& G, node v)
 							m_pGC->original(v) << ", " <<
 							m_pGC->original(m_A[w].front()->target());
 #endif
-						
+
 						edge e1 = m_ESTACK.pop();
 						edge e2 = m_ESTACK.pop();
 						m_A[w].del(m_IN_ADJ[e2]);
@@ -969,7 +969,7 @@ void TricComp::pathSearch (const Graph& G, node v)
 					xy = m_ESTACK.top();
 					x = m_NEWNUM[xy->source()];
 					y = m_NEWNUM[xy->target()];
-	
+
 					if (!((wnum <= x && x < wnum+m_ND[w]) || (wnum <= y && y < wnum+m_ND[w])))
 						break;
 
@@ -1174,6 +1174,7 @@ bool isTriconnected(const Graph &G, node &s1, node &s2)
 
 void TricComp::printOs(edge e)
 {
+    (void) e;
 #ifdef TRIC_COMP_OUTPUT
 	cout << " (" << m_pGC->original(e->source()) << "," <<
 		m_pGC->original(e->target()) << "," << e->index() << ")";

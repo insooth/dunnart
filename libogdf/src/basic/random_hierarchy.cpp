@@ -1,20 +1,20 @@
 /*
  * $Revision: 1.2 $
- * 
+ *
  * last checkin:
- *   $Author: chimani $ 
- *   $Date: 2008-02-20 20:33:07 +1100 (Wed, 20 Feb 2008) $ 
+ *   $Author: chimani $
+ *   $Date: 2008-02-20 20:33:07 +1100 (Wed, 20 Feb 2008) $
  ***************************************************************/
- 
+
 /** \file
  * \brief Implements graph generator for hierarchical graphs.
- * 
+ *
  * \author Carsten Gutwenger, Christoph Buchheim
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,19 +31,19 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
@@ -104,7 +104,7 @@ void randomHierarchy(Graph &G,
 
 	/** Place nodes **/
 
-	for(int i = 0; i < numberOfNodes; i++) 
+	for(int i = 0; i < numberOfNodes; i++)
 		G.newNode();
 
 	int numberOfLayers=0, totNumber=0, realCount=0;
@@ -116,7 +116,7 @@ void randomHierarchy(Graph &G,
 		vrt[totNumber++] = 0;
 		realCount++;
 		r = double(randomNumber(0,1000)) / 1000.0;
-		if(totNumber == 1 && singleSource || realCount == numberOfNodes || r*r*numberOfNodes < 1)
+		if(((totNumber == 1) && singleSource) || (realCount == numberOfNodes) || (r*r*numberOfNodes < 1))
 		{
 			if(longEdges && numberOfLayers)
 				vrt[totNumber++] = 1;
@@ -194,7 +194,7 @@ void randomHierarchy(Graph &G,
 	delete[] leftN;
 	delete[] rightN;
 
-	if(planar) 
+	if(planar)
 		for(act = 0; act < totNumber; act++) {
 			CmpTail cmpTail;
 			edgeIn[act].quicksort(cmpTail);

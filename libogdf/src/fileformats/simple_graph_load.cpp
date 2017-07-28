@@ -1,22 +1,22 @@
 /*
  * $Revision: 1.3 $
- * 
+ *
  * last checkin:
- *   $Author: gutwenger $ 
- *   $Date: 2008-06-07 21:39:43 +1000 (Sat, 07 Jun 2008) $ 
+ *   $Author: gutwenger $
+ *   $Date: 2008-06-07 21:39:43 +1000 (Sat, 07 Jun 2008) $
  ***************************************************************/
- 
+
 /** \file
  * \brief Implementation of simple graph loaders.
- * 
+ *
  * See header-file simple_graph_load.h for more information.
- * 
+ *
  * \author Markus Chimani, Carsten Gutwenger
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,22 +33,22 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
- 
+
 #include <ogdf/fileformats/simple_graph_load.h>
 #include <ogdf/basic/Logger.h>
 #include <ogdf/basic/HashArray.h>
@@ -121,12 +121,12 @@ bool loadSimpleGraphStream(Graph &G, std::istream& fileStream) {
 
 	char buffer[SIMPLE_LOAD_BUFFER_SIZE];
 	int numN = 0, numE = 0;
-	
+	(void) numE;
 	//try to read the two first lines to get the graph size
 	if (!fileStream.eof())
 	{
 		char* pch;
-		//contains the name 
+		//contains the name
 		fileStream.getline(buffer, SIMPLE_LOAD_BUFFER_SIZE-1);
 		pch = strtok(buffer, " ");
 		if (strcmp(pch, "*BEGIN") != 0) return false;
@@ -144,16 +144,16 @@ bool loadSimpleGraphStream(Graph &G, std::istream& fileStream) {
 		    if (pch == NULL) return false;
 		    numE = atoi(pch);
 		}
-		else return false;	
+		else return false;
 	}
 	else return false;
-	
+
 	if (numN == 0) return true;
-	
+
 	Array<node> indexToNode(1,numN,0);
 	for (int i = 1; i <= numN; i++)
 	{
-		//we assign new indexes here if they are not consecutive 
+		//we assign new indexes here if they are not consecutive
 		//starting from 1 in the file!
 		indexToNode[i] = G.newNode();
 	}
@@ -161,17 +161,17 @@ bool loadSimpleGraphStream(Graph &G, std::istream& fileStream) {
 	while(!fileStream.eof())
 	{
 		fileStream.getline(buffer, SIMPLE_LOAD_BUFFER_SIZE-1);
-		
+
 		if(buffer[0] == 0)
 			continue;
-		    
+
 		int srcIndex, tgtIndex;
 		sscanf(buffer, "%d%d", &srcIndex, &tgtIndex);
 		char* pch;
 		pch = strtok(buffer, " ");
-		if ( (strcmp(pch, "*END") == 0) || (strcmp(pch, "*CHECKSUM") == 0) ) 
+		if ( (strcmp(pch, "*END") == 0) || (strcmp(pch, "*CHECKSUM") == 0) )
 		    continue;
-		
+
 		if(srcIndex < 1 || srcIndex > numN || tgtIndex < 1 || tgtIndex > numN)
 			{
 				Logger::slout() << "loadSimpleGraphStream: illegal node index in edge specification.\n";
@@ -189,12 +189,12 @@ bool loadYGraph(Graph &G, FILE *lineStream) {
 
 	char c,s;
 	int n,i,j;
-	
+
 	YG_NEXTBYTE(n);
 	Array<node> A(n);
 	for(i=n; i-->0;)
 		A[i] = G.newNode();
-	
+
 	s = 0;
 	for(i = 1; i<n; ++i) {
 		for(j = 0; j<i; ++j) {
@@ -208,7 +208,7 @@ bool loadYGraph(Graph &G, FILE *lineStream) {
 	}
 
 	c = fgetc(lineStream);
-	if(c != EOF && c != '\n') { 
+	if(c != EOF && c != '\n') {
 		Logger::slout(Logger::LL_MINOR) << "loadYGraph: Warning: line too long! ignoring...";
 	}
 	return true;
@@ -228,10 +228,10 @@ bool loadPlaHypergraph(Graph &G, List<node>& hypernodes, List<edge>* shell, cons
 
 int extractIdentifierLength(char* from, int line) {
 	int p = 1;
-	while(from[p]!=',' && from[p]!=')' && from[p]!=' ' && from[p]!='(') { 
+	while(from[p]!=',' && from[p]!=')' && from[p]!=' ' && from[p]!='(') {
 		++p;
 		if(from[p]=='\0') {
-			cerr << "Loading Hypergraph: Error in line " << line << 
+			cerr << "Loading Hypergraph: Error in line " << line <<
 				". Expected comma, bracket or whitespace before EOL; Ignoring.\n";
 			break;
 		}
@@ -241,24 +241,24 @@ int extractIdentifierLength(char* from, int line) {
 
 int newStartPos(char* from, int line) {
 	int p = 0;
-	while(from[p]=='\t' || from[p]==' ' || from[p]==',') { 
+	while(from[p]=='\t' || from[p]==' ' || from[p]==',') {
 		++p;
 		if(from[p]=='\0') {
-			cerr << "Loading Hypergraph: Error in line " << line << 
+			cerr << "Loading Hypergraph: Error in line " << line <<
 				". Expected whitespace or delimiter before EOL; Ignoring.\n";
 			break;
 		}
 	}
-	
+
 	return p;
 }
 
 int findOpen(char* from, int line) {
 	int p = 0;
-	while(from[p]!='(') { 
+	while(from[p]!='(') {
 		++p;
 		if(from[p]=='\0') {
-			cerr << "Loading Hypergraph: Error in line " << line << 
+			cerr << "Loading Hypergraph: Error in line " << line <<
 				". Expected opening bracket before EOL; Ignoring.\n";
 			break;
 		}
@@ -282,23 +282,23 @@ bool loadBenchHypergraphStream(Graph &G, List<node>& hypernodes, List<edge>* she
 	hypernodes.clear();
 	if(shell) shell->clear();
 	node si,so;
-	
+
 	char buffer[SIMPLE_LOAD_BUFFER_SIZE];
-	
+
 //	Array<node> indexToNode(1,250,0);
 
 	HashArray<String,node> hm(0);
-	
+
 	if(shell) {
 //		hypernodes.pushBack( si=G.newNode() );
 //		hypernodes.pushBack( so=G.newNode() );
-//		shell.pushBack( G.newEdge( si, so ) );		
+//		shell.pushBack( G.newEdge( si, so ) );
 		shell->pushBack( G.newEdge( si=G.newNode(), so=G.newNode() ) );
 	}
 
 	int line = 0;
 	while(!fileStream.eof())
-	{	
+	{
 		++line;
 		fileStream.getline(buffer, SIMPLE_LOAD_BUFFER_SIZE-1);
 		size_t l = strlen(buffer);
@@ -312,14 +312,14 @@ bool loadBenchHypergraphStream(Graph &G, List<node>& hypernodes, List<edge>* she
 			hm[s] = n;
 			hypernodes.pushBack(n);
 			if(shell) shell->pushBack( G.newEdge(si,n) );
-//			cout << "input: " << s << " -> " << n->index() << "\n";					
+//			cout << "input: " << s << " -> " << n->index() << "\n";
 		} else if(!strncmp("OUTPUT(",buffer,7)) {
 			String s(extractIdentifierLength(buffer+7, line),buffer+7);
 			node n = G.newNode();
 			hm[s] = n;
 			hypernodes.pushBack(n);
-			if(shell) shell->pushBack( G.newEdge(n,so) );								
-//			cout << "output: " << s << " -> " << n->index() << "\n";					
+			if(shell) shell->pushBack( G.newEdge(n,so) );
+//			cout << "output: " << s << " -> " << n->index() << "\n";
 		} else {
 			int p = extractIdentifierLength(buffer, line);
 			String s(p,buffer); // gatename
@@ -334,7 +334,7 @@ bool loadBenchHypergraphStream(Graph &G, List<node>& hypernodes, List<edge>* she
 					hypernodes.pushBack(out);
 					G.newEdge(in,out);
 					m = in;
-				}	
+				}
 			}
 			p = findOpen(buffer, line);
 			do {
@@ -356,10 +356,10 @@ bool loadBenchHypergraphStream(Graph &G, List<node>& hypernodes, List<edge>* she
 				}
 				G.newEdge(mm,m);
 //				cout << "Edge: " << s << "(" << hm[s]->index() << ") TO " << m->index() << "\n";
-			} while(buffer[p] == ',');			
-		}		
-	}	
-	
+			} while(buffer[p] == ',');
+		}
+	}
+
 	return true;
 }
 
@@ -368,19 +368,19 @@ bool loadPlaHypergraphStream(Graph &G, List<node>& hypernodes, List<edge>* shell
 	hypernodes.clear();
 	if(shell) shell->clear();
 	node si,so;
-	
+
 	int i;
 	int numGates;
 	fileStream >> numGates;
 //	cout << "numGates=" << numGates << "\n";
-	
+
 	Array<node> outport(1,numGates);
 	for(i = 1; i<=numGates; ++i) {
 		node out = G.newNode();
 		outport[i] = out;
 		hypernodes.pushBack(out);
 	}
-	
+
 	for(i = 1; i<=numGates; ++i) {
 		int id, type, numinput;
 		fileStream >> id >> type >> numinput;
@@ -397,7 +397,7 @@ bool loadPlaHypergraphStream(Graph &G, List<node>& hypernodes, List<edge>* shell
 //		cout << "\n";
 		fileStream.ignore(500,'\n');
 	}
-	
+
 	if(shell) {
 		shell->pushBack( G.newEdge( si=G.newNode(), so=G.newNode() ) );
 		node n;
@@ -411,7 +411,7 @@ bool loadPlaHypergraphStream(Graph &G, List<node>& hypernodes, List<edge>* shell
 			}
 		}
 	}
-	
+
 	return true;
 }
 

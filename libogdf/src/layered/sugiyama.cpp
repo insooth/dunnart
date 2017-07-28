@@ -1,21 +1,21 @@
 /*
  * $Revision: 1.9 $
- * 
+ *
  * last checkin:
- *   $Author: gutwenger $ 
- *   $Date: 2009-09-17 05:51:15 +1000 (Thu, 17 Sep 2009) $ 
+ *   $Author: gutwenger $
+ *   $Date: 2009-09-17 05:51:15 +1000 (Thu, 17 Sep 2009) $
  ***************************************************************/
- 
+
 /** \file
  * \brief Implementation of Sugiyama algorithm (classes Hierarchy,
  * Level, SugiyamaLayout)
- * 
+ *
  * \author Carsten Gutwenger
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,25 +32,25 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
 
 
-
+#include <functional>
 
 #include <ogdf/layered/Hierarchy.h>
 #include <ogdf/layered/SugiyamaLayout.h>
@@ -96,7 +96,7 @@ void GraphCopyAttributes::transform()
 
 		DPolyline &dpl = m_pAG->bends(eG);
 		dpl.clear();
-		
+
 		ListConstIterator<edge> itE = m_pGC->chain(eG).begin();
 		node v      = (*itE)->source();
 		node vAfter = (*itE)->target();
@@ -148,7 +148,7 @@ void ClusterGraphCopyAttributes::transform()
 
 		DPolyline &dpl = m_pACG->bends(eG);
 		dpl.clear();
-		
+
 		ListConstIterator<edge> itE = m_pH->chain(eG).begin();
 		node v      = (*itE)->source();
 		node vAfter = (*itE)->target();
@@ -309,7 +309,7 @@ void Hierarchy::doInit(const NodeArray<int> &rank)
 		if (rankSrc > rankTgt) {
 			m_GC.reverseEdge(e); std::swap(rankSrc,rankTgt);
 		}
-		
+
 		if (rankSrc == rankTgt) {
 			e = m_GC.split(e);
 			m_GC.reverseEdge(e);
@@ -330,7 +330,7 @@ void Hierarchy::doInit(const NodeArray<int> &rank)
 	for(i = 0; i <= m_pLevel.high(); ++i)
 		delete m_pLevel[i];
 	m_pLevel.init(0,maxRank);
-	
+
 	for(i = 0; i <= maxRank; ++i)
 		m_pLevel[i] = new Level(this,i,length[i]);
 
@@ -405,7 +405,7 @@ void Hierarchy::buildAdjNodes(int i)
 		node v = level[j];
 		edge e;
 		forall_adj_edges(e,v) {
-			if (e->source() == v) {			
+			if (e->source() == v) {
 				(m_lowerAdjNodes[e->target()])[m_nSet[e->target()]++] = v;
 			} else {
 				(m_upperAdjNodes[e->source()])[m_nSet[e->source()]++] = v;
@@ -506,7 +506,7 @@ int Hierarchy::calculateCrossings(int i)
 
 	int nc = 0; // number of crossings
 
-	int fa = 1; 
+	int fa = 1;
 	while (fa < nUpper)
 		fa *= 2;
 
@@ -540,7 +540,7 @@ int Hierarchy::calculateCrossings(int i)
 
 
 //-----------------------------------------------
-// The following code 
+// The following code
 //   calculateCrossingsPlaneSweep() and
 //   calculateCrossingsPlaneSweep(int i)
 // is the old implementation of the crossing calculation using a
@@ -566,7 +566,12 @@ int Hierarchy::calculateCrossingsPlaneSweep(int i)
 	const Level *pLevel[2];
 	pLevel[0] = m_pLevel[i]; pLevel[1] = m_pLevel[i+1];
 
-	if (pLevel[0]->high() <= 0 || pLevel[1] <= 0) return 0;
+    // total order for pointers not with built-in operators
+	if ((pLevel[0]->high() <= 0)
+                || std::less_equal<void*>()(static_cast<void*>(pLevel[1]), static_cast<void*>(0))
+    {
+        return 0;
+    }
 
 	int j, k;
 	for(j = 0; j <= 1; ++j)
@@ -969,7 +974,7 @@ void SugiyamaLayout::doCall(GraphAttributes &AG, bool umlCall, NodeArray<int> &r
 
 			const double dx = offset[i].m_x - offset1[i].m_x;
 			const double dy = offset[i].m_y - offset1[i].m_y;
-			
+
 			// iterate over all nodes in ith CC
 			ListConstIterator<node> it;
 			for(it = nodes.begin(); it.valid(); ++it)
@@ -993,14 +998,14 @@ void SugiyamaLayout::doCall(GraphAttributes &AG, bool umlCall, NodeArray<int> &r
 					}
 				}
 			}
-		}		
-		
+		}
+
 		m_numLevels = H.size();
 		m_maxLevelSize = 0;
 		for(int i = 0; i <= H.high(); i++) {
 			Level &l = H[i];
 			if (l.size() > m_maxLevelSize)
-				m_maxLevelSize = l.size();			
+				m_maxLevelSize = l.size();
 		}
 
 	} else {
@@ -1024,7 +1029,7 @@ void SugiyamaLayout::doCall(GraphAttributes &AG, bool umlCall, NodeArray<int> &r
 			if(vOrig == 0)
 				vOrig = GC.original(v->firstAdj()->theEdge())->source();
 
-			m_compGC[v] = component[vOrig];	
+			m_compGC[v] = component[vOrig];
 		}
 
 		reduceCrossings(H);
@@ -1065,16 +1070,16 @@ void SugiyamaLayout::doCall(GraphAttributes &AG, bool umlCall, NodeArray<int> &r
 			}
 		}
 
-		m_numLevels = H.size();		
+		m_numLevels = H.size();
 		m_maxLevelSize = 0;
 		for(int i = 0; i <= H.high(); i++) {
 			Level &l = H[i];
 			if (l.size() > m_maxLevelSize)
-				m_maxLevelSize = l.size();			
+				m_maxLevelSize = l.size();
 		}
 
 	}
-	
+
 }
 
 
@@ -1201,7 +1206,7 @@ void SugiyamaLayout::reduceCrossings(Hierarchy &H)
 		m_nCrossings = nCrossingsOld = H.calculateCrossingsSimDraw(m_subgraphs);
 	H.storePos(bestPos);
 
-	
+
 	if (m_nCrossings == 0) return;
 
 	if(!useSubgraphs())

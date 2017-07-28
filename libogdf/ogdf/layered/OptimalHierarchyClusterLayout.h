@@ -1,21 +1,21 @@
 /*
  * $Revision: 1.5 $
- * 
+ *
  * last checkin:
- *   $Author: gutwenger $ 
- *   $Date: 2008-12-08 02:02:23 +1100 (Mon, 08 Dec 2008) $ 
+ *   $Author: gutwenger $
+ *   $Date: 2008-12-08 02:02:23 +1100 (Mon, 08 Dec 2008) $
  ***************************************************************/
- 
+
 /** \file
  * \brief Declaration of the optimal third phase of the sugiyama
  *        algorithm for clusters.
- * 
+ *
  * \author Carsten Gutwenger
- * 
+ *
  * \par License:
  * This file is part of the Open Graph Drawing Framework (OGDF).
  * Copyright (C) 2005-2007
- * 
+ *
  * \par
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,19 +32,19 @@
  * you follow the requirements of the GNU General Public License
  * in regard to all of the software in the executable aside from these
  * third-party libraries.
- * 
+ *
  * \par
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * \par
- * You should have received a copy of the GNU General Public 
+ * You should have received a copy of the GNU General Public
  * License along with this program; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
+ *
  * \see  http://www.gnu.org/copyleft/gpl.html
  ***************************************************************/
 
@@ -74,7 +74,7 @@ namespace ogdf {
  * The used model avoids Spaghetti-effect like routing of edges by using
  * long vertical segments as in FastHierarchyLayout. An additional balancing
  * can be used which balances the successors below a node.
- * 
+ *
  * <H3>Optional parameters</H3>
  *
  * <table>
@@ -107,6 +107,8 @@ class OGDF_EXPORT OptimalHierarchyClusterLayout : public HierarchyClusterLayoutM
 #ifndef OGDF_LP_SOLVER
 protected:
 	void doCall(const ExtendedNestingGraph& H,ClusterGraphCopyAttributes &ACGC) {
+        (void) H;
+        (void) ACGC;
 		OGDF_THROW_PARAM(LibraryNotSupportedException, lnscCoin);
 	}
 
